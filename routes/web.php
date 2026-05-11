@@ -7,6 +7,18 @@ Route::get('/', function () {
     return view('frontend.index');
 })->name('home');
 
+Route::get('/services', function () {
+    return view('frontend.services.index');
+})->name('services.index');
+
+Route::get('/services/{slug}', function ($slug) {
+    return view('frontend.services.show', ['slug' => $slug]);
+})->name('services.show');
+
+Route::get('/packages', function () {
+    return view('frontend.packages.index');
+})->name('packages.index');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

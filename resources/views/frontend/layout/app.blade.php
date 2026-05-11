@@ -16,9 +16,10 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#fdfbf7] text-[#2c1e14] overflow-x-hidden">
+<body class="bg-[#fdfbf7] text-[#2c1e14] overflow-x-hidden" x-data>
     
     @include('frontend.includes.header')
+    @include('frontend.includes.auth_modals')
 
     <main>
         @yield('content')

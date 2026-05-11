@@ -22,6 +22,11 @@
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center space-x-8">
+                <!-- Cart Icon -->
+                <a href="#" class="relative p-2 text-[#3d2b1f] hover:text-[#c6a664] transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    <span class="absolute top-0 right-0 w-4 h-4 bg-[#c6a664] text-white text-[10px] font-bold flex items-center justify-center rounded-full">0</span>
+                </a>
                 <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Services</a>
                 <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Packages</a>
                 <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Make Your Packages</a>
@@ -30,14 +35,19 @@
                     @auth
                         <a href="{{ url('/dashboard') }}" class="bg-[#3d2b1f] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#5d4037] transition-all shadow-md">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Log in</a>
-                        <a href="{{ route('register') }}" class="bg-[#c6a664] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#b59554] transition-all shadow-lg">Get App</a>
+                        <button @click="$dispatch('open-login')" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Log in</button>
+                        <button @click="$dispatch('open-register')" class="bg-[#c6a664] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#b59554] transition-all shadow-lg">Get App</button>
                     @endauth
                 @endif
             </div>
 
             <!-- Mobile Actions -->
             <div class="md:hidden flex items-center gap-3">
+                <!-- Mobile Cart -->
+                <a href="#" class="relative p-2 text-[#3d2b1f]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    <span class="absolute top-0 right-0 w-4 h-4 bg-[#c6a664] text-white text-[10px] font-bold flex items-center justify-center rounded-full">0</span>
+                </a>
                 <!-- Mobile Search Icon -->
                 <button id="mobile-search-btn" class="text-[#3d2b1f] p-2 hover:bg-[#3d2b1f]/5 rounded-lg transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -93,8 +103,8 @@
                     @auth
                         <a href="{{ url('/dashboard') }}" class="btn-primary text-center">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-lg font-semibold text-[#3d2b1f]">Log in</a>
-                        <a href="{{ route('register') }}" class="btn-primary text-center">Register / Get App</a>
+                        <button @click="$dispatch('open-login')" class="text-lg font-semibold text-left text-[#3d2b1f]">Log in</button>
+                        <button @click="$dispatch('open-register')" class="btn-primary text-center">Register / Get App</button>
                     @endauth
                 @endif
                 
