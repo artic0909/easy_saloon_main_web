@@ -22,16 +22,22 @@
 
     // Mobile Drawer Logic
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileSearchBtn = document.getElementById('mobile-search-btn');
     const closeDrawerBtn = document.getElementById('close-drawer');
     const mobileDrawer = document.getElementById('mobile-drawer');
     const drawerBackdrop = document.getElementById('drawer-backdrop');
     const drawerContent = document.getElementById('drawer-content');
+    const drawerSearchInput = mobileDrawer ? mobileDrawer.querySelector('input') : null;
 
-    function openDrawer() {
+    function openDrawer(focusSearch = false) {
         mobileDrawer.classList.remove('pointer-events-none');
         drawerBackdrop.classList.add('opacity-100');
         drawerBackdrop.classList.remove('opacity-0');
         drawerContent.classList.remove('translate-x-full');
+        
+        if (focusSearch && drawerSearchInput) {
+            setTimeout(() => drawerSearchInput.focus(), 500);
+        }
     }
 
     function closeDrawer() {
@@ -44,7 +50,11 @@
     }
 
     if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', openDrawer);
+        mobileMenuBtn.addEventListener('click', () => openDrawer(false));
+    }
+
+    if (mobileSearchBtn) {
+        mobileSearchBtn.addEventListener('click', () => openDrawer(true));
     }
 
     if (closeDrawerBtn) {

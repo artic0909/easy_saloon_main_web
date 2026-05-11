@@ -23,6 +23,9 @@
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center space-x-8">
                 <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Services</a>
+                <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Packages</a>
+                <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Make Your Packages</a>
+
                 @if (Route::has('login'))
                     @auth
                         <a href="{{ url('/dashboard') }}" class="bg-[#3d2b1f] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#5d4037] transition-all shadow-md">Dashboard</a>
@@ -35,8 +38,8 @@
 
             <!-- Mobile Actions -->
             <div class="md:hidden flex items-center gap-3">
-                <!-- Mobile Search Icon (optional trigger) -->
-                <button class="text-[#3d2b1f] p-2 hover:bg-[#3d2b1f]/5 rounded-lg transition-all">
+                <!-- Mobile Search Icon -->
+                <button id="mobile-search-btn" class="text-[#3d2b1f] p-2 hover:bg-[#3d2b1f]/5 rounded-lg transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </button>
                 <div class="hidden sm:flex items-center gap-2 mr-2">
@@ -78,9 +81,9 @@
         
         <div class="flex-1 overflow-y-auto p-6 space-y-6">
             <div class="flex flex-col space-y-4">
-                <a href="#" class="text-lg font-semibold text-[#3d2b1f] hover:text-[#c6a664]">Home Services</a>
-                <a href="#" class="text-lg font-semibold text-[#3d2b1f] hover:text-[#c6a664]">Salons</a>
-                <a href="#" class="text-lg font-semibold text-[#3d2b1f] hover:text-[#c6a664]">Join as Professional</a>
+                <a href="#" class="text-lg font-semibold text-[#3d2b1f] hover:text-[#c6a664]">Services</a>
+                <a href="#" class="text-lg font-semibold text-[#3d2b1f] hover:text-[#c6a664]">Packages</a>
+                <a href="#" class="text-lg font-semibold text-[#3d2b1f] hover:text-[#c6a664]">Make Your Packages</a>
             </div>
             
             <div class="h-px bg-gray-100 w-full"></div>
