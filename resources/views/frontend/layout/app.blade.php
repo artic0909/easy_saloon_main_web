@@ -20,10 +20,6 @@
     
     @include('frontend.includes.header')
     
-    @guest
-        @include('frontend.includes.auth_modals')
-    @endguest
-
     <main>
         @yield('content')
     </main>

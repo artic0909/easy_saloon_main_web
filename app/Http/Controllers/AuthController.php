@@ -13,7 +13,12 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.login'); // Fallback if modal is not used
+        return view('frontend.auth.login');
+    }
+
+    public function showRegister()
+    {
+        return view('frontend.auth.register');
     }
 
     public function login(Request $request)

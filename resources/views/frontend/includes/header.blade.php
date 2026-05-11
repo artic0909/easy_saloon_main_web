@@ -62,8 +62,8 @@
                         </div>
                     </div>
                 @else
-                    <button @click="$dispatch('open-login')" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Log in</button>
-                    <button @click="$dispatch('open-register')" class="bg-[#c6a664] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#b59554] transition-all shadow-lg">Get Started</button>
+                    <a href="{{ route('login') }}" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Log in</a>
+                    <a href="{{ route('register') }}" class="bg-[#c6a664] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#b59554] transition-all shadow-lg">Get Started</a>
                 @endauth
             </div>
 
@@ -117,8 +117,8 @@
                         <button type="submit" class="block text-lg font-bold text-red-500">Sign Out</button>
                     </form>
                 @else
-                    <button @click="$dispatch('open-login'); closeDrawer()" class="block text-lg font-bold text-[#3d2b1f]">Login</button>
-                    <button @click="$dispatch('open-register'); closeDrawer()" class="w-full bg-[#3d2b1f] text-white py-4 rounded-2xl font-bold mt-4 shadow-lg">Join Now</button>
+                    <a href="{{ route('login') }}" class="block text-lg font-bold text-[#3d2b1f]">Login</a>
+                    <a href="{{ route('register') }}" class="block w-full bg-[#3d2b1f] text-white py-4 rounded-2xl font-bold mt-4 text-center shadow-lg">Join Now</a>
                 @endauth
             </nav>
         </div>
