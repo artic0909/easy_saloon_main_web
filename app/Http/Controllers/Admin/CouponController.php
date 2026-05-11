@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Coupon;
+use App\Models\User;
+use App\Notifications\CouponNotification;
+use Illuminate\Support\Facades\Notification;
 
 class CouponController extends Controller
 {
@@ -30,9 +33,13 @@ class CouponController extends Controller
             'expiry_date' => 'nullable|date',
         ]);
 
-        Coupon::create($request->all());
+        $coupon = Coupon::create($request->all());
 
-        return redirect()->route('admin.coupons.index')->with('success', 'Coupon created successfully.');
+        // Notify all users about the new coupon
+        $users = User::where('role', 'user')->get();
+        Notification::send($users, new CouponNotification($coupon));
+
+        return redirect()->route('admin.coupons.index')->with('success', 'Coupon created successfully and users notified.');
     }
 
     public function edit(Coupon $coupon)
@@ -60,5 +67,13 @@ class CouponController extends Controller
     {
         $coupon->delete();
         return redirect()->route('admin.coupons.index')->with('success', 'Coupon deleted successfully.');
+    }
+
+    public function notifyUsers(Coupon $coupon)
+    {
+        $users = User::where('role', 'user')->get();
+        Notification::send($users, new CouponNotification($coupon));
+
+        return back()->with('success', 'Users notified about this coupon.');
     }
 }

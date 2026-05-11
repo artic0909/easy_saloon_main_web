@@ -29,9 +29,16 @@
             <svg class="w-5 h-5 {{ $currentRoute == 'dashboard.addresses' ? 'text-[#c6a664]' : 'text-gray-400 group-hover:text-[#3d2b1f]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
             <span class="text-sm">Saved Addresses</span>
         </a>
-        <a href="{{ route('dashboard.notifications') }}" class="flex items-center gap-4 px-6 py-4 rounded-2xl {{ $currentRoute == 'dashboard.notifications' ? 'bg-[#3d2b1f] text-white shadow-xl shadow-[#3d2b1f]/20' : 'text-gray-500 hover:bg-gray-50' }} font-bold transition-all group">
-            <svg class="w-5 h-5 {{ $currentRoute == 'dashboard.notifications' ? 'text-[#c6a664]' : 'text-gray-400 group-hover:text-[#3d2b1f]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-            <span class="text-sm">Notifications</span>
+        <a href="{{ route('dashboard.notifications') }}" class="flex items-center justify-between px-6 py-4 rounded-2xl {{ $currentRoute == 'dashboard.notifications' ? 'bg-[#3d2b1f] text-white shadow-xl shadow-[#3d2b1f]/20' : 'text-gray-500 hover:bg-gray-50' }} font-bold transition-all group">
+            <div class="flex items-center gap-4">
+                <svg class="w-5 h-5 {{ $currentRoute == 'dashboard.notifications' ? 'text-[#c6a664]' : 'text-gray-400 group-hover:text-[#3d2b1f]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                <span class="text-sm">Notifications</span>
+            </div>
+            @if(auth()->user()->unreadNotifications->count() > 0)
+                <span class="bg-[#c6a664] text-white text-[10px] px-2 py-0.5 rounded-full shadow-lg">
+                    {{ auth()->user()->unreadNotifications->count() }}
+                </span>
+            @endif
         </a>
         <div class="pt-6 mt-6 border-t border-gray-100">
             <form action="{{ route('logout') }}" method="POST">

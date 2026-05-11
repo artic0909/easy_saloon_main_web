@@ -12,24 +12,40 @@
             <!-- Main Content -->
             <main class="flex-1 space-y-8 md:space-y-12">
                 <section class="bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 shadow-sm border border-gray-100">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
-                        <h2 class="text-3xl font-bold text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Notifications</h2>
-                        <div class="flex items-center gap-2 px-4 py-2 bg-[#fdfbf7] rounded-xl border border-gray-50">
-                            <span class="w-2 h-2 rounded-full bg-[#c6a664] animate-pulse"></span>
-                            <span class="text-[10px] font-black uppercase text-[#3d2b1f] tracking-widest">{{ $notifications->count() }} Updates</span>
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 w-full">
+                            <h2 class="text-3xl font-bold text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Notifications</h2>
+                            <div class="flex items-center gap-4">
+                                @if(auth()->user()->unreadNotifications->count() > 0)
+                                    <form action="{{ route('dashboard.notifications.read-all') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="text-[10px] font-black uppercase text-[#c6a664] tracking-widest hover:text-[#3d2b1f] transition-all">Mark all as read</button>
+                                    </form>
+                                @endif
+                                <div class="flex items-center gap-2 px-4 py-2 bg-[#fdfbf7] rounded-xl border border-gray-50">
+                                    <span class="w-2 h-2 rounded-full bg-[#c6a664] animate-pulse"></span>
+                                    <span class="text-[10px] font-black uppercase text-[#3d2b1f] tracking-widest">{{ auth()->user()->unreadNotifications->count() }} New</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        @forelse($notifications as $notification)
-                            @php
+
+                        <div class="space-y-4">
+                            @forelse($notifications as $notification)
+                                @php
                                 $data = $notification->data;
-                                $isUnread = $notification->unread();
+                                $isUnread = is_null($notification->read_at);
                                 $type = $data['type'] ?? 'general';
-                                $icon = $data['icon'] ?? 'bell';
+                                $icon = $data['icon'] ?? ($type == 'coupon' ? 'ticket' : 'bell');
+                                
+                                $isExpired = false;
+                                if ($type == 'coupon' && isset($data['coupon_id'])) {
+                                    $coupon = \App\Models\Coupon::find($data['coupon_id']);
+                                    $isExpired = !$coupon || !$coupon->is_active || ($coupon->expiry_date && $coupon->expiry_date->isPast());
+                                }
                             @endphp
-                            <div class="group relative p-6 md:p-8 {{ $isUnread ? 'bg-[#fdfbf7]' : 'bg-white' }} rounded-[2rem] border border-gray-50 hover:bg-white hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-1 transition-all duration-500">
-                                @if($isUnread)
+                            <div class="group relative p-6 md:p-8 {{ $isUnread ? 'bg-[#fdfbf7]' : 'bg-white' }} {{ $isExpired ? 'opacity-50 grayscale-[0.5]' : '' }} rounded-[2rem] border border-gray-50 {{ !$isExpired && $type == 'coupon' ? 'cursor-pointer' : '' }} hover:bg-white hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-1 transition-all duration-500"
+                                 @if(!$isExpired && $type == 'coupon' && isset($data['code'])) onclick="copyCoupon('{{ $data['code'] }}')" @endif>
+                                
+                                @if($isUnread && !$isExpired)
                                     <div class="absolute top-8 right-8 w-2 h-2 rounded-full bg-[#c6a664]"></div>
                                 @endif
                                 
@@ -47,19 +63,40 @@
                                     
                                     <div class="flex-1">
                                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
-                                            <h4 class="text-lg font-bold text-[#3d2b1f]">{{ $data['title'] }}</h4>
+                                            <h4 class="text-lg font-bold text-[#3d2b1f] flex items-center gap-2">
+                                                {{ $data['title'] }}
+                                                @if($isExpired)
+                                                    <span class="text-[9px] bg-red-100 text-red-500 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Expired</span>
+                                                @elseif($type == 'coupon')
+                                                    <span class="text-[9px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Active • Click to Copy</span>
+                                                @endif
+                                            </h4>
                                             <span class="text-[10px] font-black uppercase text-gray-300 tracking-widest">{{ $notification->created_at->diffForHumans() }}</span>
                                         </div>
                                         <p class="text-sm text-gray-500 leading-relaxed">{{ $data['message'] }}</p>
                                         
                                         @if($type == 'booking' && isset($data['booking_id']))
-                                            <div class="mt-6">
-                                                <a href="{{ route('dashboard.bookings') }}" class="inline-flex items-center gap-2 text-[10px] font-black uppercase text-[#c6a664] tracking-widest hover:text-[#3d2b1f] transition-colors">
-                                                    View Booking Details
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                                                </a>
-                                            </div>
-                                        @endif
+                                             <div class="mt-6 flex items-center gap-6">
+                                                 <a href="{{ route('dashboard.bookings') }}" class="inline-flex items-center gap-2 text-[10px] font-black uppercase text-[#c6a664] tracking-widest hover:text-[#3d2b1f] transition-colors">
+                                                     View Booking Details
+                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                                 </a>
+                                                 
+                                                 @if($isUnread)
+                                                     <form action="{{ route('dashboard.notifications.read', $notification->id) }}" method="POST">
+                                                         @csrf
+                                                         <button type="submit" class="text-[10px] font-black uppercase text-gray-400 tracking-widest hover:text-[#3d2b1f] transition-all">Mark as read</button>
+                                                     </form>
+                                                 @endif
+                                             </div>
+                                         @elseif($isUnread)
+                                             <div class="mt-6">
+                                                 <form action="{{ route('dashboard.notifications.read', $notification->id) }}" method="POST">
+                                                     @csrf
+                                                     <button type="submit" class="text-[10px] font-black uppercase text-[#c6a664] tracking-widest hover:text-[#3d2b1f] transition-all">Mark as read</button>
+                                                 </form>
+                                             </div>
+                                         @endif
                                     </div>
                                 </div>
                             </div>
@@ -78,4 +115,26 @@
         </div>
     </div>
 </div>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function copyCoupon(code) {
+        navigator.clipboard.writeText(code).then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Code Copied!',
+                text: 'Coupon code ' + code + ' has been copied to your clipboard.',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: '#fff',
+                iconColor: '#c6a664'
+            });
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+        });
+    }
+</script>
 @endsection

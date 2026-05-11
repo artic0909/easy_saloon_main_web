@@ -41,7 +41,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/addresses/save', [App\Http\Controllers\DashboardController::class, 'saveAddress'])->name('dashboard.addresses.save');
         Route::delete('/addresses/{id}', [App\Http\Controllers\DashboardController::class, 'deleteAddress'])->name('dashboard.addresses.delete');
         
-        Route::get('/notifications', [App\Http\Controllers\DashboardController::class, 'notifications'])->name('dashboard.notifications');
+        Route::get('/notifications', [App\Http\Controllers\Dashboard\NotificationController::class, 'index'])->name('dashboard.notifications');
+        Route::post('/notifications/{id}/read', [App\Http\Controllers\Dashboard\NotificationController::class, 'markAsRead'])->name('dashboard.notifications.read');
+        Route::post('/notifications/read-all', [App\Http\Controllers\Dashboard\NotificationController::class, 'markAllAsRead'])->name('dashboard.notifications.read-all');
     });
 });
 

@@ -52,6 +52,14 @@
                         </td>
                         <td class="px-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
+                                @if($coupon->is_active)
+                                    <form action="{{ route('admin.coupons.notify', $coupon->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button class="btn btn-sm btn-primary rounded-pill px-3" title="Notify All Users">
+                                            <i class="bi bi-bell-fill"></i> Notify
+                                        </button>
+                                    </form>
+                                @endif
                                 <a href="{{ route('admin.coupons.edit', $coupon->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">Edit</a>
                                 <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                     @csrf

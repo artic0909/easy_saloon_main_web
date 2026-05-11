@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Staff;
+use App\Notifications\BookingStatusNotification;
 
 class BookingManagementController extends Controller
 {
@@ -32,6 +33,8 @@ class BookingManagementController extends Controller
             'status' => 'confirmed'
         ]);
 
+        $booking->user->notify(new BookingStatusNotification($booking, 'assigned'));
+
         return back()->with('success', 'Staff assigned and booking confirmed.');
     }
 
@@ -42,6 +45,8 @@ class BookingManagementController extends Controller
         ]);
 
         $booking->update(['status' => $request->status]);
+
+        $booking->user->notify(new BookingStatusNotification($booking, $request->status));
 
         return back()->with('success', 'Booking status updated successfully.');
     }

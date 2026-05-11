@@ -21,6 +21,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('services', ServiceController::class);
     Route::resource('packages', PackageController::class);
     Route::resource('coupons', CouponController::class);
+    Route::post('/coupons/{coupon}/notify', [CouponController::class, 'notifyUsers'])->name('coupons.notify');
     
     Route::get('/bookings', [BookingManagementController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [BookingManagementController::class, 'show'])->name('bookings.show');
