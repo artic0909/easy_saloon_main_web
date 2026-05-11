@@ -24,42 +24,42 @@
                     </div>
 
                     <!-- Add/Edit Address Form (Hidden by default) -->
-                    <div id="addressFormSection" class="hidden mb-12 p-10 bg-[#fdfbf7] rounded-[2.5rem] border border-gray-100">
-                        <h3 id="formTitle" class="text-xl font-bold text-[#3d2b1f] mb-8">Add New Address</h3>
-                        <form id="addressForm" action="{{ route('dashboard.addresses.save') }}" method="POST" class="grid md:grid-cols-2 gap-8">
+                    <div id="addressFormSection" class="hidden mb-12 p-6 md:p-10 bg-[#fdfbf7] rounded-[2rem] md:rounded-[2.5rem] border border-gray-100">
+                        <h3 id="formTitle" class="text-lg md:text-xl font-bold text-[#3d2b1f] mb-6 md:mb-8">Add New Address</h3>
+                        <form id="addressForm" action="{{ route('dashboard.addresses.save') }}" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                             @csrf
                             <input type="hidden" name="address_id" id="address_id">
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Address Title (e.g. Home, Work)</label>
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 md:ml-4">Address Title (e.g. Home, Work)</label>
                                 <input type="text" name="title" id="field_title" required placeholder="Home" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Landmark (Optional)</label>
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 md:ml-4">Landmark (Optional)</label>
                                 <input type="text" name="landmark" id="field_landmark" placeholder="Near Central Park" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="md:col-span-2 space-y-2">
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Full Address</label>
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 md:ml-4">Full Address</label>
                                 <input type="text" name="full_address" id="field_full_address" required placeholder="123 Luxury Street, Apartment 4B" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">City</label>
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 md:ml-4">City</label>
                                 <input type="text" name="city" id="field_city" required placeholder="City Name" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">State</label>
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 md:ml-4">State</label>
                                 <input type="text" name="state" id="field_state" required placeholder="State Name" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Country</label>
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 md:ml-4">Country</label>
                                 <input type="text" name="country" id="field_country" required placeholder="Country Name" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
-                            <div class="flex items-center gap-3 ml-4">
+                            <div class="flex items-center gap-3 ml-2 md:ml-4">
                                 <input type="checkbox" name="is_primary" id="is_primary" class="w-5 h-5 text-[#c6a664] bg-white border-gray-200 rounded-lg focus:ring-[#c6a664]">
                                 <label for="is_primary" class="text-xs font-bold text-[#3d2b1f]">Set as primary address</label>
                             </div>
-                            <div class="md:col-span-2 flex gap-4 pt-4">
-                                <button type="submit" class="bg-[#3d2b1f] text-white px-10 py-4 rounded-2xl font-bold hover:bg-[#c6a664] transition-all shadow-lg">Save Address</button>
-                                <button type="button" onclick="toggleAddressForm()" class="px-10 py-4 rounded-2xl font-bold text-gray-400 hover:text-[#3d2b1f] transition-all">Cancel</button>
+                            <div class="md:col-span-2 flex flex-col sm:flex-row gap-4 pt-4">
+                                <button type="submit" class="w-full sm:w-auto bg-[#3d2b1f] text-white px-10 py-4 rounded-2xl font-bold hover:bg-[#c6a664] transition-all shadow-lg order-1 sm:order-none">Save Address</button>
+                                <button type="button" onclick="toggleAddressForm()" class="w-full sm:w-auto px-10 py-4 rounded-2xl font-bold text-gray-400 hover:text-[#3d2b1f] transition-all order-2 sm:order-none">Cancel</button>
                             </div>
                         </form>
                     </div>
