@@ -44,6 +44,8 @@ class Booking extends Model
         return $this->belongsTo(Salon::class);
     }
 
+    
+
     public function address()
     {
         return $this->belongsTo(Address::class);

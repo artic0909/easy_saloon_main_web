@@ -20,6 +20,11 @@ class BookingItem extends Model
         return $this->belongsTo(Service::class);
     }
 
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
+    }
+
     public function booking()
     {
         return $this->belongsTo(Booking::class);

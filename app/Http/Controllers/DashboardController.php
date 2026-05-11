@@ -60,12 +60,18 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function bookings()
+    public function bookings(Request $request)
     {
-        $bookings = Booking::where('user_id', auth()->id())
-            ->with(['staff', 'salon'])
-            ->latest()
-            ->get();
+        $query = Booking::where('user_id', auth()->id())
+            ->with(['staff', 'salon', 'items.service', 'items.package', 'address.city', 'address.state']);
+
+        if ($request->filter == 'upcoming') {
+            $query->whereIn('status', ['pending', 'confirmed', 'accepted', 'on_the_way', 'started']);
+        } elseif ($request->filter == 'past') {
+            $query->whereIn('status', ['completed', 'cancelled']);
+        }
+
+        $bookings = $query->latest()->get();
             
         return view('frontend.dashboard.bookings', compact('bookings'));
     }
