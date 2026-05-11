@@ -23,22 +23,37 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials, $request->remember)) {
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
+            }
+            return back()->withErrors($validator)->withInput();
+        }
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
             $request->session()->regenerate();
             $user = Auth::user();
 
+            $redirect = route('dashboard');
             if ($user->role === 'admin') {
-                return redirect()->intended(route('admin.dashboard'));
+                $redirect = route('admin.dashboard');
             } elseif ($user->role === 'staff') {
-                return redirect()->intended(route('staff.dashboard'));
+                $redirect = route('staff.dashboard');
             }
 
-            return redirect()->intended(route('dashboard'));
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Login successful! Redirecting...', 'redirect' => $redirect]);
+            }
+            return redirect()->intended($redirect);
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['success' => false, 'message' => 'The provided credentials do not match our records.']);
         }
 
         return back()->withErrors([
@@ -48,11 +63,18 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
+            }
+            return back()->withErrors($validator)->withInput();
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -63,6 +85,10 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Registration successful! Welcome.', 'redirect' => route('dashboard')]);
+        }
 
         return redirect()->route('dashboard');
     }

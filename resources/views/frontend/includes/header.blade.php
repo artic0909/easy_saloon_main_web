@@ -130,7 +130,7 @@
                     <img src="{{ asset('images/playstore.png') }}" class="h-5 invert" alt="Play Store">
                 </a>
                 <a href="#" class="flex-1 bg-[#3d2b1f] text-white p-3 rounded-xl flex items-center justify-center">
-                    <img src="{{ asset('images/appstore.png') }}" class="h-5 invert" alt="App Store">
+                    <img src="{{ asset('assets/img/appstore.png') }}" class="h-5 invert" alt="App Store">
                 </a>
             </div>
         </div>
