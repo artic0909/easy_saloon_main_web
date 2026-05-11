@@ -37,44 +37,56 @@
                 </div>
             </div>
 
-            <!-- Right: Pricing & Booking -->
-            <div class="w-full lg:w-[400px]">
-                <div class="lg:sticky lg:top-40 bg-[#3d2b1f] rounded-[3rem] p-10 md:p-12 text-white shadow-2xl shadow-[#3d2b1f]/30 overflow-hidden relative">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-[#c6a664]/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="flex justify-between items-start mb-10">
-                            <div>
-                                <p class="text-[#c6a664] text-[10px] font-black uppercase tracking-[0.3em] mb-3">Package Value</p>
-                                <div class="flex items-baseline gap-3">
-                                    <span class="text-5xl font-black">₹{{ number_format($package->sale_price, 0) }}</span>
-                                    <span class="text-xl text-white/30 line-through">₹{{ number_format($package->original_price, 0) }}</span>
-                                </div>
-                            </div>
-                            <div class="bg-[#c6a664] text-[#3d2b1f] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-                                Save {{ round((($package->original_price - $package->sale_price) / $package->original_price) * 100) }}%
+            <!-- Right: Booking Widget -->
+            <div class="w-full lg:w-[450px]">
+                <div class="bg-[#3d2b1f] rounded-[3rem] p-10 md:p-12 shadow-2xl sticky top-40" x-data="{ serviceType: 'home' }">
+                    <!-- Price & Duration -->
+                    <div class="flex justify-between items-end mb-10 pb-8 border-b border-white/10">
+                        <div>
+                            <p class="text-[#c6a664] text-[10px] font-black uppercase tracking-widest mb-1">Package Price</p>
+                            <div class="flex items-baseline gap-3">
+                                <span class="text-4xl font-black text-white">₹{{ number_format($package->sale_price, 0) }}</span>
+                                <span class="text-sm text-white/30 line-through">₹{{ number_format($package->original_price, 0) }}</span>
                             </div>
                         </div>
-
-                        <div class="space-y-6 mb-12">
-                            <div class="flex items-center gap-4 text-white/70">
-                                <svg class="w-5 h-5 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <span class="text-sm font-medium">Estimated Time: 2-3 Hours</span>
-                            </div>
-                            <div class="flex items-center gap-4 text-white/70">
-                                <svg class="w-5 h-5 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                                <span class="text-sm font-medium">Quality Guaranteed</span>
-                            </div>
+                        <div class="text-right">
+                            <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">Total Duration</p>
+                            <span class="text-lg font-bold text-white">2-3 Hours</span>
                         </div>
-
-                        <button class="w-full bg-[#c6a664] text-[#3d2b1f] py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-white transition-all shadow-xl shadow-[#c6a664]/20 text-sm">
-                            Book This Package
-                        </button>
-                        
-                        <p class="text-center text-white/30 text-[10px] font-black uppercase tracking-widest mt-8">
-                            * Terms and conditions apply
-                        </p>
                     </div>
+
+                    <!-- Service Type Selection -->
+                    <div class="mb-10">
+                        <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Choose Service Location</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button @click="serviceType = 'home'" :class="serviceType === 'home' ? 'bg-[#c6a664] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'" class="py-4 rounded-2xl font-bold text-sm transition-all flex flex-col items-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                                At Home
+                            </button>
+                            <button @click="serviceType = 'salon'" :class="serviceType === 'salon' ? 'bg-[#c6a664] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'" class="py-4 rounded-2xl font-bold text-sm transition-all flex flex-col items-center gap-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                At Salon
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Date & Time Slot (Placeholder) -->
+                    <div class="mb-10">
+                        <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Select Slot</p>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">Today</button>
+                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">Tomorrow</button>
+                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">14 May</button>
+                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">15 May</button>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <button class="w-full bg-[#c6a664] text-white py-5 rounded-[2rem] font-bold text-lg shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]">
+                        Book Package Now
+                    </button>
+                    
+                    <p class="text-center text-white/30 text-[10px] font-bold uppercase mt-8 tracking-widest">Secure Checkout Powered by Easy Saloon</p>
                 </div>
             </div>
         </div>
