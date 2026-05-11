@@ -75,7 +75,7 @@
                                         <div class="flex flex-wrap justify-center md:justify-end gap-3 w-full sm:w-auto">
                                             @if(in_array($booking->status, ['pending', 'confirmed']))
                                                 <button onclick="cancelBooking({{ $booking->id }})" class="flex-1 sm:flex-none px-6 py-3 rounded-xl border border-red-100 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition-all">Cancel</button>
-                                                <button class="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-[#3d2b1f] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#c6a664] transition-all shadow-lg">Reschedule</button>
+                                                <!-- <button class="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-[#3d2b1f] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#c6a664] transition-all shadow-lg">Reschedule</button> -->
                                             @endif
                                             <button @click="openDetail({{ json_encode($booking) }})" class="p-3 rounded-xl bg-white text-gray-400 border border-gray-100 hover:text-[#3d2b1f] hover:border-[#3d2b1f] transition-all">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -117,95 +117,123 @@
         </div>
     </div>
 
-    <!-- Booking Details Modal -->
+    <!-- Premium Booking Details Modal -->
     <template x-if="showModal">
-        <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
-            <div class="absolute inset-0 bg-[#3d2b1f]/60 backdrop-blur-md" @click="showModal = false"></div>
-            
-            <div class="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-2xl overflow-hidden" 
+        <div class="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 overflow-hidden">
+            <!-- Glassmorphism Backdrop -->
+            <div class="absolute inset-0 bg-[#3d2b1f]/40 backdrop-blur-xl" 
                  x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0 translate-y-12"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 @click="showModal = false"></div>
+            
+            <div class="relative w-full max-w-2xl bg-white rounded-t-[3rem] md:rounded-[4rem] shadow-[0_32px_64px_-12px_rgba(61,43,31,0.3)] overflow-hidden max-h-[92vh] md:max-h-[85vh] flex flex-col border border-white/20" 
+                 x-transition:enter="transition ease-out duration-500 cubic-bezier(0.16, 1, 0.3, 1)"
+                 x-transition:enter-start="opacity-0 translate-y-full md:translate-y-24"
                  x-transition:enter-end="opacity-100 translate-y-0">
                 
-                <!-- Modal Header -->
-                <div class="px-8 md:px-12 py-8 bg-[#fdfbf7] border-b border-gray-50 flex justify-between items-center">
+                <!-- Modal Header: Luxury Styling -->
+                <div class="px-8 md:px-16 py-8 md:py-10 bg-[#fdfbf7] border-b border-gray-100 flex justify-between items-center flex-shrink-0 relative">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#c6a664] to-transparent opacity-30"></div>
                     <div>
-                        <span class="text-[10px] font-black text-[#c6a664] uppercase tracking-widest mb-1 block" x-text="'Booking #' + selectedBooking.booking_number"></span>
-                        <h3 class="text-2xl font-bold text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Appointment Details</h3>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 rounded-full bg-[#c6a664]/10 text-[#c6a664] text-[9px] font-black uppercase tracking-widest" x-text="'Booking #' + selectedBooking.booking_number"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-gray-200"></span>
+                            <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest" x-text="selectedBooking.service_type == 'home' ? 'Home Visit' : 'Salon Appointment'"></span>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Appointment Details</h3>
                     </div>
-                    <button @click="showModal = false" class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 hover:text-[#3d2b1f] shadow-sm transition-all">
+                    <button @click="showModal = false" class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 hover:text-[#3d2b1f] hover:scale-110 shadow-sm border border-gray-50 transition-all duration-300">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
 
-                <div class="p-8 md:p-12 overflow-y-auto max-h-[70vh] custom-scrollbar">
-                    <!-- Status & Location -->
-                    <div class="grid grid-cols-2 gap-6 mb-10">
-                        <div class="p-5 rounded-3xl bg-[#fdfbf7] border border-gray-50">
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Service Type</p>
-                            <p class="text-sm font-bold text-[#3d2b1f]" x-text="selectedBooking.service_type == 'home' ? 'At Home' : 'Salon Visit'"></p>
+                <!-- Scrollable Content -->
+                <div class="px-6 md:px-16 py-8 md:py-12 overflow-y-auto flex-1 custom-scrollbar space-y-10 md:space-y-12">
+                    <!-- Date & Status Section -->
+                    <div class="grid grid-cols-2 gap-4 md:gap-8">
+                        <div class="group">
+                            <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 md:mb-3">Appointment Date</p>
+                            <div class="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl md:rounded-3xl bg-[#fdfbf7] border border-gray-50 group-hover:border-[#c6a664]/30 transition-colors">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white shadow-sm flex items-center justify-center text-[#c6a664]">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <span class="text-[10px] md:text-sm font-bold text-[#3d2b1f]" x-text="new Date(selectedBooking.booking_date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })"></span>
+                            </div>
                         </div>
-                        <div class="p-5 rounded-3xl bg-[#fdfbf7] border border-gray-50">
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Current Status</p>
-                            <span class="inline-block px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest"
-                                  :class="selectedBooking.status == 'completed' ? 'bg-green-100 text-green-600' : (selectedBooking.status == 'cancelled' ? 'bg-red-100 text-red-600' : 'bg-[#c6a664]/10 text-[#c6a664]')"
-                                  x-text="selectedBooking.status"></span>
+                        <div class="group">
+                            <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 md:mb-3">Booking Status</p>
+                            <div class="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl md:rounded-3xl bg-[#fdfbf7] border border-gray-50 group-hover:border-[#c6a664]/30 transition-colors">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white shadow-sm flex items-center justify-center" :class="selectedBooking.status == 'completed' ? 'text-green-500' : (selectedBooking.status == 'cancelled' ? 'text-red-500' : 'text-[#c6a664]')">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest" :class="selectedBooking.status == 'completed' ? 'text-green-600' : (selectedBooking.status == 'cancelled' ? 'text-red-600' : 'text-[#c6a664]')" x-text="selectedBooking.status"></span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Included Items -->
-                    <div class="mb-10">
-                        <h4 class="text-sm font-black text-[#3d2b1f] uppercase tracking-widest mb-6 flex items-center gap-3">
-                            Included Services
-                            <span class="flex-1 h-px bg-gray-50"></span>
-                        </h4>
-                        <div class="space-y-4">
-                            <template x-for="item in selectedBooking.items">
-                                <div class="flex justify-between items-center p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-[#fdfbf7] flex items-center justify-center text-[#c6a664]">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <!-- Services List Section -->
+                    <div>
+                        <div class="flex items-center justify-between mb-6 md:mb-8">
+                            <h4 class="text-[10px] md:text-xs font-black text-[#3d2b1f] uppercase tracking-[0.2em]">Included Services</h4>
+                            <span class="text-[9px] md:text-[10px] font-bold text-gray-300" x-text="selectedBooking.items.length + ' Items'"></span>
+                        </div>
+                        <div class="space-y-3 md:space-y-4">
+                            <template x-for="(item, index) in selectedBooking.items" :key="index">
+                                <div class="relative group p-4 md:p-5 rounded-[1.5rem] md:rounded-[2rem] bg-white border border-gray-50 hover:border-[#c6a664]/20 hover:shadow-xl hover:shadow-gray-100/50 transition-all duration-300">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-4 md:gap-5">
+                                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-[#fdfbf7] flex items-center justify-center text-[#c6a664] font-black text-[10px] md:text-xs" x-text="index + 1"></div>
+                                            <div>
+                                                <p class="text-xs md:text-base font-bold text-[#3d2b1f] mb-0.5" x-text="item.package_id ? item.package.name : item.service.name"></p>
+                                                <p class="text-[9px] md:text-[10px] text-gray-400 font-medium uppercase tracking-widest" x-text="item.package_id ? 'Curated Bundle' : 'Professional Service'"></p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p class="text-sm font-bold text-[#3d2b1f]" x-text="item.package_id ? item.package.name : item.service.name"></p>
-                                            <p class="text-[10px] text-gray-400 font-medium" x-text="item.package_id ? 'Package Bundle' : 'Individual Service'"></p>
+                                        <div class="text-right flex-shrink-0">
+                                            <p class="text-xs md:text-sm font-black text-[#3d2b1f]" x-text="item.price > 0 ? '₹' + parseFloat(item.price).toLocaleString() : 'Free'"></p>
                                         </div>
                                     </div>
-                                    <p class="text-sm font-black text-[#3d2b1f]" x-text="item.price > 0 ? '₹' + item.price : 'Included'"></p>
                                 </div>
                             </template>
                         </div>
                     </div>
 
-                    <!-- Location / Address -->
-                    <div x-show="selectedBooking.service_type == 'home' && selectedBooking.address" class="mb-10">
-                        <h4 class="text-sm font-black text-[#3d2b1f] uppercase tracking-widest mb-6 flex items-center gap-3">
-                            Service Address
-                            <span class="flex-1 h-px bg-gray-50"></span>
-                        </h4>
-                        <div class="p-6 rounded-[2rem] bg-[#3d2b1f] text-white shadow-xl">
-                            <div class="flex items-center gap-4 mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-[#c6a664]">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                    <!-- Address / Location Section -->
+                    <div x-show="selectedBooking.service_type == 'home' && selectedBooking.address">
+                        <h4 class="text-[10px] md:text-xs font-black text-[#3d2b1f] uppercase tracking-[0.2em] mb-4 md:mb-6">Service Address</h4>
+                        <div class="p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] bg-[#3d2b1f] text-white shadow-2xl shadow-[#3d2b1f]/20 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
+                            <div class="relative flex items-start gap-5 md:gap-6">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-[#c6a664] flex items-center justify-center text-white shadow-lg flex-shrink-0">
+                                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                                 </div>
-                                <h6 class="font-bold" x-text="selectedBooking.address.title"></h6>
+                                <div class="flex-1 overflow-hidden">
+                                    <h6 class="text-base md:text-lg font-bold mb-1 md:mb-2 text-[#c6a664] truncate" x-text="selectedBooking.address.title"></h6>
+                                    <p class="text-[10px] md:text-xs text-white/70 leading-relaxed mb-3 md:mb-4" x-text="selectedBooking.address.full_address"></p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-1 h-1 rounded-full bg-[#c6a664]"></span>
+                                        <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-[#c6a664]/80" x-text="selectedBooking.address.city.name + ', ' + selectedBooking.address.state.name"></span>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="text-xs text-white/60 leading-relaxed" x-text="selectedBooking.address.full_address"></p>
-                            <p class="text-[10px] font-black uppercase text-[#c6a664] mt-4" x-text="selectedBooking.address.city.name + ', ' + selectedBooking.address.state.name"></p>
                         </div>
                     </div>
 
-                    <!-- Payment Summary -->
-                    <div class="pt-8 border-t border-gray-50 flex justify-between items-center">
-                        <div>
-                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Amount Paid</p>
-                            <h3 class="text-3xl font-black text-[#3d2b1f]" x-text="'₹' + selectedBooking.payable_amount"></h3>
+                    <!-- Final Summary Section -->
+                    <div class="pt-8 md:pt-10 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6 md:gap-8 bg-[#fdfbf7] -mx-6 md:-mx-16 px-6 md:px-16 pb-10 md:pb-12">
+                        <div class="text-center sm:text-left">
+                            <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1 md:mb-2">Total Amount Paid</p>
+                            <h3 class="text-3xl md:text-4xl font-black text-[#3d2b1f] tracking-tight" x-text="'₹' + parseFloat(selectedBooking.payable_amount).toLocaleString()"></h3>
                         </div>
-                        <div class="text-right">
-                            <span class="px-4 py-2 rounded-xl bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                                Payment Secured
+                        <div class="flex flex-col items-center sm:items-end gap-2 md:gap-3 w-full sm:w-auto">
+                            <span class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl bg-white border border-green-100 text-green-600 text-[9px] md:text-[10px] font-black uppercase tracking-widest shadow-sm">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                Payment Verified
                             </span>
+                            <p class="text-[8px] md:text-[9px] text-gray-300 font-bold uppercase tracking-widest italic">Digital Invoice Sent</p>
                         </div>
                     </div>
                 </div>
