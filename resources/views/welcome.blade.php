@@ -110,21 +110,48 @@
     </section>
 
     <!-- Services Section -->
-    <section class="py-16 bg-white">
+    <section class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-center text-2xl font-bold mb-12">Services we offer</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-                <div class="text-center group">
-                    <div class="aspect-[4/5] rounded-3xl overflow-hidden mb-4 shadow-sm border border-gray-100"><img src="/assets/img/cat-facial.png" class="w-full h-full object-cover"></div>
-                    <h4 class="font-bold">Salon at Home</h4>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                <div>
+                    <h2 class="text-4xl font-bold text-[#3d2b1f] mb-4" style="font-family: 'Playfair Display', serif;">Services we offer</h2>
+                    <p class="text-[#c6a664] font-medium uppercase tracking-widest text-xs">Curated luxury experiences for your wellbeing</p>
                 </div>
-                <div class="text-center group">
-                    <div class="aspect-[4/5] rounded-3xl overflow-hidden mb-4 shadow-sm border border-gray-100"><img src="/assets/img/cat-massage.png" class="w-full h-full object-cover"></div>
-                    <h4 class="font-bold">Spa & Massage</h4>
+                <button class="text-[#3d2b1f] font-bold text-sm border-b-2 border-[#c6a664] pb-1 hover:text-[#c6a664] transition-all">View all services</button>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-10">
+                <!-- Service 1 -->
+                <div class="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <img src="/assets/img/cat-facial.png" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Salon at Home">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#3d2b1f] via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-0 left-0 p-10 w-full translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                        <div class="w-12 h-1 w-[#c6a664] bg-[#c6a664] mb-4 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                        <h4 class="text-2xl font-bold text-white mb-2" style="font-family: 'Playfair Display', serif;">Salon at Home</h4>
+                        <p class="text-white/60 text-sm opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">Premium grooming services delivered at your convenience.</p>
+                    </div>
                 </div>
-                <div class="text-center group">
-                    <div class="aspect-[4/5] rounded-3xl overflow-hidden mb-4 shadow-sm border border-gray-100"><img src="/assets/img/cat-makeup.png" class="w-full h-full object-cover"></div>
-                    <h4 class="font-bold">Bridal & Party</h4>
+                
+                <!-- Service 2 -->
+                <div class="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl hover:-translate-y-2 transition-all duration-500 mt-0 md:mt-12">
+                    <img src="/assets/img/cat-massage.png" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Spa & Massage">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#3d2b1f] via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-0 left-0 p-10 w-full translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                        <div class="w-12 h-1 w-[#c6a664] bg-[#c6a664] mb-4 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                        <h4 class="text-2xl font-bold text-white mb-2" style="font-family: 'Playfair Display', serif;">Spa & Massage</h4>
+                        <p class="text-white/60 text-sm opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">Rejuvenate your senses with our expert therapeutic massages.</p>
+                    </div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <img src="/assets/img/cat-makeup.png" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Bridal & Party">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#3d2b1f] via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-0 left-0 p-10 w-full translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                        <div class="w-12 h-1 w-[#c6a664] bg-[#c6a664] mb-4 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                        <h4 class="text-2xl font-bold text-white mb-2" style="font-family: 'Playfair Display', serif;">Bridal & Party</h4>
+                        <p class="text-white/60 text-sm opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">Stunning bridal and party makeup by certified professionals.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -355,8 +382,12 @@
                 </div>
             </div>
 
-            <div class="mt-20 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+            <div class="mt-20 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                 <p>© 2026 Easy Saloon Private Limited. All rights reserved.</p>
+                <div class="flex items-center gap-6">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" class="h-8" alt="Play">
+                    <img src="{{ asset('assets/img/appstore.png') }}" class="h-8" alt="App Store">
+                </div>
                 <div class="flex gap-6">
                     <a href="#" class="hover:text-pink-600">Facebook</a>
                     <a href="#" class="hover:text-pink-600">Instagram</a>
