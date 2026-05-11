@@ -106,6 +106,9 @@ class BookingController extends Controller
             }
         }
 
+        // Send Notification
+        auth()->user()->notify(new \App\Notifications\BookingConfirmation($booking));
+
         return response()->json([
             'success' => true, 
             'message' => 'Booking placed successfully!',

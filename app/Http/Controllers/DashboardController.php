@@ -169,8 +169,12 @@ class DashboardController extends Controller
 
     public function notifications()
     {
-        // For now, we can use Laravel's built-in notifications or a simple table
-        $notifications = auth()->user()->notifications;
+        $user = auth()->user();
+        $notifications = $user->notifications;
+        
+        // Mark all as read when viewing the page
+        $user->unreadNotifications->markAsRead();
+
         return view('frontend.dashboard.notifications', compact('notifications'));
     }
 }
