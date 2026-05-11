@@ -109,14 +109,16 @@
                 <a href="{{ route('home') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Home</a>
                 <a href="{{ route('services.index') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Services</a>
                 <a href="{{ route('packages.index') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Packages</a>
-                <a href="#" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Contact</a>
-                <hr class="border-gray-50">
+                <a href="#" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Make Your Own Package</a>
                 @auth
-                    <a href="{{ $dashboardRoute }}" class="block text-lg font-bold text-[#c6a664]">My Dashboard</a>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="block text-lg font-bold text-red-500">Sign Out</button>
-                    </form>
+                <hr class="border-gray-50"> 
+                    <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-5">Dashboard</p>
+                    <a href="{{ $dashboardRoute }}" class="block text-lg font-bold text-[#3d2b1f]">My Dashboard</a>
+                    <a href="{{ route('dashboard.wallet') }}" class="block text-lg font-bold text-[#3d2b1f]">Wallet</a>
+                    <a href="{{ route('dashboard.bookings') }}" class="block text-lg font-bold text-[#3d2b1f]">My Bookings</a>
+                    <a href="{{ route('dashboard.notifications') }}" class="block text-lg font-bold text-[#3d2b1f]">Notifications</a>
+                    <a href="{{ route('dashboard.addresses') }}" class="block text-lg font-bold text-[#3d2b1f]">Saved Addresses</a>
+                    <a href="{{ route('logout') }}" method="POST" class="block text-lg font-bold text-red-500">Sign Out</a>
                 @else
                     <a href="{{ route('login') }}" class="block text-lg font-bold text-[#3d2b1f]">Login</a>
                     <a href="{{ route('register') }}" class="block w-full bg-[#3d2b1f] text-white py-4 rounded-2xl font-bold mt-4 text-center shadow-lg">Join Now</a>
