@@ -236,7 +236,7 @@
         </div>
         
         <div class="feedback-track">
-            <!-- Card 1 -->
+            <!-- First Set -->
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
                     <img src="https://ui-avatars.com/api/?name=Afreen+Hussain&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
@@ -247,7 +247,6 @@
                 </div>
                 <p class="text-[13px] text-gray-500 leading-relaxed italic">"Experience with Easy Saloon was really good, she was very professional and thorough... her hands were like magic. Massage and body polishing was up to the mark."</p>
             </div>
-            <!-- Card 2 -->
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
                     <img src="https://ui-avatars.com/api/?name=Srishti+Kanth&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
@@ -258,7 +257,6 @@
                 </div>
                 <p class="text-[13px] text-gray-500 leading-relaxed italic">"I recently booked a facial service with Preeti Chauhan, and I must say I am absolutely thrilled with the experience. Preeti's work is sincere and satisfying."</p>
             </div>
-            <!-- Card 3 -->
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
                     <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
@@ -269,8 +267,18 @@
                 </div>
                 <p class="text-[13px] text-gray-500 leading-relaxed italic">"The men's grooming session was top-notch. Very clean and professional. Highly recommended for home services!"</p>
             </div>
-            
-            <!-- Duplicates for scrolling -->
+            <div class="feedback-card">
+                <div class="flex items-center gap-4 mb-4">
+                    <img src="https://ui-avatars.com/api/?name=Priya+M&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
+                    <div>
+                        <h6 class="font-bold text-[#3d2b1f]">Priya Mehra</h6>
+                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
+                    </div>
+                </div>
+                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Easy Saloon has changed how I groom. The convenience of getting a high-end pedicure at home is unmatched."</p>
+            </div>
+
+            <!-- Second Set (Duplicate for Loop) -->
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
                     <img src="https://ui-avatars.com/api/?name=Afreen+Hussain&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
@@ -279,7 +287,7 @@
                         <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
                     </div>
                 </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Experience with Easy Saloon was really good, she was very professional and thorough..."</p>
+                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Experience with Easy Saloon was really good, she was very professional and thorough... her hands were like magic. Massage and body polishing was up to the mark."</p>
             </div>
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
@@ -289,7 +297,7 @@
                         <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
                     </div>
                 </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"I recently booked a facial service with Preeti Chauhan..."</p>
+                <p class="text-[13px] text-gray-500 leading-relaxed italic">"I recently booked a facial service with Preeti Chauhan, and I must say I am absolutely thrilled with the experience. Preeti's work is sincere and satisfying."</p>
             </div>
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
@@ -299,7 +307,17 @@
                         <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
                     </div>
                 </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"The men's grooming session was top-notch..."</p>
+                <p class="text-[13px] text-gray-500 leading-relaxed italic">"The men's grooming session was top-notch. Very clean and professional. Highly recommended for home services!"</p>
+            </div>
+            <div class="feedback-card">
+                <div class="flex items-center gap-4 mb-4">
+                    <img src="https://ui-avatars.com/api/?name=Priya+M&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
+                    <div>
+                        <h6 class="font-bold text-[#3d2b1f]">Priya Mehra</h6>
+                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
+                    </div>
+                </div>
+                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Easy Saloon has changed how I groom. The convenience of getting a high-end pedicure at home is unmatched."</p>
             </div>
         </div>
     </section>
