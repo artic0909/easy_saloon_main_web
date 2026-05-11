@@ -19,13 +19,23 @@ Route::get('/packages', function () {
     return view('frontend.packages.index');
 })->name('packages.index');
 
-Route::get('dashboard', function () {
-    return view('frontend.dashboard.index');
-})->middleware(['auth'])->name('dashboard');
+Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
+    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/profile/update', [App\Http\Controllers\DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
+    
+    Route::get('/bookings', [App\Http\Controllers\DashboardController::class, 'bookings'])->name('dashboard.bookings');
+    Route::post('/bookings/{id}/cancel', [App\Http\Controllers\DashboardController::class, 'cancelBooking'])->name('dashboard.bookings.cancel');
+    
+    Route::get('/addresses', [App\Http\Controllers\DashboardController::class, 'addresses'])->name('dashboard.addresses');
+    Route::post('/addresses/save', [App\Http\Controllers\DashboardController::class, 'saveAddress'])->name('dashboard.addresses.save');
+    Route::delete('/addresses/{id}', [App\Http\Controllers\DashboardController::class, 'deleteAddress'])->name('dashboard.addresses.delete');
+    
+    Route::get('/wallet', [App\Http\Controllers\DashboardController::class, 'wallet'])->name('dashboard.wallet');
+    Route::get('/notifications', [App\Http\Controllers\DashboardController::class, 'notifications'])->name('dashboard.notifications');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
-    Route::post('profile/update', [App\Http\Controllers\AuthController::class, 'updateProfile'])->name('profile.update');
 });
 
 Route::middleware('guest')->group(function () {
