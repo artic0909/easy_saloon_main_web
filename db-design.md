@@ -8,6 +8,8 @@
 - phone
 - photo
 - password
+- role (enum: user, staff, admin)
+- is_active (boolean)
 - created_at
 - updated_at
 
@@ -43,7 +45,11 @@
 ## Addresses
 - id (PK)
 - user_id (FK -> users.id)
+- title (e.g. Home, Office)
 - full_address
+- landmark
+- latitude
+- longitude
 - city_id (FK -> cities.id)
 - state_id (FK -> states.id)
 - country_id (FK -> countries.id)
@@ -111,7 +117,13 @@
 - title
 - short_description
 - description
-- price_limit
+- discount_type (fixed, percentage)
+- discount_value
+- min_order_amount
+- max_discount (for percentage)
+- usage_limit_per_user
+- total_usage_limit
+- expiry_date
 - is_active (boolean)
 - created_at
 - updated_at
@@ -120,10 +132,19 @@
 - id (PK)
 - booking_number
 - user_id (FK -> users.id)
+- staff_id (FK -> staff.id, nullable)
+- salon_id (FK -> salons.id, nullable)
+- service_type (enum: home, salon_visit)
 - total_price
-- status
+- discount_amount
+- payable_amount
+- booking_date
+- time_slot
+- status (enum: pending, confirmed, accepted, on_the_way, started, completed, cancelled)
 - is_paid (boolean)
-- payment_type
+- payment_type (online, wallet, cod)
+- address_id (FK -> addresses.id, for home service)
+- cancellation_reason
 - created_at
 - updated_at
 
@@ -161,6 +182,76 @@
 - packages can include many services via package_items
 - bookings can include services or packages via booking_items
 - transactions belong to bookings
+- staff belong to users (role: staff)
+- staff can be assigned to many bookings
+- salons have many staff
+- bookings belong to one user, one staff (optional), and one salon (optional)
+- bookings have one address (optional)
+
+## Salons
+- id (PK)
+- name
+- slug
+- description
+- address
+- city_id (FK -> cities.id)
+- latitude
+- longitude
+- phone
+- email
+- image
+- is_active (boolean)
+- created_at
+- updated_at
+
+## Staff
+- id (PK)
+- user_id (FK -> users.id)
+- salon_id (FK -> salons.id, nullable)
+- designation
+- bio
+- experience_years
+- rating
+- is_available (boolean)
+- created_at
+- updated_at
+
+## Staff Availability
+- id (PK)
+- staff_id (FK -> staff.id)
+- day_of_week (0-6)
+- start_time
+- end_time
+- is_working_day (boolean)
+- created_at
+- updated_at
+
+## Staff Locations (Real-time tracking)
+- id (PK)
+- staff_id (FK -> staff.id)
+- booking_id (FK -> bookings.id)
+- latitude
+- longitude
+- captured_at
+- created_at
+
+## Banners
+- id (PK)
+- title
+- image
+- link (optional)
+- sort_order
+- is_active (boolean)
+- created_at
+- updated_at
+
+## Site Settings
+- id (PK)
+- key
+- value
+- created_at
+- updated_at
+
 
 
 

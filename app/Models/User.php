@@ -22,7 +22,32 @@ class User extends Authenticatable // implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'username',
+        'phone',
+        'photo',
+        'role',
+        'is_active',
     ];
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function staffProfile()
+    {
+        return $this->hasOne(Staff::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
