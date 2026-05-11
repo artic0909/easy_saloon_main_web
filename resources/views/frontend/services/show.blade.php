@@ -103,19 +103,37 @@
                         </div>
                     </div>
 
-                    <!-- Date & Time Slot (Placeholder) -->
-                    <div class="mb-10">
-                        <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Select Slot</p>
-                        <div class="grid grid-cols-4 gap-2">
-                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">Today</button>
-                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">Tomorrow</button>
-                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">14 May</button>
-                            <button class="bg-white/5 py-2 rounded-lg text-[10px] text-white/80 font-bold border border-white/5 hover:border-[#c6a664] transition-all">15 May</button>
+                    <!-- Date & Time Slot -->
+                    <div class="mb-10" x-data="{ selectedDate: '{{ date('Y-m-d') }}', selectedSlot: 'Morning' }">
+                        <div class="flex justify-between items-center mb-4">
+                            <p class="text-white/40 text-[10px] font-black uppercase tracking-widest">Select Date & Slot</p>
+                            <input type="date" x-model="selectedDate" min="{{ date('Y-m-d') }}" class="bg-transparent text-[#c6a664] text-xs font-bold border-none p-0 focus:ring-0 cursor-pointer">
                         </div>
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            <template x-for="date in [
+                                { label: 'Today', value: '{{ date('Y-m-d') }}' },
+                                { label: 'Tomorrow', value: '{{ date('Y-m-d', strtotime('+1 day')) }}' }
+                            ]">
+                                <button @click="selectedDate = date.value" :class="selectedDate === date.value ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/60 border-white/5'" class="py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all" x-text="date.label"></button>
+                            </template>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <template x-for="slot in ['Morning', 'Afternoon', 'Evening']">
+                                <button @click="selectedSlot = slot" :class="selectedSlot === slot ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/60 border-white/5'" class="py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all" x-text="slot"></button>
+                            </template>
+                        </div>
+
+                        <!-- Hidden fields for the form -->
+                        <form id="bookingForm" action="{{ route('checkout') }}" method="GET" class="hidden">
+                            <input type="hidden" name="service_id" value="{{ $service->id }}">
+                            <input type="hidden" name="type" :value="serviceType">
+                            <input type="hidden" name="date" :value="selectedDate">
+                            <input type="hidden" name="slot" :value="selectedSlot">
+                        </form>
                     </div>
 
                     <!-- Action Button -->
-                    <button class="w-full bg-[#c6a664] text-white py-5 rounded-[2rem] font-bold text-lg shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]">
+                    <button onclick="document.getElementById('bookingForm').submit()" class="w-full bg-[#c6a664] text-white py-5 rounded-[2rem] font-bold text-lg shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]">
                         Book Now
                     </button>
                     
