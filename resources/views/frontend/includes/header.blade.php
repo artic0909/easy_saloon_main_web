@@ -109,6 +109,7 @@
                 <a href="{{ route('home') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Home</a>
                 <a href="{{ route('services.index') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Services</a>
                 <a href="{{ route('packages.index') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Packages</a>
+                <a href="#" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Contact</a>
                 <hr class="border-gray-50">
                 @auth
                     <a href="{{ $dashboardRoute }}" class="block text-lg font-bold text-[#c6a664]">My Dashboard</a>
@@ -123,14 +124,14 @@
             </nav>
         </div>
         
-        <div class="p-8 bg-[#fdfbf7]">
-            <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4">Download Our App</p>
-            <div class="flex gap-4">
-                <a href="#" class="flex-1 bg-[#3d2b1f] text-white p-3 rounded-xl flex items-center justify-center">
-                    <img src="{{ asset('images/playstore.png') }}" class="h-5 invert" alt="Play Store">
+        <div class="p-8 bg-[#fdfbf7] border-t border-gray-100/50">
+            <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-5">Download Our App</p>
+            <div class="flex items-center gap-3">
+                <a href="#" class="flex-1 transition-all hover:opacity-80 active:scale-95">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" class="w-full h-10 object-contain" alt="Google Play">
                 </a>
-                <a href="#" class="flex-1 bg-[#3d2b1f] text-white p-3 rounded-xl flex items-center justify-center">
-                    <img src="{{ asset('assets/img/appstore.png') }}" class="h-5 invert" alt="App Store">
+                <a href="#" class="flex-1 transition-all hover:opacity-80 active:scale-95">
+                    <img src="{{ asset('assets/img/appstore.png') }}" class="w-full h-10 object-contain" alt="App Store">
                 </a>
             </div>
         </div>
