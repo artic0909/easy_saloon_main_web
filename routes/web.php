@@ -19,6 +19,11 @@ Route::get('/packages', function () {
     return view('frontend.packages.index');
 })->name('packages.index');
 
+Route::get('/packages/{slug}', function ($slug) {
+    $package = \App\Models\Package::where('slug', $slug)->with('items.service')->firstOrFail();
+    return view('frontend.packages.show', compact('package'));
+})->name('packages.show');
+
 Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     Route::post('/profile/update', [App\Http\Controllers\DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');

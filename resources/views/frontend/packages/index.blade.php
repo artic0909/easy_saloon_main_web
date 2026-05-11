@@ -15,7 +15,11 @@
                         Save ₹{{ $package->original_price - $package->sale_price }}
                     </div>
                     
-                    <h3 class="text-xl md:text-2xl font-bold text-[#3d2b1f] mb-6 whitespace-normal break-words md:pr-24" style="font-family: 'Playfair Display', serif;">{{ $package->name }}</h3>
+                    <h3 class="text-xl md:text-2xl font-bold text-[#3d2b1f] mb-6 whitespace-normal break-words md:pr-24" style="font-family: 'Playfair Display', serif;">
+                        <a href="{{ route('packages.show', $package->slug) }}" class="hover:text-[#c6a664] transition-colors">
+                            {{ $package->name }}
+                        </a>
+                    </h3>
                     
                     <div class="flex-1">
                         <ul class="space-y-4 mb-10">
@@ -34,7 +38,7 @@
                             <span class="text-2xl md:text-3xl font-black text-[#3d2b1f]">₹{{ $package->sale_price }}</span>
                             <span class="text-xs md:text-sm text-gray-300 line-through ml-2">₹{{ $package->original_price }}</span>
                         </div>
-                        <button class="w-full sm:w-auto bg-[#3d2b1f] text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-[#c6a664] transition-all text-sm">Details</button>
+                        <a href="{{ route('packages.show', $package->slug) }}" class="w-full sm:w-auto bg-[#3d2b1f] text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-[#c6a664] transition-all text-sm text-center">Details</a>
                     </div>
                 </div>
             @endforeach

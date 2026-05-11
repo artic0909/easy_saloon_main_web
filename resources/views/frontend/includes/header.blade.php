@@ -34,6 +34,7 @@
             <div class="hidden md:flex items-center space-x-8">
                 <a href="{{ route('services.index') }}" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Services</a>
                 <a href="{{ route('packages.index') }}" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Packages</a>
+                <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Make Your Package</a>
                 
                 @auth
                     <div x-data="{ open: false }" class="relative">
@@ -109,7 +110,7 @@
                 <a href="{{ route('home') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Home</a>
                 <a href="{{ route('services.index') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Services</a>
                 <a href="{{ route('packages.index') }}" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Packages</a>
-                <a href="#" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Make Your Own Package</a>
+                <a href="#" class="block text-lg font-bold text-[#3d2b1f] hover:text-[#c6a664] transition-colors">Make Your Package</a>
                 @auth
                 <hr class="border-gray-50"> 
                     <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-5">Dashboard</p>
