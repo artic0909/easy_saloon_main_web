@@ -27,8 +27,8 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                     <span class="absolute top-0 right-0 w-4 h-4 bg-[#c6a664] text-white text-[10px] font-bold flex items-center justify-center rounded-full">0</span>
                 </a>
-                <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Services</a>
-                <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Packages</a>
+                <a href="{{ route('services.index') }}" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Services</a>
+                <a href="{{ route('packages.index') }}" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Packages</a>
                 <a href="#" class="text-sm font-medium hover:text-[#c6a664] transition-colors">Make Your Packages</a>
 
                 @if (Route::has('login'))

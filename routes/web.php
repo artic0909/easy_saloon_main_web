@@ -19,16 +19,16 @@ Route::get('/packages', function () {
     return view('frontend.packages.index');
 })->name('packages.index');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('dashboard', function () {
+    return view('frontend.dashboard.index');
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
-
-    Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
-    Volt::route('settings/password', 'settings.password')->name('settings.password');
-    Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+    Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
+    Route::post('profile/update', [App\Http\Controllers\AuthController::class, 'updateProfile'])->name('profile.update');
 });
 
-require __DIR__.'/auth.php';
+Route::middleware('guest')->group(function () {
+    Route::post('login', [App\Http\Controllers\AuthController::class, 'login'])->name('login.post');
+    Route::post('register', [App\Http\Controllers\AuthController::class, 'register'])->name('register.post');
+});
