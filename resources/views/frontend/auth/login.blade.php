@@ -5,7 +5,7 @@
     <!-- Premium Background Image with Blur Overlay -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('assets/images/auth-bg.png') }}" class="w-full h-full object-cover" alt="Background">
-        <div class="absolute inset-0 bg-black/85 lg:bg-black/50 backdrop-blur-[3px] lg:backdrop-blur-[1px]"></div>
+        <div class="absolute inset-0 bg-black/70 lg:bg-black/50 backdrop-blur-[2px] lg:backdrop-blur-[1px]"></div>
     </div>
 
     <!-- Decorative Elements -->
@@ -16,7 +16,7 @@
 
     <!-- Auth Card -->
     <div class="relative z-10 w-full max-w-lg transform transition-all duration-700 hover:scale-[1.01]">
-        <div class="bg-[#111111]/95 lg:bg-[#111111]/80 backdrop-blur-md border border-white/5 rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+        <div class="bg-[#111111]/90 lg:bg-[#111111]/80 backdrop-blur-md border border-white/5 rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
             
             <!-- Card Header -->
             <div class="px-10 pt-12 pb-8 text-center relative">
