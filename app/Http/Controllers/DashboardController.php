@@ -95,6 +95,7 @@ class DashboardController extends Controller
     public function saveAddress(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'address_id' => 'nullable|exists:addresses,id',
             'title' => 'required|string|max:255',
             'full_address' => 'required|string',
             'landmark' => 'nullable|string|max:255',
@@ -112,7 +113,7 @@ class DashboardController extends Controller
         $state = \App\Models\State::firstOrCreate(['name' => $request->state, 'country_id' => $country->id]);
         $city = \App\Models\City::firstOrCreate(['name' => $request->city, 'state_id' => $state->id, 'country_id' => $country->id]);
 
-        $address = Address::create([
+        $data = [
             'user_id' => auth()->id(),
             'title' => $request->title,
             'full_address' => $request->full_address,
@@ -121,7 +122,16 @@ class DashboardController extends Controller
             'state_id' => $state->id,
             'country_id' => $country->id,
             'is_primary' => $request->has('is_primary')
-        ]);
+        ];
+
+        if ($request->address_id) {
+            $address = Address::where('user_id', auth()->id())->findOrFail($request->address_id);
+            $address->update($data);
+            $message = 'Address updated successfully.';
+        } else {
+            $address = Address::create($data);
+            $message = 'Address saved successfully.';
+        }
 
         if ($address->is_primary) {
             Address::where('user_id', auth()->id())
@@ -129,7 +139,7 @@ class DashboardController extends Controller
                 ->update(['is_primary' => false]);
         }
 
-        return response()->json(['success' => true, 'message' => 'Address saved successfully.']);
+        return response()->json(['success' => true, 'message' => $message]);
     }
 
     public function deleteAddress($id)
