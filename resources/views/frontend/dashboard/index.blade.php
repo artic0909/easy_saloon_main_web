@@ -1,24 +1,24 @@
 @extends('frontend.layout.app')
 
 @section('content')
-<div class="pt-32 pb-24 bg-[#fdfbf7]">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex flex-col lg:flex-row gap-12">
+<div class="pt-40 pb-24 bg-[#fdfbf7]">
+    <div class="max-w-7xl mx-auto px-4 md:px-8">
+        <div class="flex flex-col lg:flex-row gap-16">
             <!-- Sidebar -->
             <aside class="w-full lg:w-80 flex-shrink-0">
-                <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-gray-100">
+                <div class="bg-white rounded-[3rem] p-10 shadow-xl shadow-gray-200/50 border border-gray-100/50 sticky top-40">
                     <div class="text-center mb-10">
-                        <div class="w-24 h-24 bg-[#f4ece4] rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-[#3d2b1f]">
+                        <div class="w-24 h-24 bg-[#3d2b1f] rounded-[2rem] mx-auto mb-6 flex items-center justify-center text-3xl font-black text-[#c6a664] shadow-lg transform -rotate-3 hover:rotate-0 transition-transform duration-500">
                             {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
                         </div>
-                        <h4 class="text-xl font-bold text-[#3d2b1f]">{{ auth()->user()->name ?? 'User Name' }}</h4>
-                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">{{ auth()->user()->email ?? 'user@example.com' }}</p>
+                        <h4 class="text-2xl font-black text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">{{ auth()->user()->name ?? 'User Name' }}</h4>
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-2">{{ auth()->user()->email ?? 'user@example.com' }}</p>
                     </div>
 
-                    <nav class="space-y-2">
-                        <a href="#" class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-[#3d2b1f] text-white font-bold transition-all shadow-lg">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            My Profile
+                    <nav class="space-y-3">
+                        <a href="#" class="flex items-center gap-4 px-6 py-4 rounded-2xl bg-[#3d2b1f] text-white font-bold transition-all shadow-xl shadow-[#3d2b1f]/20 group">
+                            <svg class="w-5 h-5 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            <span class="text-sm">My Profile</span>
                         </a>
                         <a href="#" class="flex items-center gap-4 px-6 py-4 rounded-2xl text-gray-500 hover:bg-gray-50 font-bold transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>

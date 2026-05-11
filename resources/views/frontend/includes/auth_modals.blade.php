@@ -46,64 +46,66 @@ class="relative">
             </div>
 
             <!-- Form Container -->
-            <div class="p-10">
+            <div class="p-8 md:p-10 min-h-[400px] flex flex-col justify-center">
                 <!-- Login Mode -->
-                <div x-show="authMode === 'login'">
-                    <form action="{{ route('login.post') }}" method="POST" class="space-y-6">
+                <div x-show="authMode === 'login'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                    <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
                         @csrf
-                        <div class="space-y-2">
+                        <div class="space-y-1.5">
                             <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Email Address</label>
-                            <input type="email" name="email" required class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
+                            <input type="email" name="email" required placeholder="name@example.com" class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664] placeholder:text-gray-200">
                         </div>
-                        <div class="space-y-2">
+                        <div class="space-y-1.5">
                             <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Password</label>
-                            <input type="password" name="password" required class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
+                            <input type="password" name="password" required placeholder="••••••••" class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664] placeholder:text-gray-200">
                         </div>
                         <div class="flex items-center justify-between px-2">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" name="remember" class="w-4 h-4 rounded border-gray-200 text-[#3d2b1f] focus:ring-[#c6a664]">
-                                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Remember Me</span>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Remember Me</span>
                             </label>
-                            <a href="#" class="text-xs font-bold text-[#c6a664] uppercase tracking-widest hover:text-[#3d2b1f]">Forgot?</a>
+                            <a href="#" class="text-[10px] font-bold text-[#c6a664] uppercase tracking-widest hover:text-[#3d2b1f]">Forgot?</a>
                         </div>
                         <button type="submit" class="w-full bg-[#3d2b1f] text-white py-5 rounded-[2rem] font-bold text-lg shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]">
                             Sign In
                         </button>
                     </form>
                     <div class="mt-8 text-center">
-                        <p class="text-sm text-gray-500">Don't have an account? 
-                            <button @click="authMode = 'register'" class="text-[#3d2b1f] font-bold hover:text-[#c6a664] transition-colors">Create Account</button>
+                        <p class="text-xs text-gray-500 font-medium">Don't have an account? 
+                            <button @click="authMode = 'register'" class="text-[#3d2b1f] font-bold hover:text-[#c6a664] transition-colors border-b border-[#3d2b1f] hover:border-[#c6a664]">Create Account</button>
                         </p>
                     </div>
                 </div>
 
                 <!-- Register Mode -->
-                <div x-show="authMode === 'register'">
-                    <form action="{{ route('register.post') }}" method="POST" class="space-y-6">
+                <div x-show="authMode === 'register'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                    <form action="{{ route('register.post') }}" method="POST" class="space-y-4">
                         @csrf
-                        <div class="space-y-2">
+                        <div class="space-y-1.5">
                             <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Full Name</label>
-                            <input type="text" name="name" required class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
+                            <input type="text" name="name" required placeholder="John Doe" class="w-full bg-[#fdfbf7] border-none rounded-2xl py-3.5 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664] placeholder:text-gray-200">
                         </div>
-                        <div class="space-y-2">
+                        <div class="space-y-1.5">
                             <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Email Address</label>
-                            <input type="email" name="email" required class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
+                            <input type="email" name="email" required placeholder="name@example.com" class="w-full bg-[#fdfbf7] border-none rounded-2xl py-3.5 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664] placeholder:text-gray-200">
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Password</label>
-                            <input type="password" name="password" required class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Password</label>
+                                <input type="password" name="password" required placeholder="••••••••" class="w-full bg-[#fdfbf7] border-none rounded-2xl py-3.5 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664] placeholder:text-gray-200">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Confirm</label>
+                                <input type="password" name="password_confirmation" required placeholder="••••••••" class="w-full bg-[#fdfbf7] border-none rounded-2xl py-3.5 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664] placeholder:text-gray-200">
+                            </div>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Confirm Password</label>
-                            <input type="password" name="password_confirmation" required class="w-full bg-[#fdfbf7] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
-                        </div>
-                        <button type="submit" class="w-full bg-[#c6a664] text-white py-5 rounded-[2rem] font-bold text-lg shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]">
+                        <button type="submit" class="w-full bg-[#c6a664] text-white py-5 rounded-[2rem] font-bold text-lg shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98] mt-4">
                             Join Now
                         </button>
                     </form>
                     <div class="mt-8 text-center">
-                        <p class="text-sm text-gray-500">Already have an account? 
-                            <button @click="authMode = 'login'" class="text-[#3d2b1f] font-bold hover:text-[#c6a664] transition-colors">Sign In</button>
+                        <p class="text-xs text-gray-500 font-medium">Already have an account? 
+                            <button @click="authMode = 'login'" class="text-[#3d2b1f] font-bold hover:text-[#c6a664] transition-colors border-b border-[#3d2b1f] hover:border-[#c6a664]">Sign In</button>
                         </p>
                     </div>
                 </div>
