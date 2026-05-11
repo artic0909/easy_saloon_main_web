@@ -89,11 +89,7 @@ class DashboardController extends Controller
             ->with(['city', 'state', 'country'])
             ->get();
             
-        $cities = \App\Models\City::all();
-        $states = \App\Models\State::all();
-        $countries = \App\Models\Country::all();
-            
-        return view('frontend.dashboard.addresses', compact('addresses', 'cities', 'states', 'countries'));
+        return view('frontend.dashboard.addresses', compact('addresses'));
     }
 
     public function saveAddress(Request $request)
@@ -102,23 +98,28 @@ class DashboardController extends Controller
             'title' => 'required|string|max:255',
             'full_address' => 'required|string',
             'landmark' => 'nullable|string|max:255',
-            'city_id' => 'required|exists:cities,id',
-            'state_id' => 'required|exists:states,id',
-            'country_id' => 'required|exists:countries,id',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
         }
 
+        // Get or Create location IDs
+        $country = \App\Models\Country::firstOrCreate(['name' => $request->country]);
+        $state = \App\Models\State::firstOrCreate(['name' => $request->state, 'country_id' => $country->id]);
+        $city = \App\Models\City::firstOrCreate(['name' => $request->city, 'state_id' => $state->id, 'country_id' => $country->id]);
+
         $address = Address::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'full_address' => $request->full_address,
             'landmark' => $request->landmark,
-            'city_id' => $request->city_id,
-            'state_id' => $request->state_id,
-            'country_id' => $request->country_id,
+            'city_id' => $city->id,
+            'state_id' => $state->id,
+            'country_id' => $country->id,
             'is_primary' => $request->has('is_primary')
         ]);
 

@@ -37,31 +37,19 @@
                             </div>
                             <div class="md:col-span-2 space-y-2">
                                 <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Full Address</label>
-                                <textarea name="full_address" required rows="3" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]"></textarea>
+                                <input type="text" name="full_address" required placeholder="123 Luxury Street, Apartment 4B" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">City</label>
-                                <select name="city_id" required class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
-                                    @foreach($cities as $city)
-                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="city" required placeholder="City Name" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">State</label>
-                                <select name="state_id" required class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
-                                    @foreach($states as $state)
-                                        <option value="{{ $state->id }}">{{ $state->name }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="state" required placeholder="State Name" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-4">Country</label>
-                                <select name="country_id" required class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
-                                    @foreach($countries as $country)
-                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="country" required placeholder="Country Name" class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#3d2b1f] focus:ring-2 focus:ring-[#c6a664]">
                             </div>
                             <div class="flex items-center gap-3 ml-4">
                                 <input type="checkbox" name="is_primary" id="is_primary" class="w-5 h-5 text-[#c6a664] bg-white border-gray-200 rounded-lg focus:ring-[#c6a664]">
