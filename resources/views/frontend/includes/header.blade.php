@@ -115,7 +115,6 @@
                 <hr class="border-gray-50"> 
                     <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-5">Dashboard</p>
                     <a href="{{ $dashboardRoute }}" class="block text-lg font-bold text-[#3d2b1f]">My Dashboard</a>
-                    <a href="{{ route('dashboard.wallet') }}" class="block text-lg font-bold text-[#3d2b1f]">Wallet</a>
                     <a href="{{ route('dashboard.bookings') }}" class="block text-lg font-bold text-[#3d2b1f]">My Bookings</a>
                     <a href="{{ route('dashboard.notifications') }}" class="block text-lg font-bold text-[#3d2b1f]">Notifications</a>
                     <a href="{{ route('dashboard.addresses') }}" class="block text-lg font-bold text-[#3d2b1f]">Saved Addresses</a>

@@ -41,7 +41,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/addresses/save', [App\Http\Controllers\DashboardController::class, 'saveAddress'])->name('dashboard.addresses.save');
         Route::delete('/addresses/{id}', [App\Http\Controllers\DashboardController::class, 'deleteAddress'])->name('dashboard.addresses.delete');
         
-        Route::get('/wallet', [App\Http\Controllers\DashboardController::class, 'wallet'])->name('dashboard.wallet');
         Route::get('/notifications', [App\Http\Controllers\DashboardController::class, 'notifications'])->name('dashboard.notifications');
     });
 });
