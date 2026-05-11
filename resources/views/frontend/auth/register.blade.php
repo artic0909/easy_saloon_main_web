@@ -5,7 +5,7 @@
     <!-- Premium Background Image -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('assets/images/auth-bg.png') }}" class="w-full h-full object-cover" alt="Background">
-        <div class="absolute inset-0 bg-black/85 backdrop-blur-[3px]"></div>
+        <div class="absolute inset-0 bg-black/85 lg:bg-black/50 backdrop-blur-[3px] lg:backdrop-blur-[1px]"></div>
     </div>
 
     <!-- Decorative Elements -->
@@ -16,7 +16,7 @@
 
     <!-- Auth Card -->
     <div class="relative z-10 w-full max-w-2xl transform transition-all duration-700">
-        <div class="bg-[#111111]/95 backdrop-blur-md border border-white/5 rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+        <div class="bg-[#111111]/95 lg:bg-[#111111]/80 backdrop-blur-md border border-white/5 rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
             
             <div class="flex flex-col lg:flex-row">
                 <!-- Side Branding (Visible on large screens) -->
