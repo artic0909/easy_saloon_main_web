@@ -1,75 +1,121 @@
-@extends('frontend.layout.app')
+@extends('admin.layout.app')
+
+@section('page_title', 'Dashboard Overview')
 
 @section('content')
-<div class="pt-32 pb-24 bg-[#fdfbf7]">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-center justify-between mb-12">
-            <div>
-                <h1 class="text-4xl font-bold text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">
-                    {{ ucfirst(auth()->user()->role) }} Dashboard
-                </h1>
-                <p class="text-[#c6a664] font-medium uppercase tracking-widest text-xs mt-2">Welcome back, {{ auth()->user()->name }}</p>
+<div class="row g-4 mb-5">
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 p-4 shadow-sm">
+            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                <i class="bi bi-people-fill"></i>
             </div>
-            <div class="flex gap-4">
-                <span class="px-4 py-2 bg-[#3d2b1f] text-white rounded-full text-[10px] font-black uppercase tracking-widest">
-                    {{ auth()->user()->role }} Account
-                </span>
+            <h6 class="text-muted fw-bold small text-uppercase tracking-wider mb-2">Total Customers</h6>
+            <h2 class="fw-black mb-1">{{ $stats['users'] }}</h2>
+            <div class="mt-3 small text-success">
+                <i class="bi bi-arrow-up-right me-1"></i> 12% increase <span class="text-muted fw-normal ms-1">vs last month</span>
             </div>
         </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 p-4 shadow-sm">
+            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                <i class="bi bi-calendar-check-fill"></i>
+            </div>
+            <h6 class="text-muted fw-bold small text-uppercase tracking-wider mb-2">Active Bookings</h6>
+            <h2 class="fw-black mb-1">{{ $stats['bookings'] }}</h2>
+            <div class="mt-3 small text-primary">
+                <i class="bi bi-clock-history me-1"></i> 5 Pending <span class="text-muted fw-normal ms-1">needs attention</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 p-4 shadow-sm">
+            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="bi bi-currency-rupee"></i>
+            </div>
+            <h6 class="text-muted fw-bold small text-uppercase tracking-wider mb-2">Total Revenue</h6>
+            <h2 class="fw-black mb-1">₹{{ number_format($stats['revenue']) }}</h2>
+            <div class="mt-3 small text-success">
+                <i class="bi bi-arrow-up-right me-1"></i> 8.5% growth <span class="text-muted fw-normal ms-1">this week</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card h-100 border-0 p-4 shadow-sm">
+            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="bi bi-scissors"></i>
+            </div>
+            <h6 class="text-muted fw-bold small text-uppercase tracking-wider mb-2">Live Services</h6>
+            <h2 class="fw-black mb-1">{{ $stats['services'] }}</h2>
+            <div class="mt-3 small text-muted">
+                Across 4 main categories
+            </div>
+        </div>
+    </div>
+</div>
 
-        <!-- Role Based View -->
-        @if(auth()->user()->role === 'admin')
-            <!-- Admin View -->
-            <div class="grid md:grid-cols-4 gap-8 mb-12">
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Total Revenue</p>
-                    <h3 class="text-2xl font-black text-[#3d2b1f]">₹1,24,500</h3>
-                </div>
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Total Bookings</p>
-                    <h3 class="text-2xl font-black text-[#3d2b1f]">152</h3>
-                </div>
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Active Staff</p>
-                    <h3 class="text-2xl font-black text-[#3d2b1f]">12</h3>
-                </div>
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">New Users</p>
-                    <h3 class="text-2xl font-black text-[#3d2b1f]">48</h3>
+<div class="row g-4">
+    <!-- Recent Bookings -->
+    <div class="col-lg-8">
+        <div class="card border-0 h-100 shadow-sm">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold mb-0">Recent Appointments</h5>
+                <a href="{{ route('admin.bookings.index') }}" class="btn btn-sm btn-light rounded-pill px-3 fw-bold">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light bg-opacity-50">
+                            <tr>
+                                <th class="px-4 py-3 border-0 small text-uppercase tracking-widest text-muted fw-bold">Client</th>
+                                <th class="py-3 border-0 small text-uppercase tracking-widest text-muted fw-bold">Service</th>
+                                <th class="py-3 border-0 small text-uppercase tracking-widest text-muted fw-bold">Date</th>
+                                <th class="py-3 border-0 small text-uppercase tracking-widest text-muted fw-bold text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recentBookings as $booking)
+                            <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.bookings.show', $booking->id) }}'">
+                                <td class="px-4 py-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="avatar-sm bg-light text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 35px; height: 35px; font-size: 11px;">
+                                            {{ substr($booking->user->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark small">{{ $booking->user->name }}</div>
+                                            <div class="text-muted" style="font-size: 10px;">{{ $booking->user->phone }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="small fw-medium">
+                                    @if($booking->items->isNotEmpty())
+                                        {{ $booking->items->first()->package_id ? $booking->items->first()->package->name : $booking->items->first()->service->name }}
+                                    @else
+                                        <span class="text-muted">No Items</span>
+                                    @endif
+                                </td>
+                                <td class="small text-muted">{{ \Carbon\Carbon::parse($booking->booking_date)->format('d M, Y') }}</td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill 
+                                        @if($booking->status == 'completed') bg-success-subtle text-success
+                                        @elseif($booking->status == 'pending') bg-warning-subtle text-warning
+                                        @elseif($booking->status == 'cancelled') bg-danger-subtle text-danger
+                                        @else bg-primary-subtle text-primary @endif px-3 py-2" style="font-size: 10px;">
+                                        {{ ucfirst($booking->status) }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        @else
-            <!-- Staff View -->
-            <div class="grid md:grid-cols-3 gap-8 mb-12">
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Today's Jobs</p>
-                    <h3 class="text-2xl font-black text-[#3d2b1f]">4</h3>
-                </div>
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Earnings Today</p>
-                    <h3 class="text-2xl font-black text-[#3d2b1f]">₹2,499</h3>
-                </div>
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
-                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Rating</p>
-                    <h3 class="text-2xl font-black text-[#c6a664]">★ 4.9</h3>
-                </div>
-            </div>
-        @endif
+        </div>
+    </div>
 
-        <!-- Recent Activities (Common) -->
-        <div class="bg-white rounded-[3rem] p-12 shadow-sm border border-gray-100">
-            <h3 class="text-2xl font-bold text-[#3d2b1f] mb-8" style="font-family: 'Playfair Display', serif;">Recent {{ auth()->user()->role === 'admin' ? 'System' : 'Job' }} Activities</h3>
-            <div class="space-y-6">
-                <div class="flex items-center gap-6 p-6 rounded-2xl bg-[#fdfbf7]">
-                    <div class="w-12 h-12 bg-[#3d2b1f] rounded-full flex items-center justify-center text-[#c6a664]">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <div>
-                        <h5 class="text-sm font-bold text-[#3d2b1f]">Authentication System Test</h5>
-                        <p class="text-xs text-gray-400">Security guard successfully verified your {{ auth()->user()->role }} role.</p>
-                    </div>
-                    <span class="ml-auto text-[10px] font-black text-gray-300 uppercase tracking-widest">Just Now</span>
-                </div>
+    <!-- Recent Users -->
+    <div class="col-lg-4">
+                <a href="#" class="btn btn-primary w-100 rounded-pill py-2">View All Users</a>
             </div>
         </div>
     </div>
