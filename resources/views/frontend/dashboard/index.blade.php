@@ -5,7 +5,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-8">
         <div class="flex flex-col lg:flex-row gap-16">
             <!-- Sidebar -->
-            <aside class="w-full lg:w-80 flex-shrink-0">
+            <aside class="hidden lg:block w-full lg:w-80 flex-shrink-0">
                 @include('frontend.dashboard.includes.sidebar')
             </aside>
 
