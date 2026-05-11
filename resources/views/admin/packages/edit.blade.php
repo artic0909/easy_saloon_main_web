@@ -23,7 +23,7 @@
                                 @foreach($services->groupBy('category.name') as $categoryName => $categoryServices)
                                     <optgroup label="{{ $categoryName ?: 'Uncategorized' }}">
                                         @foreach($categoryServices as $service)
-                                            <option value="{{ $service->id }}" {{ in_array($service->id, $selectedServices) ? 'selected' : '' }}>
+                                            <option value="{{ $service->id }}" data-price="{{ $service->sale_price ?? $service->price }}" {{ in_array($service->id, $selectedServices) ? 'selected' : '' }}>
                                                 {{ $service->name }} (₹{{ $service->sale_price ?? $service->price }})
                                             </option>
                                         @endforeach
@@ -34,7 +34,8 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-dark">Original Price (₹)</label>
-                            <input type="number" name="original_price" class="form-control bg-light border-0 py-3 px-4 rounded-4" value="{{ $package->original_price }}" required>
+                            <input type="number" name="original_price" id="original_price" class="form-control bg-light border-0 py-3 px-4 rounded-4" value="{{ $package->original_price }}" readonly required>
+                            <small class="text-muted">Auto-calculated from services</small>
                         </div>
 
                         <div class="col-md-6">
@@ -75,4 +76,18 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.select2').on('change', function() {
+            let total = 0;
+            $(this).find(':selected').each(function() {
+                total += parseFloat($(this).data('price')) || 0;
+            });
+            $('#original_price').val(total.toFixed(2));
+        });
+    });
+</script>
 @endsection

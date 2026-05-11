@@ -71,3 +71,17 @@
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.select2').on('change', function() {
+            let total = 0;
+            $(this).find(':selected').each(function() {
+                total += parseFloat($(this).data('price')) || 0;
+            });
+            $('#original_price').val(total.toFixed(2));
+        });
+    });
+</script>
+@endsection
