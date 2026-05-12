@@ -39,6 +39,10 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/packages/{slug}', [App\Http\Controllers\Frontend\PackageListingController::class, 'show'])->name('packages.show');
 
+// Blog Routes
+Route::get('/media-coverage', [App\Http\Controllers\Frontend\BlogsController::class, 'index'])->name('blogs.index');
+Route::get('/media-coverage/{id}', [App\Http\Controllers\Frontend\BlogsController::class, 'show'])->name('blogs.show');
+
 // Guest Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLogin'])->name('login');
