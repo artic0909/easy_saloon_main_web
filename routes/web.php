@@ -14,6 +14,8 @@ Route::get('/packages', [App\Http\Controllers\Frontend\PackageListingController:
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/packages/custom-package', [App\Http\Controllers\Frontend\PackageListingController::class, 'customPackage'])->name('packages.custom');
+    Route::get('/packages/custom-checkout', [App\Http\Controllers\CustomBookingController::class, 'checkout'])->name('packages.custom.checkout');
+    Route::post('/packages/custom-confirm', [App\Http\Controllers\CustomBookingController::class, 'confirm'])->name('packages.custom.confirm');
     Route::get('/checkout', [App\Http\Controllers\BookingController::class, 'checkout'])->name('checkout');
     Route::post('/booking/confirm', [App\Http\Controllers\BookingController::class, 'confirm'])->name('booking.confirm');
     Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');

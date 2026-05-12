@@ -14,7 +14,7 @@ class BookingConfirmation extends Notification
 
     protected $booking;
 
-    public function __construct(Booking $booking)
+    public function __construct($booking)
     {
         $this->booking = $booking;
     }

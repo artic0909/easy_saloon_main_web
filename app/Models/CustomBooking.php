@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class CustomBooking extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'booking_number',
+        'service_ids',
+        'equipment',
+        'total_price',
+        'total_duration',
+        'booking_date',
+        'time_slot',
+        'service_type',
+        'address_id',
+        'status',
+        'notes',
+    ];
+
+    protected $casts = [
+        'service_ids' => 'array',
+        'equipment' => 'array',
+        'booking_date' => 'date',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function getServicesAttribute()
+    {
+        return Service::whereIn('id', $this->service_ids)->get();
+    }
+}

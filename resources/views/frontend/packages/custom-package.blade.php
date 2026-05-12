@@ -95,7 +95,7 @@
                                     <template x-if="!isServiceSelected(service.id)">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v12m6-6H6"></path></svg>
                                     </template>
-                                    <span x-text="isServiceSelected(service.id) ? 'Selected' : 'Add to Bundle'"></span>
+                                    <span x-text="isServiceSelected(service.id) ? 'Selected' : 'Add to Package'"></span>
                                 </button>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                         <div class="flex justify-between items-start mb-10 md:mb-12">
                             <div>
                                 <h4 class="text-2xl md:text-3xl font-bold text-white leading-none mb-3" style="font-family: 'Playfair Display', serif;">Your Session</h4>
-                                <p class="text-[#c6a664] text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em]">Personalized Bundle</p>
+                                <p class="text-[#c6a664] text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em]">Personalized Package</p>
                             </div>
                             <div class="w-12 h-12 md:w-16 md:h-16 bg-white/5 rounded-2xl md:rounded-3xl flex items-center justify-center border border-white/10">
                                 <svg class="w-6 h-6 md:w-8 md:h-8 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -222,7 +222,7 @@
 
                         <button @click="submitBooking" :disabled="selectedServices.length === 0" 
                             class="w-full bg-[#c6a664] text-white py-6 md:py-8 rounded-[1.5rem] md:rounded-[2.5rem] font-black text-sm md:text-lg uppercase tracking-widest shadow-2xl hover:bg-[#b5955a] hover:scale-[1.02] transition-all disabled:opacity-20 disabled:grayscale active:scale-[0.98]">
-                            Book Bundle
+                            Book Package
                         </button>
                     </div>
                 </div>
@@ -259,7 +259,7 @@
     </div>
 
     <!-- Hidden Form for Checkout -->
-    <form id="customBookingForm" action="{{ route('checkout') }}" method="GET" class="hidden">
+    <form id="customBookingForm" action="{{ route('packages.custom.checkout') }}" method="GET" class="hidden">
         <input type="hidden" name="booking_title" value="Custom Package">
         <input type="hidden" name="service_ids" :value="JSON.stringify(selectedServices.map(s => s.id))">
         <input type="hidden" name="equipments" :value="JSON.stringify(allSelectedEquipments)">

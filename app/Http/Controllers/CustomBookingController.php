@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Service;
+use App\Models\CustomBooking;
+use App\Models\Address;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+class CustomBookingController extends Controller
+{
+    public function checkout(Request $request)
+    {
+        $serviceIds = json_decode($request->service_ids, true) ?? [];
+        if (empty($serviceIds)) {
+            return redirect()->route('packages.custom')->with('error', 'Please select at least one service.');
+        }
+
+        $services = Service::whereIn('id', $serviceIds)->get();
+        $totalPrice = $services->sum('sale_price');
+        $totalDuration = $services->sum('duration_minutes');
+        
+        $type = $request->type ?? 'home';
+        $date = $request->date;
+        $slot = $request->slot;
+        
+        // Handle equipment flatten if needed
+        $equipmentRaw = $request->equipments ? json_decode($request->equipments, true) : [];
+        $equipment = [];
+        if (is_array($equipmentRaw)) {
+            foreach ($equipmentRaw as $val) {
+                if (is_array($val)) {
+                    foreach ($val as $v) $equipment[] = $v;
+                } else {
+                    $equipment[] = $val;
+                }
+            }
+        }
+        $equipment = array_unique($equipment);
+
+        $userAddresses = [];
+        if (auth()->check()) {
+            $userAddresses = Address::where('user_id', auth()->id())->with(['city', 'state', 'country'])->get();
+        }
+
+        return view('frontend.custom-checkout', compact('services', 'totalPrice', 'totalDuration', 'type', 'date', 'slot', 'userAddresses', 'equipment', 'serviceIds'));
+    }
+
+    public function confirm(Request $request)
+    {
+        $request->validate([
+            'service_ids' => 'required',
+            'service_type' => 'required|in:home,salon',
+            'date' => 'required|date',
+            'slot' => 'required',
+            'address_id' => 'required_if:service_type,home',
+        ]);
+
+        if (!auth()->check()) {
+            return response()->json(['success' => false, 'message' => 'Please login to continue.'], 401);
+        }
+
+        $serviceIds = json_decode($request->service_ids, true);
+        $services = Service::whereIn('id', $serviceIds)->get();
+        $totalPrice = $services->sum('sale_price');
+        $totalDuration = $services->sum('duration_minutes');
+
+        $booking = new CustomBooking();
+        $booking->user_id = auth()->id();
+        $booking->booking_number = 'CBK-' . strtoupper(Str::random(8));
+        $booking->service_ids = $serviceIds;
+        $booking->equipment = json_decode($request->equipment, true);
+        $booking->total_price = $totalPrice;
+        $booking->total_duration = $totalDuration;
+        $booking->booking_date = $request->date;
+        $booking->time_slot = $request->slot;
+        $booking->service_type = $request->service_type;
+        $booking->status = 'pending';
+
+        if ($request->service_type == 'home') {
+            $booking->address_id = $request->address_id;
+        }
+
+        $booking->save();
+
+        // Send Notification
+        auth()->user()->notify(new \App\Notifications\BookingConfirmation($booking));
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Custom booking placed successfully!',
+            'redirect' => route('dashboard.bookings')
+        ]);
+    }
+}
