@@ -11,9 +11,25 @@ use Illuminate\Support\Facades\Notification;
 
 class CouponController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $coupons = Coupon::latest()->paginate(10);
+        $query = Coupon::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhere('title', 'like', "%$search%");
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $coupons = $query->latest()->get();
+        } else {
+            $coupons = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.coupons.index', compact('coupons'));
     }
 

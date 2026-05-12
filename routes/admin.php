@@ -23,7 +23,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('staff', StaffController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('subcategories', SubCategoryController::class);
-    Route::resource('equipment_uses', EquipmentUseController::class);
+    Route::resource('equipment_uses', EquipmentUseController::class)->parameters([
+        'equipment_uses' => 'equipment_use'
+    ]);
     Route::resource('services', ServiceController::class);
     Route::resource('packages', PackageController::class);
     Route::resource('coupons', CouponController::class);
@@ -33,6 +35,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/bookings/{booking}', [BookingManagementController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/assign', [BookingManagementController::class, 'assignStaff'])->name('bookings.assign');
     Route::patch('/bookings/{booking}/status', [BookingManagementController::class, 'updateStatus'])->name('bookings.status');
+    Route::delete('/bookings/{booking}', [BookingManagementController::class, 'destroy'])->name('bookings.destroy');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 

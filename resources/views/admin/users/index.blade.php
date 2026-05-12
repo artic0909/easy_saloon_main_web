@@ -87,14 +87,14 @@
                 </td>
                 <td class="text-end">
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-light shadow-sm" title="Edit Profile">
-                            <i class="bi bi-pencil-square text-primary"></i>
+                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-action btn-edit" title="Edit Profile">
+                            <i class="bi bi-pencil-square"></i>
                         </a>
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Permanently delete this account?')">
+                        <form id="delete-form-{{ $user->id }}" action="{{ route('admin.users.destroy', $user->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-light shadow-sm" title="Remove User">
-                                <i class="bi bi-trash3-fill text-danger"></i>
+                            <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $user->id }})" title="Remove User">
+                                <i class="bi bi-trash3-fill"></i>
                             </button>
                         </form>
                     </div>

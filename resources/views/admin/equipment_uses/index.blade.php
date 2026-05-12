@@ -4,11 +4,41 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
-        <h5 class="fw-bold mb-0">All Equipment</h5>
-        <a href="{{ route('admin.equipment_uses.create') }}" class="btn btn-primary rounded-pill px-4">
-            <i class="bi bi-plus-lg me-2"></i> Add Equipment
-        </a>
+    <div class="card-header bg-white py-3">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h5 class="fw-bold mb-0">All Equipment</h5>
+            <a href="{{ route('admin.equipment_uses.create') }}" class="btn btn-primary rounded-pill px-4">
+                <i class="bi bi-plus-lg me-2"></i> Add Equipment
+            </a>
+        </div>
+
+        <!-- Filters Area -->
+        <form action="{{ route('admin.equipment_uses.index') }}" method="GET" class="row g-3 align-items-end">
+            <div class="col-md-7">
+                <label class="form-label small fw-bold text-muted">Search Equipment</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Name..." value="{{ request('search') }}">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted">Show Rows</label>
+                <select name="per_page" class="form-select">
+                    @foreach([10, 20, 50, 100] as $num)
+                        <option value="{{ $num }}" {{ request('per_page') == $num ? 'selected' : '' }}>{{ $num }} Rows</option>
+                    @endforeach
+                    <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>Show All</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                    <a href="{{ route('admin.equipment_uses.index') }}" class="btn btn-light border w-100"><i class="bi bi-arrow-counterclockwise"></i></a>
+                </div>
+            </div>
+        </form>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -16,8 +46,7 @@
                 <thead class="bg-light">
                     <tr>
                         <th class="px-4 py-3 border-0">ID</th>
-                        <th class="py-3 border-0">Category</th>
-                        <th class="py-3 border-0">Sub Category</th>
+                        <th class="py-3 border-0">Hierarchy</th>
                         <th class="py-3 border-0">Equipment Name</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
                     </tr>
@@ -25,17 +54,24 @@
                 <tbody>
                     @foreach($equipment as $item)
                     <tr>
-                        <td class="px-4">{{ $item->id }}</td>
-                        <td><span class="badge bg-light text-dark fw-medium">{{ $item->subCategory->category->name }}</span></td>
-                        <td><span class="badge bg-light text-dark fw-medium">{{ $item->subCategory->name }}</span></td>
-                        <td>{{ $item->name }}</td>
+                        <td class="px-4 text-muted small">#{{ $item->id }}</td>
+                        <td>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold">{{ $item->subCategory->category->name }}</span>
+                            <i class="bi bi-chevron-right mx-1 small text-muted"></i>
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold">{{ $item->subCategory->name }}</span>
+                        </td>
+                        <td class="fw-bold text-dark">{{ $item->name }}</td>
                         <td class="px-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.equipment_uses.edit', $item->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">Edit</a>
-                                <form action="{{ route('admin.equipment_uses.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                <a href="{{ route('admin.equipment_uses.edit', $item->id) }}" class="btn-action btn-edit" title="Edit Equipment">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form id="delete-form-{{ $item->id }}" action="{{ route('admin.equipment_uses.destroy', $item->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-light border rounded-pill px-3 text-danger">Remove</button>
+                                    <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $item->id }})" title="Remove Equipment">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </form>
                             </div>
                         </td>

@@ -10,9 +10,21 @@ use App\Models\SubCategory;
 
 class EquipmentUseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $equipment = Equipment::with('subCategory.category')->latest()->paginate(10);
+        $query = Equipment::with('subCategory.category');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $equipment = $query->latest()->get();
+        } else {
+            $equipment = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.equipment_uses.index', compact('equipment'));
     }
 

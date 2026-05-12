@@ -151,7 +151,83 @@
             transition: all 0.4s ease;
         }
 
-        /* Top Navbar */
+        /* Table Styling */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            margin-top: -8px;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            border: none;
+            color: #6c757d;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 1.25rem 1rem;
+        }
+
+        .table tbody tr {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .table tbody tr td {
+            padding: 1.25rem 1rem;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .table tbody tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            padding-left: 1.5rem;
+        }
+
+        .table tbody tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            padding-right: 1.5rem;
+        }
+
+        .table tbody tr:hover {
+            background-color: #fff;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            /* Scaling removed */
+            transform: none !important;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            background: #fff;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .btn-action.btn-view { color: #0d6efd; }
+        .btn-action.btn-edit { color: var(--admin-accent); }
+        .btn-action.btn-delete { color: #dc3545; }
+
+        .btn-action.btn-view:hover { background: #0d6efd; color: #fff; }
+        .btn-action.btn-edit:hover { background: var(--admin-accent); color: #fff; }
+        .btn-action.btn-delete:hover { background: #dc3545; color: #fff; }
+        
         .admin-navbar {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px);
@@ -761,5 +837,33 @@
         @endif
     </script>
     @yield('scripts')
+    <script>
+        // Global Delete Confirmation
+        function confirmDelete(id, formId = null) {
+            const form = formId ? document.getElementById(formId) : document.getElementById('delete-form-' + id);
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                padding: '2rem',
+                borderRadius: '1.5rem',
+                customClass: {
+                    confirmButton: 'btn btn-danger rounded-pill px-4',
+                    cancelButton: 'btn btn-light border rounded-pill px-4'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    </script>
 </body>
 </html>

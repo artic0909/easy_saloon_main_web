@@ -12,9 +12,25 @@ use Illuminate\Support\Facades\Storage;
 
 class PackageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $packages = Package::with(['items.service'])->withCount('items')->latest()->paginate(10);
+        $query = Package::with(['items.service'])->withCount('items');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('details', 'like', "%$search%");
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $packages = $query->latest()->get();
+        } else {
+            $packages = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.packages.index', compact('packages'));
     }
 

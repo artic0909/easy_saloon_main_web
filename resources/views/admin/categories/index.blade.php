@@ -57,11 +57,15 @@
                         <td>{{ $category->name }}</td>
                         <td class="px-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">Edit</a>
-                                <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn-action btn-edit" title="Edit Category">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form id="delete-form-{{ $category->id }}" action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-light border rounded-pill px-3 text-danger">Remove</button>
+                                    <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $category->id }})" title="Remove Category">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </form>
                             </div>
                         </td>

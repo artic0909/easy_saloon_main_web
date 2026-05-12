@@ -81,4 +81,9 @@ class BookingManagementController extends Controller
 
         return back()->with('success', 'Booking status updated successfully.');
     }
+    public function destroy(Booking $booking)
+    {
+        $booking->delete();
+        return redirect()->route('admin.bookings.index')->with('success', 'Booking deleted successfully.');
+    }
 }

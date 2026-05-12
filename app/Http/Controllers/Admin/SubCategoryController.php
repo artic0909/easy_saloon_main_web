@@ -10,9 +10,21 @@ use App\Models\Category;
 
 class SubCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $subcategories = SubCategory::with('category')->latest()->paginate(10);
+        $query = SubCategory::with('category');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $subcategories = $query->latest()->get();
+        } else {
+            $subcategories = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.subcategories.index', compact('subcategories'));
     }
 

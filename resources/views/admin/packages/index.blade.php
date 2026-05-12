@@ -9,6 +9,37 @@
 @endsection
 
 @section('content')
+<div class="card mb-4 border-0 shadow-sm">
+    <div class="card-body">
+        <form action="{{ route('admin.packages.index') }}" method="GET" class="row g-3 align-items-end">
+            <div class="col-md-7">
+                <label class="form-label small fw-bold text-muted">Search Packages</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Name or details..." value="{{ request('search') }}">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted">Show Rows</label>
+                <select name="per_page" class="form-select">
+                    @foreach([10, 20, 50, 100] as $num)
+                        <option value="{{ $num }}" {{ request('per_page') == $num ? 'selected' : '' }}>{{ $num }} Rows</option>
+                    @endforeach
+                    <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>Show All</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                    <a href="{{ route('admin.packages.index') }}" class="btn btn-light border w-100"><i class="bi bi-arrow-counterclockwise"></i></a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table">
         <thead>
@@ -56,14 +87,14 @@
                 </td>
                 <td class="text-end">
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ route('admin.packages.edit', $package->id) }}" class="btn btn-light shadow-sm" title="Edit Package">
-                            <i class="bi bi-pencil-square text-primary"></i>
+                        <a href="{{ route('admin.packages.edit', $package->id) }}" class="btn-action btn-edit" title="Edit Package">
+                            <i class="bi bi-pencil-square"></i>
                         </a>
-                        <form action="{{ route('admin.packages.destroy', $package->id) }}" method="POST" onsubmit="return confirm('Delete this package?')">
+                        <form id="delete-form-{{ $package->id }}" action="{{ route('admin.packages.destroy', $package->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-light shadow-sm" title="Remove Package">
-                                <i class="bi bi-trash3-fill text-danger"></i>
+                            <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $package->id }})" title="Remove Package">
+                                <i class="bi bi-trash3-fill"></i>
                             </button>
                         </form>
                     </div>

@@ -85,17 +85,17 @@
                         </td>
                         <td class="px-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.services.show', $service->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">
-                                    <i class="bi bi-eye"></i> View
+                                <a href="{{ route('admin.services.show', $service->id) }}" class="btn-action btn-view" title="View Details">
+                                    <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">
-                                    <i class="bi bi-pencil"></i> Edit
+                                <a href="{{ route('admin.services.edit', $service->id) }}" class="btn-action btn-edit" title="Edit Service">
+                                    <i class="bi bi-pencil"></i>
                                 </a>
-                                <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                <form id="delete-form-{{ $service->id }}" action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-light border rounded-pill px-3 text-danger">
-                                        <i class="bi bi-trash"></i> Delete
+                                    <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $service->id }})" title="Delete Service">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                             </div>
