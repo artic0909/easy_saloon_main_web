@@ -25,19 +25,45 @@
 
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Category</label>
-                            <select name="category_id" class="form-select rounded-3 py-2 @error('category_id') is-invalid @enderror" required>
+                            <select name="category_id" class="form-select select2 rounded-3 py-2 @error('category_id') is-invalid @enderror" required>
                                 <option value="">Select Category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ (old('category_id', $service->category_id ?? '') == $category->id) ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                             </select>
-                            @error('category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            @error('category_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Sub Category</label>
+                            <select name="sub_category_id" class="form-select select2 rounded-3 py-2 @error('sub_category_id') is-invalid @enderror">
+                                <option value="">Select Sub Category</option>
+                                @foreach($subcategories as $subcategory)
+                                    <option value="{{ $subcategory->id }}" {{ (old('sub_category_id', $service->sub_category_id ?? '') == $subcategory->id) ? 'selected' : '' }}>
+                                        {{ $subcategory->category->name }} > {{ $subcategory->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('sub_category_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Equipment Use</label>
+                            <select name="equipment_id" class="form-select select2 rounded-3 py-2 @error('equipment_id') is-invalid @enderror">
+                                <option value="">Select Equipment</option>
+                                @foreach($equipment as $item)
+                                    <option value="{{ $item->id }}" {{ (old('equipment_id', $service->equipment_id ?? '') == $item->id) ? 'selected' : '' }}>
+                                        {{ $item->subCategory->name }} > {{ $item->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('equipment_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Regular Price (₹)</label>
-                            <input type="number" name="price" class="form-control rounded-3 py-2 @error('price') is-invalid @enderror" value="{{ old('price', $service->price ?? '') }}" required min="0">
-                            @error('price') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <input type="number" name="original_price" class="form-control rounded-3 py-2 @error('original_price') is-invalid @enderror" value="{{ old('original_price', $service->original_price ?? '') }}" required min="0">
+                            @error('original_price') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-4">
@@ -53,8 +79,8 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label fw-bold">Description</label>
-                            <textarea name="description" class="form-control rounded-3 py-2" rows="4">{{ old('description', $service->description ?? '') }}</textarea>
+                            <label class="form-label fw-bold">Service Details</label>
+                            <textarea name="details" class="form-control rounded-3 py-2" rows="4">{{ old('details', $service->details ?? '') }}</textarea>
                         </div>
 
                         <div class="col-md-12">

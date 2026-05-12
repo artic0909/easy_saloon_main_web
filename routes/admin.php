@@ -13,11 +13,17 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\TrackingController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\EquipmentUseController;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('users', UserController::class);
     Route::resource('staff', StaffController::class);
+    Route::resource('categories', CategoryController::class);
+    Route::resource('subcategories', SubCategoryController::class);
+    Route::resource('equipment_uses', EquipmentUseController::class);
     Route::resource('services', ServiceController::class);
     Route::resource('packages', PackageController::class);
     Route::resource('coupons', CouponController::class);

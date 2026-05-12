@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Category;
+use App\Models\SubCategory;
+use App\Models\Equipment;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,7 +22,9 @@ class ServiceController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.services.create', compact('categories'));
+        $subcategories = SubCategory::all();
+        $equipment = Equipment::all();
+        return view('admin.services.create', compact('categories', 'subcategories', 'equipment'));
     }
 
     public function store(Request $request)
@@ -28,10 +32,12 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric|min:0',
+            'sub_category_id' => 'nullable|exists:sub_categories,id',
+            'equipment_id' => 'nullable|exists:equipment,id',
+            'original_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
-            'description' => 'nullable|string',
+            'details' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
         ]);
 
@@ -50,7 +56,9 @@ class ServiceController extends Controller
     public function edit(Service $service)
     {
         $categories = Category::all();
-        return view('admin.services.edit', compact('service', 'categories'));
+        $subcategories = SubCategory::all();
+        $equipment = Equipment::all();
+        return view('admin.services.edit', compact('service', 'categories', 'subcategories', 'equipment'));
     }
 
     public function update(Request $request, Service $service)
@@ -58,10 +66,12 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric|min:0',
+            'sub_category_id' => 'nullable|exists:sub_categories,id',
+            'equipment_id' => 'nullable|exists:equipment,id',
+            'original_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
-            'description' => 'nullable|string',
+            'details' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
         ]);
 
