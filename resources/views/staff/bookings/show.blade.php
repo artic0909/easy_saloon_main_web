@@ -89,9 +89,14 @@
                         </div>
                     </div>
                     <div>
-                        <h6 class="fw-bold mb-2">{{ $booking->address->address_type ?? 'Home' }} Address</h6>
-                        <p class="text-muted mb-3">{{ $booking->address->address_line1 }}, {{ $booking->address->city }}, {{ $booking->address->state }} - {{ $booking->address->pincode }}</p>
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($booking->address->address_line1 . ' ' . $booking->address->city) }}" target="_blank" class="btn btn-primary btn-sm rounded-pill px-4">
+                        <h6 class="fw-bold mb-2">{{ $booking->address->address_type ?? $booking->address->title ?? 'Home' }} Address</h6>
+                        <p class="text-muted mb-3">
+                            {{ $booking->address->full_address ?? $booking->address->address_line1 ?? '' }}, 
+                            {{ $booking->address->city->name ?? '' }}, 
+                            {{ $booking->address->state->name ?? '' }} 
+                            @if($booking->address->pincode) - {{ $booking->address->pincode }} @endif
+                        </p>
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($booking->address->full_address ?? $booking->address->address_line1 ?? '') . ' ' . ($booking->address->city->name ?? '')) }}" target="_blank" class="btn btn-primary btn-sm rounded-pill px-4">
                             <i class="bi bi-map me-2"></i> Open in Maps
                         </a>
                     </div>

@@ -22,7 +22,7 @@ class BookingController extends Controller
                 $q->where('booking_number', 'like', "%$search%")
                   ->orWhereHas('user', function($uq) use ($search) {
                       $uq->where('name', 'like', "%$search%")
-                        ->orWhere('phone', 'like', "%$search%");
+                         ->orWhere('phone', 'like', "%$search%");
                   });
             });
         }
@@ -32,12 +32,17 @@ class BookingController extends Controller
             $query->whereDate('booking_date', $request->date);
         }
 
-        // Row Count
+        // Status Filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Pagination
         $perPage = $request->get('per_page', 10);
-        if ($perPage === 'all') {
+        if ($perPage == 'all') {
             $bookings = $query->latest()->get();
         } else {
-            $bookings = $query->latest()->paginate((int)$perPage)->withQueryString();
+            $bookings = $query->latest()->paginate($perPage)->withQueryString();
         }
 
         return view('staff.bookings.index', compact('bookings'));
