@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Staff;
+use App\Models\User;
 use App\Notifications\BookingStatusNotification;
 
 class BookingManagementController extends Controller
@@ -18,14 +19,14 @@ class BookingManagementController extends Controller
 
     public function show(Booking $booking)
     {
-        $staffMembers = Staff::with('user')->where('is_available', true)->get();
+        $staffMembers = User::where('role', 'staff')->get();
         return view('admin.bookings.show', compact('booking', 'staffMembers'));
     }
 
     public function assignStaff(Request $request, Booking $booking)
     {
         $request->validate([
-            'staff_id' => 'required|exists:staff,id',
+            'staff_id' => 'required|exists:users,id',
         ]);
 
         $booking->update([

@@ -86,10 +86,10 @@
                 @if($booking->staff)
                     <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded-3">
                         <div class="avatar-md bg-warning text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 48px; height: 48px;">
-                            {{ substr($booking->staff->user->name, 0, 1) }}
+                            {{ substr($booking->staff->name, 0, 1) }}
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-1">{{ $booking->staff->user->name }}</h6>
+                            <h6 class="fw-bold mb-1">{{ $booking->staff->name }}</h6>
                             <p class="small text-muted mb-0">{{ $booking->staff->designation }}</p>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                             <option value="">Choose Staff...</option>
                             @foreach($staffMembers as $staff)
                                 <option value="{{ $staff->id }}" {{ ($booking->staff_id == $staff->id) ? 'selected' : '' }}>
-                                    {{ $staff->user->name }} ({{ $staff->designation }})
+                                    {{ $staff->name }} ({{ $staff->designation }})
                                 </option>
                             @endforeach
                         </select>

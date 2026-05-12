@@ -23,19 +23,19 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Full Name</label>
-                            <input type="text" name="name" class="form-control rounded-3 py-2 @error('name') is-invalid @enderror" value="{{ old('name', $staff->user->name ?? '') }}" required>
+                            <input type="text" name="name" class="form-control rounded-3 py-2 @error('name') is-invalid @enderror" value="{{ old('name', $staff->name ?? '') }}" required>
                             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Email Address</label>
-                            <input type="email" name="email" class="form-control rounded-3 py-2 @error('email') is-invalid @enderror" value="{{ old('email', $staff->user->email ?? '') }}" required>
+                            <input type="email" name="email" class="form-control rounded-3 py-2 @error('email') is-invalid @enderror" value="{{ old('email', $staff->email ?? '') }}" required>
                             @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Phone Number</label>
-                            <input type="text" name="phone" class="form-control rounded-3 py-2 @error('phone') is-invalid @enderror" value="{{ old('phone', $staff->user->phone ?? '') }}">
+                            <input type="text" name="phone" class="form-control rounded-3 py-2 @error('phone') is-invalid @enderror" value="{{ old('phone', $staff->phone ?? '') }}">
                             @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 

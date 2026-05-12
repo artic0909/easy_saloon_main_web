@@ -14,7 +14,7 @@ class StaffController extends Controller
 {
     public function index()
     {
-        $staffMembers = Staff::with(['user', 'salon'])->latest()->paginate(10);
+        $staffMembers = User::where('role', 'staff')->latest()->paginate(10);
         return view('admin.staff.index', compact('staffMembers'));
     }
 
@@ -37,44 +37,34 @@ class StaffController extends Controller
             'bio' => 'nullable|string',
         ]);
 
-        DB::beginTransaction();
-        try {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone,
-                'role' => 'staff',
-                'is_active' => true,
-            ]);
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'role' => 'staff',
+            'is_active' => true,
+            'salon_id' => $request->salon_id,
+            'designation' => $request->designation,
+            'experience_years' => $request->experience_years,
+            'bio' => $request->bio,
+            'is_available' => true,
+        ]);
 
-            Staff::create([
-                'user_id' => $user->id,
-                'salon_id' => $request->salon_id,
-                'designation' => $request->designation,
-                'experience_years' => $request->experience_years,
-                'bio' => $request->bio,
-            ]);
-
-            DB::commit();
-            return redirect()->route('admin.staff.index')->with('success', 'Staff member added successfully.');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Failed to add staff: ' . $e->getMessage());
-        }
+        return redirect()->route('admin.staff.index')->with('success', 'Staff member added successfully.');
     }
 
-    public function edit(Staff $staff)
+    public function edit(User $staff)
     {
         $salons = Salon::all();
         return view('admin.staff.edit', compact('staff', 'salons'));
     }
 
-    public function update(Request $request, Staff $staff)
+    public function update(Request $request, User $staff)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $staff->user_id,
+            'email' => 'required|email|unique:users,email,' . $staff->id,
             'phone' => 'nullable|string',
             'designation' => 'required|string',
             'salon_id' => 'nullable|exists:salons,id',
@@ -82,36 +72,28 @@ class StaffController extends Controller
             'bio' => 'nullable|string',
         ]);
 
-        DB::beginTransaction();
-        try {
-            $staff->user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-            ]);
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'salon_id' => $request->salon_id,
+            'designation' => $request->designation,
+            'experience_years' => $request->experience_years,
+            'bio' => $request->bio,
+        ];
 
-            if ($request->filled('password')) {
-                $staff->user->update(['password' => Hash::make($request->password)]);
-            }
-
-            $staff->update([
-                'salon_id' => $request->salon_id,
-                'designation' => $request->designation,
-                'experience_years' => $request->experience_years,
-                'bio' => $request->bio,
-            ]);
-
-            DB::commit();
-            return redirect()->route('admin.staff.index')->with('success', 'Staff information updated successfully.');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Failed to update staff: ' . $e->getMessage());
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
         }
+
+        $staff->update($data);
+
+        return redirect()->route('admin.staff.index')->with('success', 'Staff information updated successfully.');
     }
 
-    public function destroy(Staff $staff)
+    public function destroy(User $staff)
     {
-        $staff->user->delete(); // Cascades to staff table
+        $staff->delete();
         return redirect()->route('admin.staff.index')->with('success', 'Staff member removed successfully.');
     }
 }

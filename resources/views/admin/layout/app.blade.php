@@ -297,6 +297,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             border: none;
         }
@@ -376,6 +377,24 @@
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Analytics</span>
             </a>
+
+            <!-- Category wise -->
+            <a href="{{ route('admin.categories.index') }}" class="nav-link {{ Route::is('admin.categories.*') ? 'active' : '' }}">
+                <i class="bi bi-layers-fill"></i>
+                <span>Categories</span>
+            </a>
+
+            <!-- Sub Category wise -->
+            <a href="{{ route('admin.subcategories.index') }}" class="nav-link {{ Route::is('admin.subcategories.*') ? 'active' : '' }}">
+                <i class="bi bi-layers-fill"></i>
+                <span>Sub Categories</span>
+            </a>
+
+            <!-- Equipment Use -->
+            <a href="{{ route('admin.equipment_uses.index') }}" class="nav-link {{ Route::is('admin.equipment_uses.*') ? 'active' : '' }}">
+                <i class="bi bi-layers-fill"></i>
+                <span>Equipment Use</span>
+            </a>
         </div>
 
         <div class="nav-section">
@@ -392,14 +411,17 @@
 
         <div class="nav-section">
             <p class="nav-label">Management</p>
+
+            <a href="{{ route('admin.staff.index') }}" class="nav-link {{ Route::is('admin.staff.*') ? 'active' : '' }}">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>Staffs</span>
+            </a>
+
             <a href="{{ route('admin.users.index') }}" class="nav-link {{ Route::is('admin.users.*') ? 'active' : '' }}">
                 <i class="bi bi-people-fill"></i>
                 <span>Customers</span>
             </a>
-            <a href="{{ route('admin.staff.index') }}" class="nav-link {{ Route::is('admin.staff.*') ? 'active' : '' }}">
-                <i class="bi bi-person-badge-fill"></i>
-                <span>Professionals</span>
-            </a>
+
             <a href="{{ route('admin.services.index') }}" class="nav-link {{ Route::is('admin.services.*') ? 'active' : '' }}">
                 <i class="bi bi-scissors"></i>
                 <span>Services</span>

@@ -29,11 +29,11 @@
                         <td class="px-4">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="avatar-sm bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 38px; height: 38px;">
-                                    {{ substr($staff->user->name, 0, 1) }}
+                                    {{ substr($staff->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <div class="fw-bold text-dark">{{ $staff->user->name }}</div>
-                                    <div class="small text-muted">{{ $staff->user->email }}</div>
+                                    <div class="fw-bold text-dark">{{ $staff->name }}</div>
+                                    <div class="small text-muted">{{ $staff->email }}</div>
                                 </div>
                             </div>
                         </td>

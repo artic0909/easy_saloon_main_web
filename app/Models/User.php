@@ -27,7 +27,17 @@ class User extends Authenticatable // implements MustVerifyEmail
         'photo',
         'role',
         'is_active',
+        'salon_id',
+        'designation',
+        'bio',
+        'experience_years',
+        'is_available',
     ];
+
+    public function salon()
+    {
+        return $this->belongsTo(Salon::class);
+    }
 
     public function wallet()
     {
