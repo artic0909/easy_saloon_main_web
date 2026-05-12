@@ -62,6 +62,36 @@
             </div>
         </div>
     </section>
+    
+    <!-- Categories Grid -->
+    <section class="py-16 bg-[#fffaf5]">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-[#3d2b1f] mb-3" style="font-family: 'Playfair Display', serif;">Explore by Category</h2>
+                <div class="w-16 h-1 bg-[#c6a664] mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                @foreach($categories as $category)
+                <a href="{{ route('services.index', ['category' => $category->slug]) }}" class="group block text-center">
+                    <div class="relative aspect-square rounded-[2rem] overflow-hidden mb-4 shadow-sm group-hover:shadow-xl transition-all duration-500 bg-white p-2 border border-gray-100">
+                        <div class="w-full h-full rounded-[1.8rem] overflow-hidden relative">
+                            @if($category->image)
+                                <img src="{{ asset('storage/' . $category->image) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="{{ $category->name }}">
+                            @else
+                                <div class="w-full h-full bg-gray-50 flex items-center justify-center">
+                                    <i class="bi bi-scissors text-2xl text-[#c6a664]"></i>
+                                </div>
+                            @endif
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500"></div>
+                        </div>
+                    </div>
+                    <h6 class="font-bold text-[#3d2b1f] text-sm group-hover:text-[#c6a664] transition-colors">{{ $category->name }}</h6>
+                </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
     <!-- Services Section -->
     <section class="py-24 bg-white">

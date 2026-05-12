@@ -3,12 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Route::get('/', function () {
-    $achievements = \App\Models\Achievement::latest()->get();
-    $feedbacks = \App\Models\Feedback::latest()->get();
-    $blogs = \App\Models\Blog::latest()->get();
-    return view('frontend.index', compact('achievements', 'feedbacks', 'blogs'));
-})->name('home');
+Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('home');
 
 Route::get('/services', function () {
     return view('frontend.services.index');
