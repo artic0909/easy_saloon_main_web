@@ -5,9 +5,7 @@ use Livewire\Volt\Volt;
 
 Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('home');
 
-Route::get('/services', function () {
-    return view('frontend.services.index');
-})->name('services.index');
+Route::get('/services', [App\Http\Controllers\Frontend\ServiceListingController::class, 'index'])->name('services.index');
 
 Route::get('/services/{slug}', function ($slug) {
     return view('frontend.services.show', ['slug' => $slug]);
