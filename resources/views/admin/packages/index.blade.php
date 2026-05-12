@@ -47,7 +47,6 @@
                 <th>Package Details</th>
                 <th>Pricing Structure</th>
                 <th>Included Items</th>
-                <th class="text-center">Active Status</th>
                 <th class="text-end">Actions</th>
             </tr>
         </thead>
@@ -65,7 +64,6 @@
                         @endif
                         <div>
                             <div class="fw-bold text-dark fs-6">{{ $package->name }}</div>
-                            <div class="text-muted small text-truncate" style="max-width: 200px;">{{ $package->details }}</div>
                         </div>
                     </div>
                 </td>
@@ -80,13 +78,11 @@
                         @endforeach
                     </div>
                 </td>
-                <td class="text-center">
-                    <div class="form-check form-switch d-flex justify-content-center">
-                        <input class="form-check-input shadow-none" type="checkbox" {{ $package->is_active ? 'checked' : '' }} style="cursor: pointer; width: 40px; height: 20px;">
-                    </div>
-                </td>
                 <td class="text-end">
                     <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ route('admin.packages.show', $package->id) }}" class="btn-action btn-view" title="View Details">
+                            <i class="bi bi-eye-fill"></i>
+                        </a>
                         <a href="{{ route('admin.packages.edit', $package->id) }}" class="btn-action btn-edit" title="Edit Package">
                             <i class="bi bi-pencil-square"></i>
                         </a>

@@ -34,6 +34,12 @@ class PackageController extends Controller
         return view('admin.packages.index', compact('packages'));
     }
 
+    public function show(Package $package)
+    {
+        $package->load(['items.service.category']);
+        return view('admin.packages.show', compact('package'));
+    }
+
     public function create()
     {
         $services = Service::with('category')->where('is_active', true)->orderBy('name')->get();
