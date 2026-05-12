@@ -111,11 +111,12 @@
                                 <span class="badge bg-danger-subtle text-danger"><i class="bi bi-broadcast me-1"></i> Open for Acceptance</span>
                             @else
                                 <span class="badge 
-                                    @if($booking->status == 'Completed') bg-success-subtle text-success
-                                    @elseif($booking->status == 'Pending') bg-warning-subtle text-warning
-                                    @elseif($booking->status == 'Accepted') bg-primary-subtle text-primary
-                                    @elseif($booking->status == 'On the way') bg-info-subtle text-info
-                                    @elseif($booking->status == 'Started') bg-indigo-subtle text-indigo
+                                    @php $s = strtolower($booking->status); @endphp
+                                    @if($s == 'completed') bg-success-subtle text-success
+                                    @elseif($s == 'pending') bg-warning-subtle text-warning
+                                    @elseif($s == 'accepted') bg-primary-subtle text-primary
+                                    @elseif($s == 'on the way' || $s == 'on_the_way') bg-info-subtle text-info
+                                    @elseif($s == 'started') bg-indigo-subtle text-indigo
                                     @else bg-danger-subtle text-danger @endif px-3">
                                     {{ $booking->status }}
                                 </span>

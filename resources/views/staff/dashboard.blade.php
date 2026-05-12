@@ -79,7 +79,14 @@
                         @if(!$booking->staff_id)
                             <span class="badge bg-danger-subtle text-danger">Unassigned</span>
                         @else
-                            <span class="badge {{ $booking->status == 'Completed' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning' }}">
+                            <span class="badge 
+                                @php $s = strtolower($booking->status); @endphp
+                                @if($s == 'completed') bg-success-subtle text-success
+                                @elseif($s == 'pending') bg-warning-subtle text-warning
+                                @elseif($s == 'accepted') bg-primary-subtle text-primary
+                                @elseif($s == 'on the way' || $s == 'on_the_way') bg-info-subtle text-info
+                                @elseif($s == 'started') bg-indigo-subtle text-indigo
+                                @else bg-danger-subtle text-danger @endif">
                                 {{ $booking->status }}
                             </span>
                         @endif

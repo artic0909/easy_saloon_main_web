@@ -66,7 +66,7 @@ class BookingController extends Controller
             if ($booking->staff_id === null && $request->status === 'Accepted') {
                 $booking->update([
                     'staff_id' => auth()->id(),
-                    'status' => 'Accepted'
+                    'status' => 'accepted'
                 ]);
                 return back()->with('success', 'Booking accepted successfully.');
             }
@@ -77,8 +77,18 @@ class BookingController extends Controller
             'status' => 'required|in:Accepted,On the way,Started,Completed,Rejected'
         ]);
 
+        $statusMap = [
+            'Accepted' => 'accepted',
+            'On the way' => 'on_the_way',
+            'Started' => 'started',
+            'Completed' => 'completed',
+            'Rejected' => 'cancelled'
+        ];
+
+        $dbStatus = $statusMap[$request->status] ?? $request->status;
+
         $booking->update([
-            'status' => $request->status
+            'status' => $dbStatus
         ]);
 
         return back()->with('success', 'Booking status updated to ' . $request->status);

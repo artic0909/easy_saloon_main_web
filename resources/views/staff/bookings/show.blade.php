@@ -13,11 +13,11 @@
                     <div class="col-md-6">
                         <p class="text-white-50 small mb-1 uppercase tracking-wider fw-bold">Current Status ({{ $booking->type }})</p>
                         <h2 class="fw-black mb-0">
-                            @if(!$booking->staff_id)
-                                Broadcasted
-                            @else
-                                {{ $booking->status }}
-                            @endif
+                                @if(!$booking->staff_id)
+                                    Broadcasted
+                                @else
+                                    {{ ucwords(str_replace('_', ' ', $booking->status)) }}
+                                @endif
                         </h2>
                     </div>
                     <div class="col-md-6 text-md-end mt-3 mt-md-0">
@@ -28,12 +28,13 @@
                                     <option value="" selected disabled>Available Booking</option>
                                     <option value="Accepted">Accept & Claim Booking</option>
                                 @else
-                                    <option value="Pending" {{ $booking->status == 'Pending' ? 'selected' : '' }}>Pending (Assigned)</option>
-                                    <option value="Accepted" {{ $booking->status == 'Accepted' ? 'selected' : '' }}>Accepted</option>
-                                    <option value="On the way" {{ $booking->status == 'On the way' ? 'selected' : '' }}>On the way</option>
-                                    <option value="Started" {{ $booking->status == 'Started' ? 'selected' : '' }}>Service Started</option>
-                                    <option value="Completed" {{ $booking->status == 'Completed' ? 'selected' : '' }}>Service Completed</option>
-                                    <option value="Rejected" {{ $booking->status == 'Rejected' ? 'selected' : '' }}>Reject Booking</option>
+                                    @php $s = $booking->status; @endphp
+                                    <option value="Pending" {{ $s == 'pending' ? 'selected' : '' }}>Pending (Assigned)</option>
+                                    <option value="Accepted" {{ $s == 'accepted' ? 'selected' : '' }}>Accepted</option>
+                                    <option value="On the way" {{ $s == 'on_the_way' ? 'selected' : '' }}>On the way</option>
+                                    <option value="Started" {{ $s == 'started' ? 'selected' : '' }}>Service Started</option>
+                                    <option value="Completed" {{ $s == 'completed' ? 'selected' : '' }}>Service Completed</option>
+                                    <option value="Rejected" {{ $s == 'cancelled' ? 'selected' : '' }}>Reject Booking</option>
                                 @endif
                             </select>
                         </form>
