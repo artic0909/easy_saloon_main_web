@@ -45,11 +45,18 @@
                         </td>
                         <td class="px-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">Edit</a>
+                                <a href="{{ route('admin.services.show', $service->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
                                 <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-light border rounded-pill px-3 text-danger">Delete</button>
+                                    <button class="btn btn-sm btn-light border rounded-pill px-3 text-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
                                 </form>
                             </div>
                         </td>

@@ -15,15 +15,21 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $services = Service::with('category')->latest()->paginate(10);
+        $services = Service::with(['category', 'subCategory'])->latest()->paginate(10);
         return view('admin.services.index', compact('services'));
+    }
+
+    public function show(Service $service)
+    {
+        $service->load(['category', 'subCategory', 'equipment']);
+        return view('admin.services.show', compact('service'));
     }
 
     public function create()
     {
         $categories = Category::all();
-        $subcategories = SubCategory::all();
-        $equipment = Equipment::all();
+        $subcategories = collect();
+        $equipment = collect();
         return view('admin.services.create', compact('categories', 'subcategories', 'equipment'));
     }
 
@@ -64,8 +70,8 @@ class ServiceController extends Controller
     public function edit(Service $service)
     {
         $categories = Category::all();
-        $subcategories = SubCategory::all();
-        $equipment = Equipment::all();
+        $subcategories = SubCategory::where('category_id', $service->category_id)->get();
+        $equipment = Equipment::where('sub_category_id', $service->sub_category_id)->get();
         return view('admin.services.edit', compact('service', 'categories', 'subcategories', 'equipment'));
     }
 
