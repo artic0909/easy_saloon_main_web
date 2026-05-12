@@ -15,8 +15,8 @@
                     @method('PUT')
                     <div class="mb-4">
                         <label class="form-label fw-bold">Sub Category</label>
-                        <select name="sub_category_id" class="form-select select2 rounded-3" required>
-                            <option value="">Select Sub Category</option>
+                        <select name="sub_category_id" class="form-select select2 rounded-3" data-placeholder="Select Sub Category" required>
+                            <option value=""></option>
                             @foreach($subcategories as $subcategory)
                                 <option value="{{ $subcategory->id }}" {{ old('sub_category_id', $equipment_use->sub_category_id) == $subcategory->id ? 'selected' : '' }}>
                                     {{ $subcategory->category->name }} > {{ $subcategory->name }}

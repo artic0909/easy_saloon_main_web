@@ -16,6 +16,7 @@
                 <thead class="bg-light">
                     <tr>
                         <th class="px-4 py-3 border-0">ID</th>
+                        <th class="py-3 border-0">Category</th>
                         <th class="py-3 border-0">Sub Category</th>
                         <th class="py-3 border-0">Equipment Name</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
@@ -25,6 +26,7 @@
                     @foreach($equipment as $item)
                     <tr>
                         <td class="px-4">{{ $item->id }}</td>
+                        <td><span class="badge bg-light text-dark fw-medium">{{ $item->subCategory->category->name }}</span></td>
                         <td><span class="badge bg-light text-dark fw-medium">{{ $item->subCategory->name }}</span></td>
                         <td>{{ $item->name }}</td>
                         <td class="px-4 text-end">

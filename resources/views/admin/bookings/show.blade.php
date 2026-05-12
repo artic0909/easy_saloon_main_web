@@ -99,8 +99,8 @@
                     @csrf
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-muted">Select Staff Member</label>
-                        <select name="staff_id" class="form-select rounded-3 py-2" required>
-                            <option value="">Choose Staff...</option>
+                        <select name="staff_id" class="form-select select2 rounded-3 py-2" data-placeholder="Choose Staff..." required>
+                            <option value=""></option>
                             @foreach($staffMembers as $staff)
                                 <option value="{{ $staff->id }}" {{ ($booking->staff_id == $staff->id) ? 'selected' : '' }}>
                                     {{ $staff->name }} ({{ $staff->designation }})

@@ -15,8 +15,8 @@
                     @method('PUT')
                     <div class="mb-4">
                         <label class="form-label fw-bold">Parent Category</label>
-                        <select name="category_id" class="form-select select2 rounded-3" required>
-                            <option value="">Select Category</option>
+                        <select name="category_id" class="form-select select2 rounded-3" data-placeholder="Select Category" required>
+                            <option value=""></option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ old('category_id', $subcategory->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach

@@ -12,7 +12,7 @@ class EquipmentUseController extends Controller
 {
     public function index()
     {
-        $equipment = Equipment::with('subCategory')->latest()->paginate(10);
+        $equipment = Equipment::with('subCategory.category')->latest()->paginate(10);
         return view('admin.equipment_uses.index', compact('equipment'));
     }
 

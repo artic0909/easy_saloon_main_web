@@ -25,8 +25,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Category</label>
-                            <select name="category_id" class="form-select select2 rounded-3 py-2 @error('category_id') is-invalid @enderror" required>
-                                <option value="">Select Category</option>
+                            <select name="category_id" class="form-select select2 rounded-3 py-2 @error('category_id') is-invalid @enderror" data-placeholder="Select Category" required>
+                                <option value=""></option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ (old('category_id', $service->category_id ?? '') == $category->id) ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
@@ -36,8 +36,8 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Sub Category</label>
-                            <select name="sub_category_id" class="form-select select2 rounded-3 py-2 @error('sub_category_id') is-invalid @enderror">
-                                <option value="">Select Sub Category</option>
+                            <select name="sub_category_id" class="form-select select2 rounded-3 py-2 @error('sub_category_id') is-invalid @enderror" data-placeholder="Select Sub Category">
+                                <option value=""></option>
                                 @foreach($subcategories as $subcategory)
                                     <option value="{{ $subcategory->id }}" {{ (old('sub_category_id', $service->sub_category_id ?? '') == $subcategory->id) ? 'selected' : '' }}>
                                         {{ $subcategory->category->name }} > {{ $subcategory->name }}
@@ -49,8 +49,8 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Equipment Use</label>
-                            <select name="equipment_id" class="form-select select2 rounded-3 py-2 @error('equipment_id') is-invalid @enderror">
-                                <option value="">Select Equipment</option>
+                            <select name="equipment_id" class="form-select select2 rounded-3 py-2 @error('equipment_id') is-invalid @enderror" data-placeholder="Select Equipment">
+                                <option value=""></option>
                                 @foreach($equipment as $item)
                                     <option value="{{ $item->id }}" {{ (old('equipment_id', $service->equipment_id ?? '') == $item->id) ? 'selected' : '' }}>
                                         {{ $item->subCategory->name }} > {{ $item->name }}
