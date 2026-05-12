@@ -114,14 +114,26 @@
                         {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
                     <h6 class="fw-bold mb-1">{{ auth()->user()->name }}</h6>
-                    <p class="text-muted small mb-3">{{ auth()->user()->staffProfile->designation ?? 'Service Professional' }}</p>
+                    <p class="text-muted small mb-3">{{ auth()->user()->designation ?? 'Service Professional' }}</p>
+                    
+                    <div class="mb-3">
+                        @if(auth()->user()->is_available)
+                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> Available
+                            </span>
+                        @else
+                            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">
+                                <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> Busy / Offline
+                            </span>
+                        @endif
+                    </div>
                     
                     <form action="{{ route('staff.profile.availability') }}" method="POST">
                         @csrf
                         <div class="form-check form-switch d-inline-block p-0">
-                            <label class="form-check-label fw-bold small me-5" for="availabilitySwitch">Available for Bookings</label>
+                            <label class="form-check-label fw-bold small me-5" for="availabilitySwitch">Toggle Availability</label>
                             <input class="form-check-input" type="checkbox" name="is_available" id="availabilitySwitch" 
-                                {{ auth()->user()->staffProfile && auth()->user()->staffProfile->is_available ? 'checked' : '' }}
+                                {{ auth()->user()->is_available ? 'checked' : '' }}
                                 onchange="this.form.submit()">
                         </div>
                     </form>

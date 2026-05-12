@@ -115,7 +115,28 @@
 
     <!-- Recent Users -->
     <div class="col-lg-4">
-                <a href="#" class="btn btn-primary w-100 rounded-pill py-2">View All Users</a>
+        <div class="card border-0 h-100 shadow-sm">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold mb-0">New Clients</h5>
+                <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-light rounded-pill px-3 fw-bold">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-3">
+                    @foreach($recentUsers as $user)
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-light bg-opacity-50 rounded-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 12px;">
+                                {{ substr($user->name, 0, 1) }}
+                            </div>
+                            <div>
+                                <div class="fw-bold text-dark small">{{ $user->name }}</div>
+                                <div class="text-muted" style="font-size: 11px;">{{ $user->phone }}</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1" style="font-size: 9px;">New</span>
+                    </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>

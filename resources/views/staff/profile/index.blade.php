@@ -10,16 +10,16 @@
                 {{ substr($user->name, 0, 1) }}
             </div>
             <h4 class="fw-bold mb-1">{{ $user->name }}</h4>
-            <p class="text-muted mb-4">{{ $staff->designation ?? 'Service Professional' }}</p>
+            <p class="text-muted mb-4">{{ $user->designation ?? 'Service Professional' }}</p>
             
             <div class="bg-light rounded-4 p-4 text-start mb-4">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted small">Experience</span>
-                    <span class="fw-bold">{{ $staff->experience_years ?? 0 }} Years</span>
+                    <span class="fw-bold">{{ $user->experience_years ?? 0 }} Years</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span class="text-muted small">Rating</span>
-                    <span class="text-warning fw-bold"><i class="bi bi-star-fill me-1"></i> {{ $staff->rating ?? '0.0' }}</span>
+                    <span class="text-warning fw-bold"><i class="bi bi-star-fill me-1"></i> {{ $user->rating ?? '0.0' }}</span>
                 </div>
             </div>
 
@@ -28,7 +28,7 @@
                 <div class="form-check form-switch d-flex align-items-center justify-content-between bg-white border rounded-pill px-4 py-3">
                     <label class="form-check-label fw-bold mb-0" for="availabilitySwitchLarge">Availability Status</label>
                     <input class="form-check-input ms-0" type="checkbox" name="is_available" id="availabilitySwitchLarge" 
-                        {{ $staff && $staff->is_available ? 'checked' : '' }}
+                        {{ $user->is_available ? 'checked' : '' }}
                         onchange="this.form.submit()">
                 </div>
             </form>
@@ -63,13 +63,13 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Years of Experience</label>
-                            <input type="number" name="experience_years" class="form-control rounded-3 py-2" value="{{ old('experience_years', $staff->experience_years) }}">
+                            <input type="number" name="experience_years" class="form-control rounded-3 py-2" value="{{ old('experience_years', $user->experience_years ?? '') }}">
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">Professional Biography</label>
-                        <textarea name="bio" class="form-control rounded-3" rows="4">{{ old('bio', $staff->bio) }}</textarea>
+                        <textarea name="bio" class="form-control rounded-3" rows="4">{{ old('bio', $user->bio ?? '') }}</textarea>
                     </div>
 
                     <hr class="my-4 opacity-50">

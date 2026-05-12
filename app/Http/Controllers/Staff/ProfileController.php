@@ -13,8 +13,7 @@ class ProfileController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $staff = $user->staffProfile;
-        return view('staff.profile.index', compact('user', 'staff'));
+        return view('staff.profile.index', compact('user'));
     }
 
     public function update(Request $request)
@@ -30,22 +29,19 @@ class ProfileController extends Controller
             'experience_years' => 'nullable|integer'
         ]);
 
-        $user->update([
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-        ]);
+            'bio' => $request->bio,
+            'experience_years' => $request->experience_years
+        ];
 
         if ($request->filled('password')) {
-            $user->update(['password' => Hash::make($request->password)]);
+            $data['password'] = Hash::make($request->password);
         }
 
-        if ($user->staffProfile) {
-            $user->staffProfile->update([
-                'bio' => $request->bio,
-                'experience_years' => $request->experience_years
-            ]);
-        }
+        $user->update($data);
 
         return back()->with('success', 'Profile updated successfully.');
     }
@@ -53,11 +49,9 @@ class ProfileController extends Controller
     public function updateAvailability(Request $request)
     {
         $user = auth()->user();
-        if ($user->staffProfile) {
-            $user->staffProfile->update([
-                'is_available' => $request->has('is_available')
-            ]);
-        }
+        $user->update([
+            'is_available' => $request->has('is_available')
+        ]);
 
         return back()->with('success', 'Availability status updated.');
     }

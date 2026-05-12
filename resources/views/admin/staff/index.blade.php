@@ -71,9 +71,15 @@
                         <td>{{ $staff->salon->name ?? 'Mobile / Home Service' }}</td>
                         <td class="text-center">{{ $staff->experience_years }} Years</td>
                         <td class="text-center">
-                            <span class="badge rounded-pill {{ $staff->is_available ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} px-3 py-2">
-                                {{ $staff->is_available ? 'Available' : 'Busy' }}
-                            </span>
+                            @if($staff->is_available)
+                                <span class="badge rounded-pill bg-success-subtle text-success border border-success border-opacity-25 px-3 py-2">
+                                    <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> Available
+                                </span>
+                            @else
+                                <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger border-opacity-25 px-3 py-2">
+                                    <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> Busy
+                                </span>
+                            @endif
                         </td>
                         <td class="px-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
