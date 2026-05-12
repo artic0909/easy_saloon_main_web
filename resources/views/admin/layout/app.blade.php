@@ -587,8 +587,8 @@
                         </div>
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-3 p-2 rounded-4">
-                        <li><a class="dropdown-item py-2 rounded-3" href="{{ route('dashboard') }}"><i class="bi bi-person me-2"></i> My Profile</a></li>
-                        <li><hr class="dropdown-divider opacity-50"></li>
+                        <!-- <li><a class="dropdown-item py-2 rounded-3" href="{{ route('dashboard') }}"><i class="bi bi-person me-2"></i> My Profile</a></li> -->
+                        <!-- <li><hr class="dropdown-divider opacity-50"></li> -->
                         <li>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
