@@ -33,8 +33,22 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|string|max:255']);
-        Category::create(['name' => $request->name]);
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'slug' => \Illuminate\Support\Str::slug($request->name),
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('categories', 'public');
+        }
+
+        Category::create($data);
+
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }
 
@@ -45,8 +59,25 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        $request->validate(['name' => 'required|string|max:255']);
-        $category->update(['name' => $request->name]);
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'slug' => \Illuminate\Support\Str::slug($request->name),
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($category->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($category->image);
+            }
+            $data['image'] = $request->file('image')->store('categories', 'public');
+        }
+
+        $category->update($data);
+
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
     }
 

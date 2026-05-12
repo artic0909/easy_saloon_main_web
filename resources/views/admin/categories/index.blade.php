@@ -45,7 +45,7 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">ID</th>
+                        <th class="px-4 py-3 border-0">Image</th>
                         <th class="py-3 border-0">Name</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
                     </tr>
@@ -53,8 +53,19 @@
                 <tbody>
                     @foreach($categories as $category)
                     <tr>
-                        <td class="px-4">{{ $category->id }}</td>
-                        <td>{{ $category->name }}</td>
+                        <td class="px-4">
+                            @if($category->image)
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
+                            @else
+                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center border" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-image text-muted"></i>
+                                </div>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">{{ $category->name }}</div>
+                            <div class="small text-muted">Slug: {{ $category->slug }}</div>
+                        </td>
                         <td class="px-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
                                 <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn-action btn-edit" title="Edit Category">
