@@ -44,7 +44,7 @@
 
                         <div class="col-12">
                             <label class="form-label fw-bold text-dark">Package Details</label>
-                            <textarea name="details" rows="4" class="form-control bg-light border-0 py-3 px-4 rounded-4" placeholder="Describe what's included in this package..." required></textarea>
+                            <textarea name="details" rows="4" class="form-control bg-light border-0 py-3 px-4 rounded-4 summernote" placeholder="Describe what's included in this package..." required></textarea>
                         </div>
 
                         <div class="col-md-12">
@@ -75,6 +75,22 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
+        // Initialize Summernote
+        $('.summernote').summernote({
+            placeholder: 'Describe what\'s included in this package...',
+            tabsize: 2,
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+
         $('.select2').on('change', function() {
             let total = 0;
             $(this).find(':selected').each(function() {

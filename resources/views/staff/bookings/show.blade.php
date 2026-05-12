@@ -85,11 +85,27 @@
                                      @endif
                                  </td>
                                  <td class="text-end fw-bold">
-                                     @if($item->price > 0)
-                                         ₹{{ number_format($item->price, 2) }}
-                                     @else
-                                         <span class="text-success small fw-normal">Included</span>
-                                     @endif
+                                     <div class="d-flex flex-column align-items-end">
+                                         @if($item->item_type == 'package' && $item->package)
+                                             <div class="d-flex align-items-baseline gap-2 justify-content-end">
+                                                 <span class="text-dark">₹{{ number_format($item->price, 0) }}</span>
+                                                 <small class="text-muted text-decoration-line-through fw-normal" style="font-size: 0.7rem;">₹{{ number_format($item->package->original_price, 0) }}</small>
+                                             </div>
+                                         @elseif($item->item_type == 'service' && $item->service)
+                                             @if($item->price > 0)
+                                                 <div class="d-flex align-items-baseline gap-2 justify-content-end">
+                                                     <span class="text-dark">₹{{ number_format($item->price, 0) }}</span>
+                                                     <small class="text-muted text-decoration-line-through fw-normal" style="font-size: 0.7rem;">₹{{ number_format($item->service->original_price, 0) }}</small>
+                                                 </div>
+                                             @else
+                                                 <span class="text-success small fw-normal mb-1">Included</span>
+                                                 <div class="d-flex align-items-baseline gap-2 justify-content-end opacity-50">
+                                                     <small class="fw-bold text-dark" style="font-size: 0.65rem;">₹{{ number_format($item->service->sale_price, 0) }}</small>
+                                                     <small class="text-decoration-line-through text-muted" style="font-size: 0.6rem;">₹{{ number_format($item->service->original_price, 0) }}</small>
+                                                 </div>
+                                             @endif
+                                         @endif
+                                     </div>
                                  </td>
                              </tr>
                              @endforeach
