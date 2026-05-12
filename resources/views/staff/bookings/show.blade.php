@@ -58,15 +58,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($booking->items as $item)
-                            <tr>
-                                <td>
-                                    <div class="fw-bold">{{ $item->service->name ?? 'Deleted Service' }}</div>
-                                </td>
-                                <td><span class="badge bg-light text-muted border">{{ $item->service->category->name ?? 'N/A' }}</span></td>
-                                <td class="text-end fw-bold">₹{{ number_format($item->price, 2) }}</td>
-                            </tr>
-                            @endforeach
+                             @foreach($booking->items as $item)
+                             <tr>
+                                 <td>
+                                     <div class="fw-bold">{{ $item->service->name ?? 'Deleted Service' }}</div>
+                                     @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
+                                         <div class="mt-1 d-flex flex-wrap gap-1">
+                                             @foreach($item->service->subCategory->equipment as $eq)
+                                                 <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10 py-0 px-2" style="font-size: 0.6rem;">
+                                                     <i class="bi bi-tools me-1"></i>{{ $eq->name }}
+                                                 </span>
+                                             @endforeach
+                                         </div>
+                                     @endif
+                                 </td>
+                                 <td><span class="badge bg-light text-muted border">{{ $item->service->category->name ?? 'N/A' }}</span></td>
+                                 <td class="text-end fw-bold">₹{{ number_format($item->price, 2) }}</td>
+                             </tr>
+                             @endforeach
                         </tbody>
                         <tfoot class="border-top">
                             <tr>
@@ -78,6 +87,31 @@
                 </div>
             </div>
         </div>
+
+        @php
+            $equipments = $booking->equipment;
+            if (is_string($equipments)) {
+                $equipments = json_decode($equipments, true);
+            }
+        @endphp
+
+        @if($equipments && count($equipments) > 0)
+        <div class="card border-0 mb-4 shadow-sm">
+            <div class="card-header bg-info bg-opacity-10 py-3">
+                <h5 class="mb-0 fw-bold text-info"><i class="bi bi-tools me-2"></i>Equipments Required</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach($equipments as $item)
+                        <span class="badge bg-light text-info border border-info border-opacity-25 px-4 py-2 rounded-pill fs-6">
+                            {{ $item }}
+                        </span>
+                    @endforeach
+                </div>
+                <p class="text-muted small mt-3 mb-0">Please ensure you carry all the listed equipment for this service.</p>
+            </div>
+        </div>
+        @endif
 
         <div class="card border-0">
             <div class="card-header"><h5 class="mb-0 fw-bold">Service Location</h5></div>

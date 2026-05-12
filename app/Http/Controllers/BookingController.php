@@ -62,7 +62,13 @@ class BookingController extends Controller
         
         // Handle equipment storage
         if ($request->has('equipment')) {
-            $booking->equipment = is_array($request->equipment) ? $request->equipment : json_decode($request->equipment, true);
+            $equipmentData = $request->equipment;
+            if (is_string($equipmentData)) {
+                $decoded = json_decode($equipmentData, true);
+                $booking->equipment = is_array($decoded) ? $decoded : [$equipmentData];
+            } else {
+                $booking->equipment = $equipmentData;
+            }
         }
         
         if ($request->item_type == 'service') {

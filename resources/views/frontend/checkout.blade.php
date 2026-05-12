@@ -172,7 +172,7 @@
         formData.append('service_type', type);
         formData.append('date', '{{ $date }}');
         formData.append('slot', '{{ $slot }}');
-        formData.append('equipment', '{{ json_encode($equipment) }}');
+        formData.append('equipment', '@json($equipment)');
         if (addressId) formData.append('address_id', addressId);
 
         fetch('{{ route("booking.confirm") }}', {

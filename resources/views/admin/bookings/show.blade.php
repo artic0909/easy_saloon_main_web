@@ -37,11 +37,18 @@
                     </div>
                     @endif
 
-                    @if($booking->equipment && count($booking->equipment) > 0)
+                    @php
+                        $equipments = $booking->equipment;
+                        if (is_string($equipments)) {
+                            $equipments = json_decode($equipments, true);
+                        }
+                    @endphp
+
+                    @if($equipments && count($equipments) > 0)
                     <div class="col-12">
                         <label class="small text-muted text-uppercase fw-bold tracking-widest">Equipments Required</label>
                         <div class="mt-2 d-flex flex-wrap gap-2">
-                            @foreach($booking->equipment as $item)
+                            @foreach($equipments as $item)
                                 <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-2 rounded-pill">
                                     <i class="bi bi-tools me-2"></i>{{ $item }}
                                 </span>
@@ -70,7 +77,15 @@
                         @foreach($booking->items as $item)
                         <tr class="border-bottom">
                             <td class="px-4 py-3">
-                                <span class="fw-bold text-dark">{{ $item->package_id ? $item->package->name : $item->service->name }}</span>
+                                <div class="fw-bold text-dark">{{ $item->package_id ? $item->package->name : $item->service->name }}</div>
+                                @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
+                                    <div class="mt-1">
+                                        <small class="text-muted">Required Tools: </small>
+                                        @foreach($item->service->subCategory->equipment as $eq)
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 py-0 px-2" style="font-size: 0.65rem;">{{ $eq->name }}</span>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </td>
                             <td>{{ ucfirst($item->item_type) }}</td>
                             <td class="px-4 text-end fw-bold">₹{{ number_format($item->price) }}</td>
