@@ -25,7 +25,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Category</label>
-                            <select name="category_id" class="form-select select2 rounded-3 py-2 @error('category_id') is-invalid @enderror" data-placeholder="Select Category" required>
+                            <select name="category_id" id="category" class="form-select select2 rounded-3 py-2 @error('category_id') is-invalid @enderror" data-placeholder="Select Category" required>
                                 <option value=""></option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ (old('category_id', $service->category_id ?? '') == $category->id) ? 'selected' : '' }}>{{ $category->name }}</option>
@@ -36,7 +36,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Sub Category</label>
-                            <select name="sub_category_id" class="form-select select2 rounded-3 py-2 @error('sub_category_id') is-invalid @enderror" data-placeholder="Select Sub Category">
+                            <select name="sub_category_id" id="sub_category" class="form-select select2 rounded-3 py-2 @error('sub_category_id') is-invalid @enderror" data-placeholder="Select Sub Category">
                                 <option value=""></option>
                                 @foreach($subcategories as $subcategory)
                                     <option value="{{ $subcategory->id }}" {{ (old('sub_category_id', $service->sub_category_id ?? '') == $subcategory->id) ? 'selected' : '' }}>
@@ -49,15 +49,15 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Equipment Use</label>
-                            <select name="equipment_id" class="form-select select2 rounded-3 py-2 @error('equipment_id') is-invalid @enderror" data-placeholder="Select Equipment">
+                            <select name="equipment[]" id="equipment" class="form-select select2 rounded-3 py-2 @error('equipment') is-invalid @enderror" data-placeholder="Select Equipment" multiple>
                                 <option value=""></option>
                                 @foreach($equipment as $item)
-                                    <option value="{{ $item->id }}" {{ (old('equipment_id', $service->equipment_id ?? '') == $item->id) ? 'selected' : '' }}>
-                                        {{ $item->subCategory->name }} > {{ $item->name }}
+                                    <option value="{{ $item->id }}" {{ (isset($service) && $service->equipment->contains($item->id)) ? 'selected' : '' }}>
+                                        {{ $item->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('equipment_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            @error('equipment') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-4">
@@ -106,4 +106,55 @@
         </div>
     </div>
 </div>
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('#category').on('change', function() {
+            var category_id = $(this).val();
+            if (category_id) {
+                $.ajax({
+                    url: '/admin/get-subcategories/' + category_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        $('#sub_category').empty();
+                        $('#sub_category').append('<option value=""></option>');
+                        $.each(data, function(key, value) {
+                            $('#sub_category').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                        $('#sub_category').trigger('change');
+                    }
+                });
+            } else {
+                $('#sub_category').empty();
+                $('#sub_category').append('<option value=""></option>');
+                $('#sub_category').trigger('change');
+            }
+        });
+
+        $('#sub_category').on('change', function() {
+            var subcategory_id = $(this).val();
+            if (subcategory_id) {
+                $.ajax({
+                    url: '/admin/get-equipment/' + subcategory_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        $('#equipment').empty();
+                        $('#equipment').append('<option value=""></option>');
+                        $.each(data, function(key, value) {
+                            $('#equipment').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                        $('#equipment').trigger('change');
+                    }
+                });
+            } else {
+                $('#equipment').empty();
+                $('#equipment').append('<option value=""></option>');
+                $('#equipment').trigger('change');
+            }
+        });
+    });
+</script>
+@endsection
 @endsection

@@ -33,7 +33,8 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'nullable|exists:sub_categories,id',
-            'equipment_id' => 'nullable|exists:equipment,id',
+            'equipment' => 'nullable|array',
+            'equipment.*' => 'exists:equipment,id',
             'original_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
@@ -41,14 +42,18 @@ class ServiceController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->except('image');
+        $data = $request->except(['image', 'equipment']);
         $data['slug'] = Str::slug($request->name);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('services', 'public');
         }
 
-        Service::create($data);
+        $service = Service::create($data);
+
+        if ($request->has('equipment')) {
+            $service->equipment()->sync($request->equipment);
+        }
 
         return redirect()->route('admin.services.index')->with('success', 'Service created successfully.');
     }
@@ -67,7 +72,8 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'nullable|exists:sub_categories,id',
-            'equipment_id' => 'nullable|exists:equipment,id',
+            'equipment' => 'nullable|array',
+            'equipment.*' => 'exists:equipment,id',
             'original_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
@@ -75,7 +81,7 @@ class ServiceController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->except('image');
+        $data = $request->except(['image', 'equipment']);
         $data['slug'] = Str::slug($request->name);
 
         if ($request->hasFile('image')) {
@@ -87,6 +93,12 @@ class ServiceController extends Controller
 
         $service->update($data);
 
+        if ($request->has('equipment')) {
+            $service->equipment()->sync($request->equipment);
+        } else {
+            $service->equipment()->sync([]);
+        }
+
         return redirect()->route('admin.services.index')->with('success', 'Service updated successfully.');
     }
 
@@ -97,5 +109,15 @@ class ServiceController extends Controller
         }
         $service->delete();
         return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
+    }
+
+    public function getSubCategories($category_id)
+    {
+        return response()->json(SubCategory::where('category_id', $category_id)->get());
+    }
+
+    public function getEquipment($subcategory_id)
+    {
+        return response()->json(Equipment::where('sub_category_id', $subcategory_id)->get());
     }
 }
