@@ -478,7 +478,7 @@
 
         <div class="nav-section">
             <p class="nav-label">Operations</p>
-            <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ Route::is('admin.bookings.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ Route::is('admin.bookings.*') || Route::is('admin.custom_bookings.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar2-check-fill"></i>
                 <span>Bookings</span>
             </a>
@@ -553,7 +553,7 @@
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ route('staff.bookings.index') }}" class="nav-link {{ Route::is('staff.bookings.*') ? 'active' : '' }}">
+            <a href="{{ route('staff.bookings.index') }}" class="nav-link {{ Route::is('staff.bookings.*') || Route::is('staff.custom_bookings.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar2-check-fill"></i>
                 <span>My Bookings</span>
             </a>

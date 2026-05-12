@@ -48,7 +48,6 @@
                 <th>Contact Info</th>
                 <th>Platform Role</th>
                 <th>Joined Date</th>
-                <th class="text-center">Status</th>
                 <th class="text-end">Actions</th>
             </tr>
         </thead>
@@ -80,11 +79,6 @@
                     @endif
                 </td>
                 <td class="small text-muted">{{ $user->created_at->format('M d, Y') }}</td>
-                <td class="text-center">
-                    <div class="form-check form-switch d-flex justify-content-center">
-                        <input class="form-check-input shadow-none" type="checkbox" {{ $user->is_active ? 'checked' : '' }} style="cursor: pointer; width: 40px; height: 20px;">
-                    </div>
-                </td>
                 <td class="text-end">
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-action btn-edit" title="Edit Profile">

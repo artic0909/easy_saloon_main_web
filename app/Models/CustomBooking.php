@@ -22,6 +22,7 @@ class CustomBooking extends Model
         'time_slot',
         'service_type',
         'address_id',
+        'staff_id',
         'status',
         'notes',
     ];
