@@ -44,9 +44,9 @@
                             @if($booking->staff)
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="avatar-xs bg-warning bg-opacity-10 text-warning rounded-circle text-center" style="width: 24px; height: 24px; line-height: 24px; font-size: 10px;">
-                                        {{ substr($booking->staff->user->name, 0, 1) }}
+                                        {{ substr($booking->staff->name, 0, 1) }}
                                     </div>
-                                    <span class="small fw-bold">{{ $booking->staff->user->name }}</span>
+                                    <span class="small fw-bold">{{ $booking->staff->name }}</span>
                                 </div>
                             @else
                                 <span class="text-danger small fw-bold">Not Assigned</span>
