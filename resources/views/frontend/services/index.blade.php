@@ -1,7 +1,7 @@
 @extends('frontend.layout.app')
 
 @section('content')
-<div class="pt-32 pb-24 bg-[#fdfbf7]">
+<div x-data="{ showFilter: false }" class="pt-32 pb-24 bg-[#fdfbf7]">
     <div class="max-w-7xl mx-auto px-4">
         <!-- Breadcrumbs -->
         <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
@@ -10,85 +10,121 @@
             <span class="text-[#3d2b1f]">All Services</span>
         </div>
 
+        <!-- Mobile Filter Toggle -->
+        <div class="lg:hidden mb-8">
+            <button @click="showFilter = true" class="w-full flex items-center justify-center gap-3 bg-white py-4 rounded-2xl shadow-sm border border-gray-100 font-bold text-[#3d2b1f] hover:bg-gray-50 transition-all">
+                <i class="bi bi-funnel"></i>
+                <span>Filter Services</span>
+                @if(request('category') || request('subcategory') || request('max_price'))
+                    <span class="w-2 h-2 bg-[#c6a664] rounded-full"></span>
+                @endif
+            </button>
+        </div>
+
         <div class="flex flex-col lg:flex-row gap-12">
-            <!-- Sidebar / Filters -->
-            <aside class="w-full lg:w-72 flex-shrink-0">
-                <form id="filter-form" action="{{ route('services.index') }}" method="GET" class="sticky top-32">
-                    <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
-                        <div class="flex items-center justify-between mb-8">
-                            <h5 class="text-xl font-bold text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Filters</h5>
-                            <a href="{{ route('services.index') }}" class="text-[10px] font-bold text-[#c6a664] uppercase tracking-widest hover:opacity-70 transition-opacity">Reset</a>
-                        </div>
-                        
-                        <!-- Categories -->
-                        <div class="mb-10">
-                            <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Categories</h6>
-                            <div class="flex flex-col gap-4">
-                                @foreach($categories as $cat)
-                                    <label class="flex items-center gap-3 cursor-pointer group custom-checkbox">
-                                        <input type="checkbox" name="category[]" value="{{ $cat->slug }}" 
-                                            class="hidden peer"
-                                            {{ in_array($cat->slug, (array)request('category')) ? 'checked' : '' }}
-                                            onchange="this.form.submit()">
-                                        <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
-                                            <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                        </div>
-                                        <span class="text-sm font-semibold text-gray-600 group-hover:text-[#3d2b1f] transition-colors">{{ $cat->name }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
+            <!-- Sidebar / Filters (Off-canvas for Mobile) -->
+            <div 
+                x-show="showFilter" 
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="-translate-x-full"
+                x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="translate-x-0"
+                x-transition:leave-end="-translate-x-full"
+                class="fixed inset-0 z-[100] lg:relative lg:inset-auto lg:z-0 lg:block"
+                style="display: none;"
+                :style="window.innerWidth >= 1024 ? 'display: block !important' : ''"
+            >
+                <!-- Backdrop for mobile -->
+                <div @click="showFilter = false" class="absolute inset-0 bg-black/50 lg:hidden"></div>
 
-                        <!-- Sub Categories (Dynamic based on Category) -->
-                        @if($relevantSubCategories->count() > 0)
-                        <div class="mb-10 animate-fade-in">
-                            <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Sub Categories</h6>
-                            <div class="flex flex-col gap-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                @foreach($relevantSubCategories as $sub)
-                                    <label class="flex items-center gap-3 cursor-pointer group custom-checkbox">
-                                        <input type="checkbox" name="subcategory[]" value="{{ $sub->slug }}" 
-                                            class="hidden peer"
-                                            {{ in_array($sub->slug, (array)request('subcategory')) ? 'checked' : '' }}
-                                            onchange="this.form.submit()">
-                                        <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
-                                            <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                        </div>
-                                        <span class="text-sm font-medium text-gray-600 group-hover:text-[#3d2b1f] transition-colors">{{ $sub->name }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                        @endif
+                <!-- Drawer Content -->
+                <aside class="relative w-72 h-full lg:h-auto bg-white lg:bg-transparent overflow-y-auto lg:overflow-visible p-8 lg:p-0 shadow-2xl lg:shadow-none">
+                    <div class="flex items-center justify-between mb-8 lg:hidden">
+                        <h5 class="text-xl font-bold text-[#3d2b1f]">Filters</h5>
+                        <button @click="showFilter = false" class="p-2 text-gray-400 hover:text-[#3d2b1f]">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
 
-                        <!-- Price Range -->
-                        <div class="mb-10">
-                            <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Max Price</h6>
-                            <div class="space-y-5">
-                                <input type="range" name="max_price" min="0" max="10000" step="100" 
-                                    value="{{ request('max_price', 10000) }}"
-                                    class="w-full accent-[#c6a664]"
-                                    oninput="priceDisplay.innerText = '₹' + this.value"
-                                    onchange="this.form.submit()">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase">₹0</span>
-                                    <span id="priceDisplay" class="text-sm font-black text-[#3d2b1f] bg-gray-50 px-3 py-1 rounded-lg">₹{{ request('max_price', 10000) }}</span>
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase">₹10,000+</span>
+                    <form id="filter-form" action="{{ route('services.index') }}" method="GET" class="sticky top-32">
+                        <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
+                            <div class="hidden lg:flex items-center justify-between mb-8">
+                                <h5 class="text-xl font-bold text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Filters</h5>
+                                <a href="{{ route('services.index') }}" class="text-[10px] font-bold text-[#c6a664] uppercase tracking-widest hover:opacity-70 transition-opacity">Reset</a>
+                            </div>
+                            
+                            <!-- Categories -->
+                            <div class="mb-10">
+                                <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Categories</h6>
+                                <div class="flex flex-col gap-4">
+                                    @foreach($categories as $cat)
+                                        <label class="flex items-center gap-3 cursor-pointer group custom-checkbox">
+                                            <input type="checkbox" name="category[]" value="{{ $cat->slug }}" 
+                                                class="hidden peer"
+                                                {{ in_array($cat->slug, (array)request('category')) ? 'checked' : '' }}>
+                                            <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
+                                                <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-600 group-hover:text-[#3d2b1f] transition-colors">{{ $cat->name }}</span>
+                                        </label>
+                                    @endforeach
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Sort By -->
-                        <div>
-                            <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Sort By</h6>
-                            <select name="sort" class="w-full bg-[#fdfbf7] border-none rounded-2xl text-sm font-bold text-[#3d2b1f] py-3.5 focus:ring-2 focus:ring-[#c6a664] cursor-pointer" onchange="this.form.submit()">
-                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
-                                <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                                <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                            </select>
+                            <!-- Sub Categories -->
+                            @if($relevantSubCategories->count() > 0)
+                            <div class="mb-10 animate-fade-in">
+                                <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Sub Categories</h6>
+                                <div class="flex flex-col gap-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                                    @foreach($relevantSubCategories as $sub)
+                                        <label class="flex items-center gap-3 cursor-pointer group custom-checkbox">
+                                            <input type="checkbox" name="subcategory[]" value="{{ $sub->slug }}" 
+                                                class="hidden peer"
+                                                {{ in_array($sub->slug, (array)request('subcategory')) ? 'checked' : '' }}>
+                                            <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
+                                                <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                            </div>
+                                            <span class="text-sm font-medium text-gray-600 group-hover:text-[#3d2b1f] transition-colors">{{ $sub->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                            <!-- Price Range -->
+                            <div class="mb-10">
+                                <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Max Price</h6>
+                                <div class="space-y-5">
+                                    <input type="range" name="max_price" min="0" max="10000" step="100" 
+                                        value="{{ request('max_price', 10000) }}"
+                                        class="w-full accent-[#c6a664]"
+                                        oninput="priceDisplay.innerText = '₹' + this.value">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] font-bold text-gray-400 uppercase">₹0</span>
+                                        <span id="priceDisplay" class="text-sm font-black text-[#3d2b1f] bg-gray-50 px-3 py-1 rounded-lg">₹{{ request('max_price', 10000) }}</span>
+                                        <span class="text-[10px] font-bold text-gray-400 uppercase">₹10,000+</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sort By -->
+                            <div class="mb-10">
+                                <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Sort By</h6>
+                                <select name="sort" class="w-full bg-[#fdfbf7] border-none rounded-2xl text-sm font-bold text-[#3d2b1f] py-3.5 focus:ring-2 focus:ring-[#c6a664] cursor-pointer">
+                                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
+                                    <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                                    <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <button type="submit" class="w-full bg-[#3d2b1f] text-white py-4 rounded-2xl font-bold hover:bg-[#c6a664] transition-all shadow-lg shadow-black/10">Apply Filters</button>
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </aside>
+                    </form>
+                </aside>
+            </div>
 
             <!-- Main Listing -->
             <div class="flex-1">
@@ -186,5 +222,6 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background: #d1d5db;
     }
+    [x-cloak] { display: none !important; }
 </style>
 @endsection
