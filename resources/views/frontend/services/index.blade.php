@@ -1,7 +1,13 @@
 @extends('frontend.layout.app')
 
 @section('content')
-<div x-data="{ showFilter: false }" class="pt-32 pb-24 bg-[#fdfbf7]">
+<div x-data="{ 
+    showFilter: false, 
+    selectedCategories: {{ json_encode((array)request('category', [])) }},
+    isCategorySelected(slug) {
+        return this.selectedCategories.includes(slug);
+    }
+}" class="pt-32 pb-24 bg-[#fdfbf7]">
     <div class="max-w-7xl mx-auto px-4">
         <!-- Breadcrumbs -->
         <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
@@ -22,24 +28,20 @@
         </div>
 
         <div class="flex flex-col lg:flex-row gap-12">
-            <!-- Sidebar / Filters (Off-canvas for Mobile) -->
+            <!-- Sidebar / Filters (Off-canvas for Mobile, Permanent for Desktop) -->
             <div 
-                x-show="showFilter" 
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="-translate-x-full"
-                x-transition:enter-end="translate-x-0"
-                x-transition:leave="transition ease-in duration-300"
-                x-transition:leave-start="translate-x-0"
-                x-transition:leave-end="-translate-x-full"
                 class="fixed inset-0 z-[100] lg:relative lg:inset-auto lg:z-0 lg:block"
-                style="display: none;"
-                :style="window.innerWidth >= 1024 ? 'display: block !important' : ''"
+                :class="showFilter ? 'block' : 'hidden lg:block'"
+                x-cloak
             >
                 <!-- Backdrop for mobile -->
-                <div @click="showFilter = false" class="absolute inset-0 bg-black/50 lg:hidden"></div>
+                <div x-show="showFilter" @click="showFilter = false" x-transition:opacity class="absolute inset-0 bg-black/50 lg:hidden"></div>
 
                 <!-- Drawer Content -->
-                <aside class="relative w-72 h-full lg:h-auto bg-white lg:bg-transparent overflow-y-auto lg:overflow-visible p-8 lg:p-0 shadow-2xl lg:shadow-none">
+                <aside 
+                    class="relative w-72 h-full lg:h-auto bg-white lg:bg-transparent overflow-y-auto lg:overflow-visible p-8 lg:p-0 shadow-2xl lg:shadow-none transition-transform duration-300 transform lg:translate-x-0"
+                    :class="showFilter ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+                >
                     <div class="flex items-center justify-between mb-8 lg:hidden">
                         <h5 class="text-xl font-bold text-[#3d2b1f]">Filters</h5>
                         <button @click="showFilter = false" class="p-2 text-gray-400 hover:text-[#3d2b1f]">
@@ -62,7 +64,7 @@
                                         <label class="flex items-center gap-3 cursor-pointer group custom-checkbox">
                                             <input type="checkbox" name="category[]" value="{{ $cat->slug }}" 
                                                 class="hidden peer"
-                                                {{ in_array($cat->slug, (array)request('category')) ? 'checked' : '' }}>
+                                                x-model="selectedCategories">
                                             <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
                                                 <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                             </div>
@@ -72,25 +74,27 @@
                                 </div>
                             </div>
 
-                            <!-- Sub Categories -->
-                            @if($relevantSubCategories->count() > 0)
-                            <div class="mb-10 animate-fade-in">
+                            <!-- Sub Categories (Dynamic via Alpine) -->
+                            <div class="mb-10" x-show="selectedCategories.length > 0" x-transition>
                                 <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Sub Categories</h6>
                                 <div class="flex flex-col gap-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                    @foreach($relevantSubCategories as $sub)
-                                        <label class="flex items-center gap-3 cursor-pointer group custom-checkbox">
-                                            <input type="checkbox" name="subcategory[]" value="{{ $sub->slug }}" 
-                                                class="hidden peer"
-                                                {{ in_array($sub->slug, (array)request('subcategory')) ? 'checked' : '' }}>
-                                            <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
-                                                <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                            </div>
-                                            <span class="text-sm font-medium text-gray-600 group-hover:text-[#3d2b1f] transition-colors">{{ $sub->name }}</span>
-                                        </label>
+                                    @foreach($categories as $cat)
+                                        <div x-show="isCategorySelected('{{ $cat->slug }}')">
+                                            @foreach($cat->subCategories as $sub)
+                                                <label class="flex items-center gap-3 cursor-pointer group custom-checkbox mb-3">
+                                                    <input type="checkbox" name="subcategory[]" value="{{ $sub->slug }}" 
+                                                        class="hidden peer"
+                                                        {{ in_array($sub->slug, (array)request('subcategory')) ? 'checked' : '' }}>
+                                                    <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
+                                                        <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                    </div>
+                                                    <span class="text-sm font-medium text-gray-600 group-hover:text-[#3d2b1f] transition-colors">{{ $sub->name }}</span>
+                                                </label>
+                                            @endforeach
+                                        </div>
                                     @endforeach
                                 </div>
                             </div>
-                            @endif
 
                             <!-- Price Range -->
                             <div class="mb-10">
