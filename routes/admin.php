@@ -45,6 +45,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // CMS Routes
     Route::get('/cms/banners', [CmsController::class, 'banners'])->name('cms.banners.index');
     Route::post('/cms/banners', [CmsController::class, 'storeBanner'])->name('cms.banners.store');
+    Route::delete('/cms/banners/{banner}', [CmsController::class, 'deleteBanner'])->name('cms.banners.destroy');
     // AJAX Routes for dependent dropdowns
     Route::get('/get-subcategories/{category_id}', [ServiceController::class, 'getSubCategories']);
     Route::get('/get-equipment/{subcategory_id}', [ServiceController::class, 'getEquipment']);

@@ -26,10 +26,12 @@
                                     <span class="badge {{ $banner->is_active ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} px-3">
                                         {{ $banner->is_active ? 'Active' : 'Inactive' }}
                                     </span>
-                                    <form action="{{ route('admin.cms.banners.delete', $banner->id) }}" method="POST" onsubmit="return confirm('Delete this banner?')">
+                                    <form id="delete-form-{{ $banner->id }}" action="{{ route('admin.cms.banners.destroy', $banner->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-sm btn-light border rounded-pill px-3 text-danger">Delete</button>
+                                        <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $banner->id }})" title="Delete Banner">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </form>
                                 </div>
                             </div>
