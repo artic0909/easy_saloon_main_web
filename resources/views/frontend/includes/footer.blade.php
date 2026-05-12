@@ -35,7 +35,7 @@
                 <h6 class="text-xs font-black uppercase text-gray-400 mb-6 tracking-widest">Quick Links</h6>
                 <ul class="space-y-3 text-xs font-bold">
                     <li><a href="#" class="footer-link">Privacy Policy</a></li>
-                    <li><a href="#" class="footer-link">Blog</a></li>
+                    <li><a href="{{ route('blogs.index') }}" class="footer-link">Media Coverage</a></li>
                     <li><a href="#" class="footer-link">Offers</a></li>
                     <li><a href="#" class="footer-link">Contact Us</a></li>
                 </ul>
