@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
-    return view('frontend.index');
+    $achievements = \App\Models\Achievement::latest()->get();
+    $feedbacks = \App\Models\Feedback::latest()->get();
+    $blogs = \App\Models\Blog::latest()->get();
+    return view('frontend.index', compact('achievements', 'feedbacks', 'blogs'));
 })->name('home');
 
 Route::get('/services', function () {

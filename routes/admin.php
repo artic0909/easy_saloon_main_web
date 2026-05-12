@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\TrackingController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\EquipmentUseController;
 
@@ -46,6 +47,25 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/cms/banners', [CmsController::class, 'banners'])->name('cms.banners.index');
     Route::post('/cms/banners', [CmsController::class, 'storeBanner'])->name('cms.banners.store');
     Route::delete('/cms/banners/{banner}', [CmsController::class, 'deleteBanner'])->name('cms.banners.destroy');
+
+    // Profile Manage Routes
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/numbers', [ProfileController::class, 'numbers'])->name('numbers');
+        Route::post('/numbers', [ProfileController::class, 'storeNumber'])->name('numbers.store');
+        Route::put('/numbers/{achievement}', [ProfileController::class, 'updateNumber'])->name('numbers.update');
+        Route::delete('/numbers/{achievement}', [ProfileController::class, 'deleteNumber'])->name('numbers.destroy');
+
+        Route::get('/feedbacks', [ProfileController::class, 'feedbacks'])->name('feedbacks');
+        Route::post('/feedbacks', [ProfileController::class, 'storeFeedback'])->name('feedbacks.store');
+        Route::delete('/feedbacks/{feedback}', [ProfileController::class, 'deleteFeedback'])->name('feedbacks.destroy');
+
+        Route::get('/media-coverage', [ProfileController::class, 'mediaCoverage'])->name('media_coverage');
+        Route::post('/media-coverage', [ProfileController::class, 'storeMediaCoverage'])->name('media_coverage.store');
+        Route::delete('/media-coverage/{blog}', [ProfileController::class, 'deleteMediaCoverage'])->name('media_coverage.destroy');
+
+        Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
+        Route::post('/settings', [ProfileController::class, 'updateSettings'])->name('settings.update');
+    });
     // AJAX Routes for dependent dropdowns
     Route::get('/get-subcategories/{category_id}', [ServiceController::class, 'getSubCategories']);
     Route::get('/get-equipment/{subcategory_id}', [ServiceController::class, 'getEquipment']);

@@ -526,6 +526,26 @@
             </a>
         </div>
 
+        <div class="nav-section">
+            <p class="nav-label">Profile Manage</p>
+            <a href="{{ route('admin.profile.numbers') }}" class="nav-link {{ Route::is('admin.profile.numbers') ? 'active' : '' }}">
+                <i class="bi bi-hash"></i>
+                <span>Numbers</span>
+            </a>
+            <a href="{{ route('admin.profile.feedbacks') }}" class="nav-link {{ Route::is('admin.profile.feedbacks') ? 'active' : '' }}">
+                <i class="bi bi-chat-heart-fill"></i>
+                <span>Feedbacks</span>
+            </a>
+            <a href="{{ route('admin.profile.media_coverage') }}" class="nav-link {{ Route::is('admin.profile.media_coverage') ? 'active' : '' }}">
+                <i class="bi bi-newspaper"></i>
+                <span>Media Coverage</span>
+            </a>
+            <a href="{{ route('admin.profile.settings') }}" class="nav-link {{ Route::is('admin.profile.settings') ? 'active' : '' }}">
+                <i class="bi bi-person-gear"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
         <div class="mt-auto p-4">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
