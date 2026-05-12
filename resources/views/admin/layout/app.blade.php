@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     
     <style>
         :root {
@@ -526,6 +528,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -580,46 +584,68 @@
             outline: none;
         }
 
-        /* Multiple Selection */
+        /* Multiple Selection Chips Fix */
         .select2-container--default .select2-selection--multiple {
             background-color: #fff;
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 1rem;
-            padding: 5px 15px;
+            padding: 4px 12px;
             min-height: 52px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
             transition: all 0.3s ease;
         }
 
-        .select2-container--default.select2-container--focus .select2-selection--multiple {
-            border-color: var(--admin-accent);
-            box-shadow: 0 0 0 4px var(--admin-accent-glow);
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 0;
+            margin: 0;
+            width: 100%;
         }
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background: linear-gradient(135deg, var(--admin-accent), #a88d52);
-            border: none;
-            color: white;
-            border-radius: 0.6rem;
-            padding: 4px 12px;
-            margin-top: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            background: linear-gradient(135deg, var(--admin-accent), #a88d52) !important;
+            border: none !important;
+            color: white !important;
+            border-radius: 2rem !important;
+            padding: 4px 14px !important;
+            margin: 0 !important;
+            font-weight: 600 !important;
+            font-size: 0.8rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            box-shadow: 0 4px 10px rgba(198, 166, 100, 0.2);
         }
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-            color: white;
-            margin-right: 0;
-            border: none;
-            background: transparent;
-            font-weight: bold;
+            color: white !important;
+            margin: 0 !important;
+            border: none !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            width: 18px !important;
+            height: 18px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 10px !important;
+            order: 2;
         }
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-            background: transparent;
-            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.4) !important;
+            color: white !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+            margin: 0 !important;
+            padding: 8px 0 !important;
+            font-family: inherit;
         }
 
         /* Dropdown Design */

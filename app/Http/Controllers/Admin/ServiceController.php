@@ -39,10 +39,13 @@ class ServiceController extends Controller
             'sale_price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
             'details' => 'nullable|string',
+            'what_included' => 'nullable|array',
+            'what_included.*' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->except(['image', 'equipment']);
+        $data = $request->except(['image', 'equipment', 'what_included']);
+        $data['what_included'] = array_filter($request->what_included ?? []);
         $data['slug'] = Str::slug($request->name);
 
         if ($request->hasFile('image')) {
@@ -78,10 +81,13 @@ class ServiceController extends Controller
             'sale_price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
             'details' => 'nullable|string',
+            'what_included' => 'nullable|array',
+            'what_included.*' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->except(['image', 'equipment']);
+        $data = $request->except(['image', 'equipment', 'what_included']);
+        $data['what_included'] = array_filter($request->what_included ?? []);
         $data['slug'] = Str::slug($request->name);
 
         if ($request->hasFile('image')) {

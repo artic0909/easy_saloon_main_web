@@ -11,15 +11,19 @@ class Service extends Model
     protected $fillable = [
         'category_id',
         'sub_category_id',
-        'equipment_id',
         'name',
         'slug',
         'details',
+        'what_included',
         'original_price',
         'sale_price',
         'duration_minutes',
         'is_active',
         'image',
+    ];
+
+    protected $casts = [
+        'what_included' => 'array',
     ];
 
     public function category(): BelongsTo

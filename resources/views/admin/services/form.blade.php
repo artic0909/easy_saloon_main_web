@@ -79,8 +79,29 @@
                         </div>
 
                         <div class="col-md-12">
+                            <label class="form-label fw-bold">What Included?</label>
+                            <div id="what_included_container">
+                                @php
+                                    $what_included = old('what_included', $service->what_included ?? []);
+                                    if (empty($what_included)) $what_included = [''];
+                                @endphp
+                                @foreach($what_included as $item)
+                                    <div class="input-group mb-2 what-included-item">
+                                        <input type="text" name="what_included[]" class="form-control rounded-start-3" placeholder="Enter what is included..." value="{{ $item }}">
+                                        <button type="button" class="btn btn-outline-danger remove-field border">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-success add-field border">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
                             <label class="form-label fw-bold">Service Details</label>
-                            <textarea name="details" class="form-control rounded-3 py-2" rows="4">{{ old('details', $service->details ?? '') }}</textarea>
+                            <textarea name="details" id="details" class="form-control summernote rounded-3 py-2" rows="4">{{ old('details', $service->details ?? '') }}</textarea>
                         </div>
 
                         <div class="col-md-12">
@@ -109,6 +130,26 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
+        // Initialize Summernote
+        $('.summernote').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            callbacks: {
+                onInit: function() {
+                    $(this).next('.note-editor').addClass('rounded-4 overflow-hidden border-1');
+                }
+            }
+        });
+
+        // Dependent Dropdowns
         $('#category').on('change', function() {
             var category_id = $(this).val();
             if (category_id) {
@@ -141,7 +182,6 @@
                     dataType: "json",
                     success: function(data) {
                         $('#equipment').empty();
-                        $('#equipment').append('<option value=""></option>');
                         $.each(data, function(key, value) {
                             $('#equipment').append('<option value="' + value.id + '">' + value.name + '</option>');
                         });
@@ -150,8 +190,30 @@
                 });
             } else {
                 $('#equipment').empty();
-                $('#equipment').append('<option value=""></option>');
                 $('#equipment').trigger('change');
+            }
+        });
+
+        // Dynamic "What Included" fields
+        $(document).on('click', '.add-field', function() {
+            var html = `
+                <div class="input-group mb-2 what-included-item">
+                    <input type="text" name="what_included[]" class="form-control rounded-start-3" placeholder="Enter what is included...">
+                    <button type="button" class="btn btn-outline-danger remove-field border">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-success add-field border">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>`;
+            $('#what_included_container').append(html);
+        });
+
+        $(document).on('click', '.remove-field', function() {
+            if ($('.what-included-item').length > 1) {
+                $(this).closest('.what-included-item').remove();
+            } else {
+                $(this).closest('.what-included-item').find('input').val('');
             }
         });
     });
