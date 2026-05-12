@@ -14,7 +14,11 @@
                     @csrf
                     <div class="mb-4">
                         <label class="form-label fw-bold">Source / Headline</label>
-                        <input type="text" name="title" class="form-control rounded-3" placeholder="e.g. Times of India" required>
+                        <input type="text" name="title" class="form-control rounded-3" placeholder="e.g. India's most trusted home salon brand is here" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">News Paper / Category</label>
+                        <input type="text" name="category" class="form-control rounded-3" placeholder="e.g. News 18, The Economic Times">
                     </div>
                     <div class="mb-4">
                         <label class="form-label fw-bold">Thumbnail Image</label>

@@ -114,6 +114,7 @@ class ProfileController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'category' => 'nullable|string|max:255',
             'image' => 'required|image|max:2048',
             'description' => 'required|string',
         ]);
@@ -140,6 +141,7 @@ class ProfileController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'category' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:2048',
             'description' => 'required|string',
         ]);

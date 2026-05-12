@@ -29,6 +29,9 @@
                         </td>
                         <td>
                             <div class="fw-bold text-dark">{{ $blog->title }}</div>
+                            @if($blog->category)
+                                <div class="badge bg-light text-muted border px-2 py-1 mb-1" style="font-size: 10px;">{{ $blog->category }}</div>
+                            @endif
                             <div class="text-muted small">{!! Str::limit(strip_tags($blog->description), 50) !!}</div>
                         </td>
                         <td>{{ $blog->created_at->format('M d, Y') }}</td>

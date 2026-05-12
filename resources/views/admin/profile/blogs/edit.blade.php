@@ -18,6 +18,10 @@
                         <input type="text" name="title" class="form-control rounded-3" value="{{ $blog->title }}" required>
                     </div>
                     <div class="mb-4">
+                        <label class="form-label fw-bold">News Paper / Category</label>
+                        <input type="text" name="category" class="form-control rounded-3" value="{{ $blog->category }}" placeholder="e.g. News 18, The Economic Times">
+                    </div>
+                    <div class="mb-4">
                         <label class="form-label fw-bold">Thumbnail Image</label>
                         <div class="mb-2">
                             <img src="{{ asset('storage/' . $blog->image) }}" class="rounded-3 border" style="width: 150px;">
