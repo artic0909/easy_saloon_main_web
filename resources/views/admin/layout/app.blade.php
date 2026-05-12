@@ -449,6 +449,7 @@
             </div>
         </div>
 
+        @if(auth()->user()->role == 'admin')
         <div class="nav-section mt-4">
             <p class="nav-label">Core Dashboard</p>
             <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
@@ -545,6 +546,35 @@
                 <span>Settings</span>
             </a>
         </div>
+        @elseif(auth()->user()->role == 'staff')
+        <div class="nav-section mt-4">
+            <p class="nav-label">Main Menu</p>
+            <a href="{{ route('staff.dashboard') }}" class="nav-link {{ Route::is('staff.dashboard') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ route('staff.bookings.index') }}" class="nav-link {{ Route::is('staff.bookings.*') ? 'active' : '' }}">
+                <i class="bi bi-calendar2-check-fill"></i>
+                <span>My Bookings</span>
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <p class="nav-label">Operations</p>
+            <a href="{{ route('staff.location.index') }}" class="nav-link {{ Route::is('staff.location.*') ? 'active' : '' }}">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Live Tracking</span>
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <p class="nav-label">Account Settings</p>
+            <a href="{{ route('staff.profile.index') }}" class="nav-link {{ Route::is('staff.profile.*') ? 'active' : '' }}">
+                <i class="bi bi-person-badge"></i>
+                <span>My Profile</span>
+            </a>
+        </div>
+        @endif
 
         <div class="mt-auto p-4">
             <form action="{{ route('logout') }}" method="POST">
@@ -580,7 +610,7 @@
                     <div class="d-flex align-items-center gap-3 cursor-pointer" data-bs-toggle="dropdown">
                         <div class="text-end d-none d-sm-block">
                             <h6 class="mb-0 fw-bold">{{ auth()->user()->name }}</h6>
-                            <small class="text-muted text-uppercase fw-bold" style="font-size: 10px; letter-spacing: 1px;">Administrator</small>
+                            <small class="text-muted text-uppercase fw-bold" style="font-size: 10px; letter-spacing: 1px;">{{ auth()->user()->role == 'admin' ? 'Administrator' : 'Salon Staff' }}</small>
                         </div>
                         <div class="avatar-md bg-white border rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
                             {{ substr(auth()->user()->name, 0, 1) }}
@@ -605,7 +635,7 @@
                 <h2 class="fw-black mb-1">@yield('page_title', 'Dashboard Overview')</h2>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted small">Admin</a></li>
+                        <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted small">{{ auth()->user()->role == 'admin' ? 'Admin' : 'Staff' }}</a></li>
                         <li class="breadcrumb-item active small" aria-current="page">@yield('page_title', 'Dashboard')</li>
                     </ol>
                 </nav>
