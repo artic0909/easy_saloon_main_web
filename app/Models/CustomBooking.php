@@ -9,6 +9,8 @@ class CustomBooking extends Model
 {
     use HasFactory;
 
+    protected $appends = ['services'];
+
     protected $fillable = [
         'user_id',
         'booking_number',

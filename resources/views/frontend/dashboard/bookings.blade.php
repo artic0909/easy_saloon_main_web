@@ -44,12 +44,19 @@
                                             </div>
                                             <h4 class="text-lg md:text-xl font-bold text-[#3d2b1f] mb-4">
                                                 @php
-                                                    $mainItem = $booking->items->where('item_type', 'package')->first() ?? $booking->items->where('item_type', 'service')->first();
-                                                    $title = $mainItem ? ($mainItem->item_type == 'package' ? $mainItem->package->name : $mainItem->service->name) : 'Salon Service';
+                                                    $isCustom = isset($booking->service_ids);
+                                                    if ($isCustom) {
+                                                        $title = 'Custom Package';
+                                                        $serviceCount = count($booking->service_ids);
+                                                    } else {
+                                                        $mainItem = $booking->items->where('item_type', 'package')->first() ?? $booking->items->where('item_type', 'service')->first();
+                                                        $title = $mainItem ? ($mainItem->item_type == 'package' ? $mainItem->package->name : $mainItem->service->name) : 'Salon Service';
+                                                        $serviceCount = $booking->items->count();
+                                                    }
                                                 @endphp
                                                 {{ $title }}
-                                                @if($booking->items->count() > 1 && !$booking->items->where('item_type', 'package')->first())
-                                                    <span class="text-xs md:text-sm font-medium text-gray-400"> +{{ $booking->items->count() - 1 }} more</span>
+                                                @if($serviceCount > 1)
+                                                    <span class="text-xs md:text-sm font-medium text-gray-400"> +{{ $serviceCount - 1 }} more</span>
                                                 @endif
                                             </h4>
                                             <div class="flex flex-wrap justify-center sm:justify-start gap-4 md:gap-6">
@@ -70,7 +77,7 @@
                                                 {{ $booking->status == 'completed' ? 'bg-green-100 text-green-600' : ($booking->status == 'cancelled' ? 'bg-red-100 text-red-600' : 'bg-[#c6a664]/10 text-[#c6a664]') }}">
                                                 {{ $booking->status }}
                                             </span>
-                                            <h3 class="text-2xl md:text-3xl font-black text-[#3d2b1f] mt-3">₹{{ number_format($booking->payable_amount, 2) }}</h3>
+                                            <h3 class="text-2xl md:text-3xl font-black text-[#3d2b1f] mt-3">₹{{ number_format($booking->payable_amount ?? $booking->total_price, 2) }}</h3>
                                         </div>
                                         <div class="flex flex-wrap justify-center md:justify-end gap-3 w-full sm:w-auto">
                                             @if(in_array($booking->status, ['pending', 'confirmed']))
@@ -176,21 +183,21 @@
                     <div>
                         <div class="flex items-center justify-between mb-6 md:mb-8">
                             <h4 class="text-[10px] md:text-xs font-black text-[#3d2b1f] uppercase tracking-[0.2em]">Included Services</h4>
-                            <span class="text-[9px] md:text-[10px] font-bold text-gray-300" x-text="selectedBooking.items.length + ' Items'"></span>
+                            <span class="text-[9px] md:text-[10px] font-bold text-gray-300" x-text="(selectedBooking.items?.length || selectedBooking.services?.length || 0) + ' Items'"></span>
                         </div>
                         <div class="space-y-3 md:space-y-4">
-                            <template x-for="(item, index) in selectedBooking.items" :key="index">
+                            <template x-for="(item, index) in (selectedBooking.items || selectedBooking.services)" :key="index">
                                 <div class="relative group p-4 md:p-5 rounded-[1.5rem] md:rounded-[2rem] bg-white border border-gray-50 hover:border-[#c6a664]/20 hover:shadow-xl hover:shadow-gray-100/50 transition-all duration-300">
                                     <div class="flex justify-between items-center">
                                         <div class="flex items-center gap-4 md:gap-5">
                                             <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-[#fdfbf7] flex items-center justify-center text-[#c6a664] font-black text-[10px] md:text-xs" x-text="index + 1"></div>
                                             <div>
-                                                <p class="text-xs md:text-base font-bold text-[#3d2b1f] mb-0.5" x-text="item.package_id ? item.package.name : item.service.name"></p>
+                                                <p class="text-xs md:text-base font-bold text-[#3d2b1f] mb-0.5" x-text="item.package_id ? item.package.name : (item.service ? item.service.name : item.name)"></p>
                                                 <p class="text-[9px] md:text-[10px] text-gray-400 font-medium uppercase tracking-widest" x-text="item.package_id ? 'Curated Bundle' : 'Professional Service'"></p>
                                             </div>
                                         </div>
                                         <div class="text-right flex-shrink-0">
-                                            <p class="text-xs md:text-sm font-black text-[#3d2b1f]" x-text="item.price > 0 ? '₹' + parseFloat(item.price).toLocaleString() : 'Free'"></p>
+                                            <p class="text-xs md:text-sm font-black text-[#3d2b1f]" x-text="(item.price || item.sale_price) > 0 ? '₹' + parseFloat(item.price || item.sale_price).toLocaleString() : 'Free'"></p>
                                         </div>
                                     </div>
                                 </div>

@@ -17,10 +17,11 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $recentBookings = Booking::where('user_id', $user->id)
-            ->latest()
-            ->take(5)
-            ->get();
+        
+        $bookings = Booking::where('user_id', $user->id)->latest()->take(5)->get();
+        $customBookings = \App\Models\CustomBooking::where('user_id', $user->id)->latest()->take(5)->get();
+        
+        $recentBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->take(5);
             
         return view('frontend.dashboard.index', compact('user', 'recentBookings'));
     }
@@ -65,13 +66,22 @@ class DashboardController extends Controller
         $query = Booking::where('user_id', auth()->id())
             ->with(['staff', 'salon', 'items.service', 'items.package', 'address.city', 'address.state']);
 
+        $customQuery = \App\Models\CustomBooking::where('user_id', auth()->id())
+            ->with(['address.city', 'address.state']);
+
         if ($request->filter == 'upcoming') {
             $query->whereIn('status', ['pending', 'confirmed', 'accepted', 'on_the_way', 'started']);
+            $customQuery->whereIn('status', ['pending', 'confirmed', 'accepted', 'on_the_way', 'started']);
         } elseif ($request->filter == 'past') {
             $query->whereIn('status', ['completed', 'cancelled']);
+            $customQuery->whereIn('status', ['completed', 'cancelled']);
         }
 
         $bookings = $query->latest()->get();
+        $customBookings = $customQuery->latest()->get();
+
+        // Merge and sort
+        $bookings = $bookings->concat($customBookings)->sortByDesc('created_at');
             
         return view('frontend.dashboard.bookings', compact('bookings'));
     }
