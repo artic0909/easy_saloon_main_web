@@ -130,8 +130,11 @@
                             <div class="space-y-3 md:space-y-4 max-h-64 md:max-h-80 overflow-y-auto pr-2 md:pr-4 custom-scrollbar-white" x-show="selectedServices.length > 0">
                                 <template x-for="(service, index) in selectedServices" :key="service.id">
                                     <div class="bg-white/5 rounded-2xl md:rounded-3xl p-4 md:p-5 border border-white/5 flex items-center gap-4 md:gap-5 group animate-fade-in relative">
-                                        <button @click="removeService(index)" class="absolute -top-2 -right-2 w-7 h-7 bg-white text-[#3d2b1f] rounded-full flex items-center justify-center shadow-xl md:opacity-0 md:group-hover:opacity-100 transition-all hover:scale-110">
-                                            <i class="bi bi-x"></i>
+                                        <button @click="removeService(index)" 
+                                            class="absolute -top-2 -right-2 w-8 h-8 bg-white text-[#3d2b1f] rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.3)] z-20 group-hover:scale-110 transition-all border border-gray-100">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
                                         </button>
                                         <img :src="service.image" class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl object-cover shadow-2xl">
                                         <div class="flex-1 min-w-0">
@@ -165,10 +168,30 @@
                             <div>
                                 <div class="flex justify-between items-center mb-5 md:mb-6">
                                     <label class="text-white/30 text-[9px] md:text-[10px] font-black uppercase tracking-widest">Date & Slot</label>
-                                    <div class="flex items-center gap-2 text-[#c6a664]">
+                                    <div class="flex items-center gap-2 text-[#c6a664]" 
+                                        x-init="flatpickr($refs.datePicker, {
+                                            minDate: 'today',
+                                            defaultDate: 'today',
+                                            theme: 'dark',
+                                            dateFormat: 'Y-m-d',
+                                            onChange: (selectedDates, dateStr) => {
+                                                booking.date = dateStr;
+                                            }
+                                        })">
                                         <i class="bi bi-calendar3 text-[9px] md:text-[10px]"></i>
-                                        <input type="text" x-ref="datePicker" class="bg-transparent text-[11px] md:text-sm font-black border-none p-0 focus:ring-0 cursor-pointer text-right w-24 md:w-32">
+                                        <input type="text" x-ref="datePicker" readonly 
+                                            class="bg-transparent text-[#c6a664] text-[11px] md:text-sm font-black border-none p-0 focus:ring-0 cursor-pointer text-right w-24 md:w-32">
                                     </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <template x-for="date in [
+                                        { label: 'Today', value: '{{ date('Y-m-d') }}' },
+                                        { label: 'Tomorrow', value: '{{ date('Y-m-d', strtotime('+1 day')) }}' }
+                                    ]">
+                                        <button @click="booking.date = date.value; $refs.datePicker._flatpickr.setDate(date.value)" 
+                                            :class="booking.date === date.value ? 'bg-[#c6a664] text-white shadow-xl' : 'bg-white/5 text-white/40 hover:bg-white/10'" 
+                                            class="py-3 rounded-2xl text-[8px] md:text-[9px] font-black uppercase tracking-widest transition-all" x-text="date.label"></button>
+                                    </template>
                                 </div>
                                 <div class="grid grid-cols-3 gap-2">
                                     <template x-for="slot in ['Morning', 'Afternoon', 'Evening']">
@@ -267,17 +290,94 @@
     .flatpickr-calendar {
         background: #3d2b1f !important;
         border: 1px solid rgba(198, 166, 100, 0.3) !important;
-        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8) !important;
-        border-radius: 3rem !important;
-        padding: 20px !important;
-        width: 320px !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+        border-radius: 2rem !important;
+        padding: 15px !important;
+        width: 300px !important;
         font-family: 'Outfit', sans-serif !important;
         z-index: 9999 !important;
     }
-    .flatpickr-day.selected { background: #c6a664 !important; border: none !important; border-radius: 15px !important; }
-    .flatpickr-day:hover { background: rgba(198, 166, 100, 0.2) !important; border-radius: 15px !important; }
-    .flatpickr-month { color: #c6a664 !important; fill: #c6a664 !important; }
-    .flatpickr-current-month { font-weight: 900 !important; }
+    .flatpickr-months {
+        margin-bottom: 10px !important;
+    }
+    .flatpickr-months .flatpickr-month {
+        background: transparent !important;
+        color: #c6a664 !important;
+        fill: #c6a664 !important;
+        height: 60px !important;
+    }
+    .flatpickr-current-month {
+        font-size: 1.2rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        width: 100% !important;
+        left: 0 !important;
+    }
+    .flatpickr-monthDropdown-months {
+        font-weight: 800 !important;
+        padding: 0 !important;
+        margin-bottom: -5px !important;
+    }
+    .numInputWrapper {
+        width: 6ch !important;
+        display: inline-block !important;
+    }
+    .numInputWrapper input.cur-year {
+        font-weight: 800 !important;
+        color: #c6a664 !important;
+        padding: 0 !important;
+    }
+    .flatpickr-weekday {
+        color: rgba(198, 166, 100, 0.5) !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        font-size: 0.7rem !important;
+    }
+    .flatpickr-day {
+        color: white !important;
+        border-radius: 12px !important;
+        border: none !important;
+        font-weight: 500 !important;
+        height: 35px !important;
+        line-height: 35px !important;
+        margin: 2px !important;
+    }
+    .flatpickr-day:hover {
+        background: rgba(198, 166, 100, 0.2) !important;
+    }
+    .flatpickr-day.selected, .flatpickr-day.selected:hover {
+        background: #c6a664 !important;
+        color: #3d2b1f !important;
+        box-shadow: 0 4px 15px rgba(198, 166, 100, 0.4) !important;
+        font-weight: 900 !important;
+    }
+    .flatpickr-day.today {
+        border: 1px solid #c6a664 !important;
+    }
+    .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover {
+        color: rgba(255, 255, 255, 0.05) !important;
+        background: transparent !important;
+    }
+    .flatpickr-prev-month, .flatpickr-next-month {
+        color: #c6a664 !important;
+        fill: #c6a664 !important;
+        padding: 10px !important;
+    }
+    
+    @media (max-width: 450px) {
+        .flatpickr-calendar {
+            width: 280px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+        }
+    }
 
     @keyframes fade-in {
         from { opacity: 0; transform: translateY(20px); }
@@ -302,15 +402,7 @@
             },
 
             init() {
-                flatpickr(this.$refs.datePicker, {
-                    minDate: 'today',
-                    defaultDate: 'today',
-                    theme: 'dark',
-                    dateFormat: 'Y-m-d',
-                    onChange: (selectedDates, dateStr) => {
-                        this.booking.date = dateStr;
-                    }
-                });
+                // Flatpickr is now handled by x-init on the element to match service page exactly
             },
 
             scrollToBooking() {
