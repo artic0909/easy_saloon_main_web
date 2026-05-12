@@ -39,7 +39,18 @@
 
             <!-- Right: Booking Widget -->
             <div class="w-full lg:w-[450px]">
-                <div class="bg-[#3d2b1f] rounded-[3rem] p-10 md:p-12 shadow-2xl sticky top-40" x-data="{ serviceType: 'home' }">
+                <div class="bg-[#3d2b1f] rounded-[3rem] p-10 md:p-12 shadow-2xl sticky top-40" 
+                    x-data="{ 
+                        serviceType: 'home',
+                        selectedEquipments: [],
+                        toggleEquipment(name) {
+                            if (this.selectedEquipments.includes(name)) {
+                                this.selectedEquipments = this.selectedEquipments.filter(e => e !== name);
+                            } else {
+                                this.selectedEquipments.push(name);
+                            }
+                        }
+                    }">
                     <!-- Price & Duration -->
                     <div class="flex justify-between items-end mb-10 pb-8 border-b border-white/10">
                         <div>
@@ -59,15 +70,37 @@
                     <div class="mb-10">
                         <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Choose Service Location</p>
                         <div class="grid grid-cols-2 gap-4">
-                            <button @click="serviceType = 'home'" :class="serviceType === 'home' ? 'bg-[#c6a664] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'" class="py-4 rounded-2xl font-bold text-sm transition-all flex flex-col items-center gap-2">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            <button @click="serviceType = 'home'" :class="serviceType === 'home' ? 'bg-[#c6a664] text-white shadow-lg' : 'bg-white/5 text-white/60 hover:bg-white/10'" class="py-5 rounded-3xl font-bold text-sm transition-all flex flex-col items-center gap-3 group">
+                                <svg class="w-7 h-7" :class="serviceType === 'home' ? 'text-white' : 'text-white/40 group-hover:text-white/60'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                                 At Home
                             </button>
-                            <button @click="serviceType = 'salon'" :class="serviceType === 'salon' ? 'bg-[#c6a664] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'" class="py-4 rounded-2xl font-bold text-sm transition-all flex flex-col items-center gap-2">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <button @click="serviceType = 'salon'" :class="serviceType === 'salon' ? 'bg-[#c6a664] text-white shadow-lg' : 'bg-white/5 text-white/60 hover:bg-white/10'" class="py-5 rounded-3xl font-bold text-sm transition-all flex flex-col items-center gap-3 group">
+                                <svg class="w-7 h-7" :class="serviceType === 'salon' ? 'text-white' : 'text-white/40 group-hover:text-white/60'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                                 At Salon
                             </button>
                         </div>
+                    </div>
+
+                    <!-- Equipment Selection (Service-wise) -->
+                    <div class="mb-10 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                        <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Required Equipments (Optional)</p>
+                        @foreach($package->items as $item)
+                            @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
+                                <div class="mb-6 last:mb-0">
+                                    <p class="text-white/60 text-[10px] font-bold mb-3 border-l-2 border-[#c6a664] pl-2 uppercase tracking-wide">{{ $item->service->name }}</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach($item->service->subCategory->equipment as $eq)
+                                            <button type="button" 
+                                                @click="toggleEquipment('{{ $eq->name }}')"
+                                                :class="selectedEquipments.includes('{{ $eq->name }}') ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/40 border-white/10 hover:border-white/30'"
+                                                class="px-3 py-1.5 rounded-xl text-[9px] font-bold border transition-all">
+                                                {{ $eq->name }}
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
 
                     <!-- Date & Time Slot -->
@@ -96,6 +129,7 @@
                             <input type="hidden" name="type" :value="serviceType">
                             <input type="hidden" name="date" :value="selectedDate">
                             <input type="hidden" name="slot" :value="selectedSlot">
+                            <input type="hidden" name="equipment" :value="JSON.stringify(selectedEquipments)">
                         </form>
                     </div>
 
