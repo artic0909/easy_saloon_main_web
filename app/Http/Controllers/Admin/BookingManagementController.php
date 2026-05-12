@@ -11,9 +11,39 @@ use App\Notifications\BookingStatusNotification;
 
 class BookingManagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::with(['user', 'staff', 'items'])->latest()->paginate(10);
+        $query = Booking::with(['user', 'staff', 'items']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  })
+                  ->orWhereHas('staff', function($sq) use ($search) {
+                      $sq->where('name', 'like', "%$search%");
+                  });
+            });
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('booking_date', $request->date);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $bookings = $query->latest()->get();
+        } else {
+            $bookings = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.bookings.index', compact('bookings'));
     }
 

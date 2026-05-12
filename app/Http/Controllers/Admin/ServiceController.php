@@ -13,9 +13,29 @@ use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $services = Service::with(['category', 'subCategory'])->latest()->paginate(10);
+        $query = Service::with(['category', 'subCategory']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('details', 'like', "%$search%");
+            });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $services = $query->latest()->get();
+        } else {
+            $services = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.services.index', compact('services'));
     }
 

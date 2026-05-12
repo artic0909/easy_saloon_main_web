@@ -648,7 +648,42 @@
             font-family: inherit;
         }
 
-        /* Dropdown Design */
+        /* Pagination Styling */
+        .pagination {
+            gap: 5px;
+        }
+
+        .page-link {
+            border-radius: 50% !important;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--admin-accent);
+            border: 1px solid rgba(198, 166, 100, 0.2);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--admin-accent);
+            border-color: var(--admin-accent);
+            color: white;
+            box-shadow: 0 4px 10px var(--admin-accent-glow);
+        }
+
+        .page-link:hover {
+            background-color: var(--admin-accent-glow);
+            color: var(--admin-accent);
+            border-color: var(--admin-accent);
+        }
+
+        .page-item.disabled .page-link {
+            background-color: transparent;
+            border-color: rgba(0,0,0,0.05);
+            color: #ccc;
+        }
         .select2-dropdown {
             border: none;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);

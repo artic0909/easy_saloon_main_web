@@ -4,8 +4,54 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
-        <h5 class="fw-bold mb-0">All Appointments</h5>
+    <div class="card-header bg-white py-3">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h5 class="fw-bold mb-0">All Appointments</h5>
+        </div>
+        
+        <!-- Filters Area -->
+        <form action="{{ route('admin.bookings.index') }}" method="GET" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted">Search Booking</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Number, Customer or Staff..." value="{{ request('search') }}">
+                </div>
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted">Filter Date</label>
+                <input type="date" name="date" class="form-control" value="{{ request('date') }}">
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted">Show Rows</label>
+                <select name="per_page" class="form-select">
+                    @foreach([10, 20, 50, 100] as $num)
+                        <option value="{{ $num }}" {{ request('per_page') == $num ? 'selected' : '' }}>{{ $num }} Rows</option>
+                    @endforeach
+                    <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>Show All</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-light border w-100"><i class="bi bi-arrow-counterclockwise"></i></a>
+                </div>
+            </div>
+        </form>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

@@ -9,9 +9,26 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('role', 'user')->latest()->paginate(10);
+        $query = User::where('role', 'user');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhere('phone', 'like', "%$search%");
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $users = $query->latest()->get();
+        } else {
+            $users = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.users.index', compact('users'));
     }
 

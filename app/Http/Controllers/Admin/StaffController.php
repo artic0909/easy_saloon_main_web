@@ -12,9 +12,27 @@ use DB;
 
 class StaffController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $staffMembers = User::where('role', 'staff')->latest()->paginate(10);
+        $query = User::where('role', 'staff');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhere('phone', 'like', "%$search%")
+                  ->orWhere('designation', 'like', "%$search%");
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $staffMembers = $query->latest()->get();
+        } else {
+            $staffMembers = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.staff.index', compact('staffMembers'));
     }
 

@@ -8,9 +8,21 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::latest()->paginate(10);
+        $query = Category::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $perPage = $request->get('per_page', 10);
+        if ($perPage == 'all') {
+            $categories = $query->latest()->get();
+        } else {
+            $categories = $query->latest()->paginate($perPage)->withQueryString();
+        }
+
         return view('admin.categories.index', compact('categories'));
     }
 
