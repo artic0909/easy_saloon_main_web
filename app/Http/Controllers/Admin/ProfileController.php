@@ -54,8 +54,13 @@ class ProfileController extends Controller
     // Feedbacks
     public function feedbacks()
     {
-        $feedbacks = Feedback::latest()->get();
-        return view('admin.profile.feedbacks', compact('feedbacks'));
+        $feedbacks = Feedback::latest()->paginate(10);
+        return view('admin.profile.feedbacks.index', compact('feedbacks'));
+    }
+
+    public function createFeedback()
+    {
+        return view('admin.profile.feedbacks.create');
     }
 
     public function storeFeedback(Request $request)
@@ -67,7 +72,24 @@ class ProfileController extends Controller
         ]);
 
         Feedback::create($validated);
-        return back()->with('success', 'Feedback added successfully.');
+        return redirect()->route('admin.profile.feedbacks')->with('success', 'Feedback added successfully.');
+    }
+
+    public function editFeedback(Feedback $feedback)
+    {
+        return view('admin.profile.feedbacks.edit', compact('feedback'));
+    }
+
+    public function updateFeedback(Request $request, Feedback $feedback)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'stars' => 'required|integer|min:1|max:5',
+            'description' => 'required|string',
+        ]);
+
+        $feedback->update($validated);
+        return redirect()->route('admin.profile.feedbacks')->with('success', 'Feedback updated successfully.');
     }
 
     public function deleteFeedback(Feedback $feedback)
@@ -79,8 +101,13 @@ class ProfileController extends Controller
     // Media Coverage (Blogs)
     public function mediaCoverage()
     {
-        $blogs = Blog::latest()->get();
-        return view('admin.profile.medica-coverage', compact('blogs'));
+        $blogs = Blog::latest()->paginate(10);
+        return view('admin.profile.blogs.index', compact('blogs'));
+    }
+
+    public function createBlog()
+    {
+        return view('admin.profile.blogs.create');
     }
 
     public function storeMediaCoverage(Request $request)
@@ -96,7 +123,36 @@ class ProfileController extends Controller
         }
 
         Blog::create($validated);
-        return back()->with('success', 'Media coverage added successfully.');
+        return redirect()->route('admin.profile.media_coverage')->with('success', 'Media coverage added successfully.');
+    }
+
+    public function showBlog(Blog $blog)
+    {
+        return view('admin.profile.blogs.view', compact('blog'));
+    }
+
+    public function editBlog(Blog $blog)
+    {
+        return view('admin.profile.blogs.edit', compact('blog'));
+    }
+
+    public function updateMediaCoverage(Request $request, Blog $blog)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
+            'description' => 'required|string',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($blog->image) {
+                Storage::disk('public')->delete($blog->image);
+            }
+            $validated['image'] = $request->file('image')->store('blogs', 'public');
+        }
+
+        $blog->update($validated);
+        return redirect()->route('admin.profile.media_coverage')->with('success', 'Media coverage updated successfully.');
     }
 
     public function deleteMediaCoverage(Blog $blog)

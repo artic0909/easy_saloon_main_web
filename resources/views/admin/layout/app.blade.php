@@ -532,11 +532,11 @@
                 <i class="bi bi-hash"></i>
                 <span>Numbers</span>
             </a>
-            <a href="{{ route('admin.profile.feedbacks') }}" class="nav-link {{ Route::is('admin.profile.feedbacks') ? 'active' : '' }}">
+            <a href="{{ route('admin.profile.feedbacks') }}" class="nav-link {{ Route::is('admin.profile.feedbacks*') ? 'active' : '' }}">
                 <i class="bi bi-chat-heart-fill"></i>
                 <span>Feedbacks</span>
             </a>
-            <a href="{{ route('admin.profile.media_coverage') }}" class="nav-link {{ Route::is('admin.profile.media_coverage') ? 'active' : '' }}">
+            <a href="{{ route('admin.profile.media_coverage') }}" class="nav-link {{ Route::is('admin.profile.media_coverage*') ? 'active' : '' }}">
                 <i class="bi bi-newspaper"></i>
                 <span>Media Coverage</span>
             </a>

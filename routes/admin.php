@@ -56,11 +56,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/numbers/{achievement}', [ProfileController::class, 'deleteNumber'])->name('numbers.destroy');
 
         Route::get('/feedbacks', [ProfileController::class, 'feedbacks'])->name('feedbacks');
+        Route::get('/feedbacks/create', [ProfileController::class, 'createFeedback'])->name('feedbacks.create');
         Route::post('/feedbacks', [ProfileController::class, 'storeFeedback'])->name('feedbacks.store');
+        Route::get('/feedbacks/{feedback}/edit', [ProfileController::class, 'editFeedback'])->name('feedbacks.edit');
+        Route::put('/feedbacks/{feedback}', [ProfileController::class, 'updateFeedback'])->name('feedbacks.update');
         Route::delete('/feedbacks/{feedback}', [ProfileController::class, 'deleteFeedback'])->name('feedbacks.destroy');
 
         Route::get('/media-coverage', [ProfileController::class, 'mediaCoverage'])->name('media_coverage');
+        Route::get('/media-coverage/create', [ProfileController::class, 'createBlog'])->name('media_coverage.create');
         Route::post('/media-coverage', [ProfileController::class, 'storeMediaCoverage'])->name('media_coverage.store');
+        Route::get('/media-coverage/{blog}', [ProfileController::class, 'showBlog'])->name('media_coverage.show');
+        Route::get('/media-coverage/{blog}/edit', [ProfileController::class, 'editBlog'])->name('media_coverage.edit');
+        Route::put('/media-coverage/{blog}', [ProfileController::class, 'updateMediaCoverage'])->name('media_coverage.update');
         Route::delete('/media-coverage/{blog}', [ProfileController::class, 'deleteMediaCoverage'])->name('media_coverage.destroy');
 
         Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
