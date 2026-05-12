@@ -74,4 +74,10 @@ class ServiceListingController extends Controller
 
         return view('frontend.services.index', compact('services', 'categories', 'relevantSubCategories'));
     }
+
+    public function show($slug)
+    {
+        $service = Service::where('slug', $slug)->with('category')->firstOrFail();
+        return view('frontend.services.show', compact('service'));
+    }
 }

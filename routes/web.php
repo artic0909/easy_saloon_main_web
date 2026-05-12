@@ -7,9 +7,7 @@ Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('h
 
 Route::get('/services', [App\Http\Controllers\Frontend\ServiceListingController::class, 'index'])->name('services.index');
 
-Route::get('/services/{slug}', function ($slug) {
-    return view('frontend.services.show', ['slug' => $slug]);
-})->name('services.show');
+Route::get('/services/{slug}', [App\Http\Controllers\Frontend\ServiceListingController::class, 'show'])->name('services.show');
 
 Route::get('/packages', function () {
     return view('frontend.packages.index');
