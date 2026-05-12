@@ -101,9 +101,15 @@
                         </td>
                         <td>
                             <div class="text-dark small">
-                                @foreach($booking->items as $item)
-                                    {{ $item->service->name ?? 'Deleted Service' }}{{ !$loop->last ? ', ' : '' }}
-                                @endforeach
+                                @if($booking instanceof \App\Models\CustomBooking)
+                                    @foreach($booking->services as $service)
+                                        {{ $service->name }}{{ !$loop->last ? ', ' : '' }}
+                                    @endforeach
+                                @else
+                                    @foreach($booking->items as $item)
+                                        {{ $item->service->name ?? 'Deleted Service' }}{{ !$loop->last ? ', ' : '' }}
+                                    @endforeach
+                                @endif
                             </div>
                         </td>
                         <td>
@@ -123,9 +129,15 @@
                             @endif
                         </td>
                         <td class="text-end pe-4">
-                            <a href="{{ route('staff.bookings.show', $booking->id) }}" class="btn btn-action btn-view" title="View Details">
-                                <i class="bi bi-eye"></i>
-                            </a>
+                            @if($booking instanceof \App\Models\CustomBooking)
+                                <a href="{{ route('staff.custom_bookings.show', $booking->id) }}" class="btn btn-action btn-view" title="View Custom Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            @else
+                                <a href="{{ route('staff.bookings.show', $booking->id) }}" class="btn btn-action btn-view" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            @endif
                         </td>
                     </tr>
                     @empty

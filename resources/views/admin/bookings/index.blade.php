@@ -108,7 +108,11 @@
                             </span>
                         </td>
                         <td class="px-4 text-end">
-                            <a href="{{ route('admin.bookings.show', $booking->id) }}" class="btn btn-sm btn-primary rounded-pill px-3">Manage</a>
+                            @if($booking instanceof \App\Models\CustomBooking)
+                                <a href="{{ route('admin.custom_bookings.show', $booking->id) }}" class="btn btn-sm btn-info text-white rounded-pill px-3">Manage Custom</a>
+                            @else
+                                <a href="{{ route('admin.bookings.show', $booking->id) }}" class="btn btn-sm btn-primary rounded-pill px-3">Manage</a>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

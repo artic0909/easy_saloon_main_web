@@ -13,6 +13,10 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.status');
+
+    // Custom Bookings
+    Route::get('/custom-bookings/{id}', [BookingController::class, 'customShow'])->name('custom_bookings.show');
+    Route::post('/custom-bookings/{id}/status', [BookingController::class, 'customUpdateStatus'])->name('custom_bookings.status');
     
     // Profile Management
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

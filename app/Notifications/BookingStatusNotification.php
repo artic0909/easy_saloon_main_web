@@ -28,10 +28,10 @@ class BookingStatusNotification extends Notification
     public function toArray($notifiable): array
     {
         $messages = [
-            'confirmed' => 'Your booking #ES-' . $this->booking->id . ' has been confirmed!',
-            'completed' => 'Your service for booking #ES-' . $this->booking->id . ' is complete. We hope you enjoyed it!',
-            'cancelled' => 'Your booking #ES-' . $this->booking->id . ' has been cancelled.',
-            'assigned' => 'A staff member has been assigned to your booking #ES-' . $this->booking->id . '.',
+            'confirmed' => 'Your booking #' . $this->booking->booking_number . ' has been confirmed!',
+            'completed' => 'Your service for booking #' . $this->booking->booking_number . ' is complete. We hope you enjoyed it!',
+            'cancelled' => 'Your booking #' . $this->booking->booking_number . ' has been cancelled.',
+            'assigned' => 'A staff member has been assigned to your booking #' . $this->booking->booking_number . '.',
         ];
 
         return [

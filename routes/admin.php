@@ -38,6 +38,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/bookings/{booking}/status', [BookingManagementController::class, 'updateStatus'])->name('bookings.status');
     Route::delete('/bookings/{booking}', [BookingManagementController::class, 'destroy'])->name('bookings.destroy');
 
+    // Custom Bookings Management
+    Route::get('/custom-bookings/{booking}', [BookingManagementController::class, 'customShow'])->name('custom_bookings.show');
+    Route::post('/custom-bookings/{booking}/assign', [BookingManagementController::class, 'customAssignStaff'])->name('custom_bookings.assign');
+    Route::patch('/custom-bookings/{booking}/status', [BookingManagementController::class, 'customUpdateStatus'])->name('custom_bookings.status');
+    Route::delete('/custom-bookings/{booking}', [BookingManagementController::class, 'customDestroy'])->name('custom_bookings.destroy');
+
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
     // Tracking

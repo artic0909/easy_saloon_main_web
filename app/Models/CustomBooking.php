@@ -42,8 +42,18 @@ class CustomBooking extends Model
         return $this->belongsTo(Address::class);
     }
 
+    public function staff()
+    {
+        return $this->belongsTo(User::class, 'staff_id');
+    }
+
     public function getServicesAttribute()
     {
         return Service::whereIn('id', $this->service_ids)->get();
+    }
+
+    public function getTypeAttribute()
+    {
+        return 'Custom Package';
     }
 }
