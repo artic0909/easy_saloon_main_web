@@ -35,14 +35,26 @@
                             </div>
                         </div>
                         
+                        <div class="mb-6">
+                            <p class="text-white/60 text-xs md:text-sm leading-relaxed line-clamp-2">
+                                {{ Str::limit(strip_tags($package->details), 80) }}
+                            </p>
+                        </div>
+
                         <div class="mb-10">
                             <ul class="space-y-3">
-                                @foreach($package->items as $item)
+                                @foreach($package->items->take(3) as $item)
                                     <li class="flex items-center gap-3">
                                         <div class="w-1.5 h-1.5 bg-[#c6a664] rounded-full shadow-[0_0_8px_#c6a664]"></div>
                                         <span class="text-xs md:text-sm font-bold text-white tracking-wide">{{ $item->service->name }}</span>
                                     </li>
                                 @endforeach
+                                @if($package->items->count() > 3)
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-1.5 h-1.5 bg-[#c6a664] rounded-full shadow-[0_0_8px_#c6a664]"></div>
+                                        <span class="text-xs md:text-sm font-bold text-white tracking-wide">& {{ $package->items->count() - 3 }} More Services</span>
+                                    </li>
+                                @endif
                             </ul>
                         </div>
 

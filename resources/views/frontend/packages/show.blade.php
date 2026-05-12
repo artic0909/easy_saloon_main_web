@@ -13,9 +13,9 @@
                     <h1 class="text-4xl md:text-6xl font-black text-[#3d2b1f] leading-tight mb-6" style="font-family: 'Playfair Display', serif;">
                         {{ $package->name }}
                     </h1>
-                    <p class="text-gray-500 text-lg md:text-xl leading-relaxed max-w-2xl">
-                        {{ $package->details }}
-                    </p>
+                    <div class="text-gray-500 text-lg md:text-xl leading-relaxed max-w-2xl prose prose-slate">
+                        {!! $package->details !!}
+                    </div>
                 </div>
 
                 <!-- Included Services -->
