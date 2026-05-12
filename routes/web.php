@@ -10,10 +10,10 @@ Route::get('/services', [App\Http\Controllers\Frontend\ServiceListingController:
 Route::get('/services/{slug}', [App\Http\Controllers\Frontend\ServiceListingController::class, 'show'])->name('services.show');
 
 Route::get('/packages', [App\Http\Controllers\Frontend\PackageListingController::class, 'index'])->name('packages.index');
-Route::get('/packages/{slug}', [App\Http\Controllers\Frontend\PackageListingController::class, 'show'])->name('packages.show');
 
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
+    Route::get('/packages/custom-package', [App\Http\Controllers\Frontend\PackageListingController::class, 'customPackage'])->name('packages.custom');
     Route::get('/checkout', [App\Http\Controllers\BookingController::class, 'checkout'])->name('checkout');
     Route::post('/booking/confirm', [App\Http\Controllers\BookingController::class, 'confirm'])->name('booking.confirm');
     Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
@@ -34,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/notifications/read-all', [App\Http\Controllers\Dashboard\NotificationController::class, 'markAllAsRead'])->name('dashboard.notifications.read-all');
     });
 });
+
+Route::get('/packages/{slug}', [App\Http\Controllers\Frontend\PackageListingController::class, 'show'])->name('packages.show');
 
 // Guest Routes
 Route::middleware('guest')->group(function () {

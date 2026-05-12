@@ -19,4 +19,15 @@ class PackageListingController extends Controller
         $package = Package::where('slug', $slug)->with('items.service')->firstOrFail();
         return view('frontend.packages.show', compact('package'));
     }
+
+    public function customPackage()
+    {
+        $categories = \App\Models\Category::where('is_active', true)
+            ->with(['services' => function($query) {
+                $query->where('is_active', true)->with('subCategory.equipment');
+            }])
+            ->get();
+            
+        return view('frontend.packages.custom-package', compact('categories'));
+    }
 }
