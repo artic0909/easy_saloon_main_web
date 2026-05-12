@@ -36,6 +36,19 @@
                         </div>
                     </div>
                     @endif
+
+                    @if($booking->equipment && count($booking->equipment) > 0)
+                    <div class="col-12">
+                        <label class="small text-muted text-uppercase fw-bold tracking-widest">Equipments Required</label>
+                        <div class="mt-2 d-flex flex-wrap gap-2">
+                            @foreach($booking->equipment as $item)
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-2 rounded-pill">
+                                    <i class="bi bi-tools me-2"></i>{{ $item }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

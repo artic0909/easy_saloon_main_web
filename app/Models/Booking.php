@@ -21,7 +21,14 @@ class Booking extends Model
         'is_paid',
         'payment_type',
         'address_id',
-        'cancellation_reason'
+        'cancellation_reason',
+        'equipment'
+    ];
+
+    protected $casts = [
+        'equipment' => 'array',
+        'booking_date' => 'date',
+        'is_paid' => 'boolean'
     ];
 
     public function items()

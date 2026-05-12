@@ -16,6 +16,7 @@ class BookingController extends Controller
         $type = $request->type ?? 'home';
         $date = $request->date;
         $slot = $request->slot;
+        $equipment = $request->equipment ? json_decode($request->equipment, true) : [];
         
         $item = null;
         if ($request->has('service_id')) {
@@ -33,7 +34,7 @@ class BookingController extends Controller
             $userAddresses = Address::where('user_id', auth()->id())->with(['city', 'state', 'country'])->get();
         }
 
-        return view('frontend.checkout', compact('item', 'itemType', 'type', 'date', 'slot', 'userAddresses'));
+        return view('frontend.checkout', compact('item', 'itemType', 'type', 'date', 'slot', 'userAddresses', 'equipment'));
     }
 
     public function confirm(Request $request)
@@ -58,6 +59,11 @@ class BookingController extends Controller
         $booking->time_slot = $request->slot;
         $booking->service_type = $request->service_type == 'salon' ? 'salon_visit' : 'home';
         $booking->status = 'pending';
+        
+        // Handle equipment storage
+        if ($request->has('equipment')) {
+            $booking->equipment = is_array($request->equipment) ? $request->equipment : json_decode($request->equipment, true);
+        }
         
         if ($request->item_type == 'service') {
             $service = Service::findOrFail($request->item_id);

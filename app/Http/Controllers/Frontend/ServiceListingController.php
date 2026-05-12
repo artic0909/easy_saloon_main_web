@@ -77,7 +77,7 @@ class ServiceListingController extends Controller
 
     public function show($slug)
     {
-        $service = Service::where('slug', $slug)->with('category')->firstOrFail();
+        $service = Service::where('slug', $slug)->with(['category', 'subCategory.equipment'])->firstOrFail();
         return view('frontend.services.show', compact('service'));
     }
 }

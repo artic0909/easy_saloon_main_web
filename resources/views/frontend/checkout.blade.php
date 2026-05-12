@@ -20,20 +20,36 @@
                         <div class="flex-1 text-center sm:text-left">
                             <span class="text-[10px] font-black text-[#c6a664] uppercase tracking-widest mb-2 inline-block">{{ ucfirst($itemType) }} Selected</span>
                             <h2 class="text-2xl md:text-3xl font-bold text-[#3d2b1f] mb-4" style="font-family: 'Playfair Display', serif;">{{ $item->name }}</h2>
-                            <div class="flex flex-wrap justify-center sm:justify-start gap-6">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            
+                            <div class="grid sm:grid-cols-2 gap-4 mb-6">
+                                <div class="flex items-center gap-3 bg-[#fdfbf7] p-3 rounded-2xl">
+                                    <svg class="w-4 h-4 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     <span class="text-xs font-bold text-[#3d2b1f]">{{ \Carbon\Carbon::parse($date)->format('D, d M Y') }}</span>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <div class="flex items-center gap-3 bg-[#fdfbf7] p-3 rounded-2xl">
+                                    <svg class="w-4 h-4 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     <span class="text-xs font-bold text-[#3d2b1f]">{{ $slot }}</span>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                <div class="flex items-center gap-3 bg-[#fdfbf7] p-3 rounded-2xl">
+                                    <svg class="w-4 h-4 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                                     <span class="text-xs font-bold text-[#3d2b1f]">{{ $type == 'home' ? 'Home Service' : 'Salon Visit' }}</span>
                                 </div>
+                                <div class="flex items-center gap-3 bg-[#fdfbf7] p-3 rounded-2xl">
+                                    <svg class="w-4 h-4 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="text-xs font-bold text-[#3d2b1f]">{{ $item->duration_minutes }} Mins</span>
+                                </div>
                             </div>
+
+                            @if(!empty($equipment))
+                                <div class="mt-4">
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Selected Equipment</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach($equipment as $eq)
+                                            <span class="bg-[#3d2b1f] text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-sm">{{ $eq }}</span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -156,6 +172,7 @@
         formData.append('service_type', type);
         formData.append('date', '{{ $date }}');
         formData.append('slot', '{{ $slot }}');
+        formData.append('equipment', '{{ json_encode($equipment) }}');
         if (addressId) formData.append('address_id', addressId);
 
         fetch('{{ route("booking.confirm") }}', {

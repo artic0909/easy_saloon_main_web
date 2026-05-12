@@ -89,7 +89,17 @@
 
             <!-- Right: Booking Widget -->
             <div class="lg:col-span-5">
-                <div class="bg-[#3d2b1f] rounded-[3rem] p-10 shadow-2xl sticky top-32" x-data="{ serviceType: 'home' }">
+                <div class="bg-[#3d2b1f] rounded-[3rem] p-10 shadow-2xl sticky top-32" x-data="{ 
+                    serviceType: 'home', 
+                    selectedEquipments: [],
+                    toggleEquipment(name) {
+                        if (this.selectedEquipments.includes(name)) {
+                            this.selectedEquipments = this.selectedEquipments.filter(i => i !== name);
+                        } else {
+                            this.selectedEquipments.push(name);
+                        }
+                    }
+                }">
                     <!-- Price & Duration -->
                     <div class="flex justify-between items-end mb-10 pb-8 border-b border-white/10">
                         <div>
@@ -120,6 +130,23 @@
                         </div>
                     </div>
 
+                    <!-- Equipment Selection -->
+                    @if($service->subCategory && $service->subCategory->equipment->count() > 0)
+                    <div class="mb-10">
+                        <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Required Equipment (Optional)</p>
+                        <div class="flex flex-wrap gap-3">
+                            @foreach($service->subCategory->equipment as $eq)
+                                <button type="button" 
+                                    @click="toggleEquipment('{{ $eq->name }}')"
+                                    :class="selectedEquipments.includes('{{ $eq->name }}') ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/40 border-white/10 hover:border-white/30'"
+                                    class="px-4 py-2 rounded-xl text-[10px] font-bold border transition-all">
+                                    {{ $eq->name }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
                     <!-- Date & Time Slot -->
                     <div class="mb-10" x-data="{ selectedDate: '{{ date('Y-m-d') }}', selectedSlot: 'Morning' }">
                         <div class="flex justify-between items-center mb-5">
@@ -146,6 +173,7 @@
                             <input type="hidden" name="type" :value="serviceType">
                             <input type="hidden" name="date" :value="selectedDate">
                             <input type="hidden" name="slot" :value="selectedSlot">
+                            <input type="hidden" name="equipment" :value="JSON.stringify(selectedEquipments)">
                         </form>
                     </div>
 
