@@ -148,17 +148,32 @@
                     @endif
 
                     <!-- Date & Time Slot -->
-                    <div class="mb-10" x-data="{ selectedDate: '{{ date('Y-m-d') }}', selectedSlot: 'Morning' }">
+                    <div class="mb-10" x-data="{ 
+                        selectedDate: '{{ date('Y-m-d') }}', 
+                        selectedSlot: 'Morning',
+                        init() {
+                            flatpickr($refs.datePicker, {
+                                minDate: 'today',
+                                defaultDate: 'today',
+                                theme: 'dark',
+                                onChange: (selectedDates, dateStr) => {
+                                    this.selectedDate = dateStr;
+                                }
+                            });
+                        }
+                    }">
                         <div class="flex justify-between items-center mb-5">
                             <p class="text-white/40 text-[10px] font-black uppercase tracking-widest">Select Date & Slot</p>
-                            <input type="date" x-model="selectedDate" min="{{ date('Y-m-d') }}" class="bg-transparent text-[#c6a664] text-xs font-black border-none p-0 focus:ring-0 cursor-pointer">
+                            <div class="relative">
+                                <input type="text" x-ref="datePicker" class="bg-transparent text-[#c6a664] text-xs font-black border-none p-0 focus:ring-0 cursor-pointer text-right w-24" placeholder="Select Date">
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3 mb-4">
                             <template x-for="date in [
                                 { label: 'Today', value: '{{ date('Y-m-d') }}' },
                                 { label: 'Tomorrow', value: '{{ date('Y-m-d', strtotime('+1 day')) }}' }
                             ]">
-                                <button @click="selectedDate = date.value" :class="selectedDate === date.value ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/60 border-transparent'" class="py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all" x-text="date.label"></button>
+                                <button @click="selectedDate = date.value; $refs.datePicker._flatpickr.setDate(date.value)" :class="selectedDate === date.value ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/60 border-transparent'" class="py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all" x-text="date.label"></button>
                             </template>
                         </div>
                         <div class="grid grid-cols-3 gap-3">
@@ -188,4 +203,102 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<style>
+    .flatpickr-calendar {
+        background: #3d2b1f !important;
+        border: 1px solid rgba(198, 166, 100, 0.3) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+        border-radius: 2rem !important;
+        padding: 15px !important;
+        width: 300px !important;
+        font-family: 'Outfit', sans-serif !important;
+        z-index: 999 !important;
+    }
+    .flatpickr-months {
+        margin-bottom: 10px !important;
+    }
+    .flatpickr-months .flatpickr-month {
+        background: transparent !important;
+        color: #c6a664 !important;
+        fill: #c6a664 !important;
+        height: 60px !important;
+    }
+    .flatpickr-current-month {
+        font-size: 1.2rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        width: 100% !important;
+        left: 0 !important;
+    }
+    .flatpickr-monthDropdown-months {
+        font-weight: 800 !important;
+        padding: 0 !important;
+        margin-bottom: -5px !important;
+    }
+    .numInputWrapper {
+        width: 6ch !important;
+        display: inline-block !important;
+    }
+    .numInputWrapper input.cur-year {
+        font-weight: 800 !important;
+        color: #c6a664 !important;
+        padding: 0 !important;
+    }
+    .flatpickr-weekday {
+        color: rgba(198, 166, 100, 0.5) !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        font-size: 0.7rem !important;
+    }
+    .flatpickr-day {
+        color: white !important;
+        border-radius: 12px !important;
+        border: none !important;
+        font-weight: 500 !important;
+        height: 35px !important;
+        line-height: 35px !important;
+        margin: 2px !important;
+    }
+    .flatpickr-day:hover {
+        background: rgba(198, 166, 100, 0.2) !important;
+    }
+    .flatpickr-day.selected, .flatpickr-day.selected:hover {
+        background: #c6a664 !important;
+        color: #3d2b1f !important;
+        box-shadow: 0 4px 15px rgba(198, 166, 100, 0.4) !important;
+        font-weight: 900 !important;
+    }
+    .flatpickr-day.today {
+        border: 1px solid #c6a664 !important;
+    }
+    .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover {
+        color: rgba(255, 255, 255, 0.05) !important;
+        background: transparent !important;
+    }
+    .flatpickr-prev-month, .flatpickr-next-month {
+        color: #c6a664 !important;
+        fill: #c6a664 !important;
+        padding: 10px !important;
+    }
+    
+    @media (max-width: 450px) {
+        .flatpickr-calendar {
+            width: 280px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+        }
+    }
+</style>
+@endpush
 @endsection
