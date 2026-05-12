@@ -3,7 +3,7 @@
 @section('content')
 <div x-data="{ 
     showFilter: false, 
-    selectedCategories: {{ json_encode((array)request('category', [])) }},
+    selectedCategories: {{ json_encode(collect(request('category', []))->flatten()->all()) }},
     isCategorySelected(slug) {
         return this.selectedCategories.includes(slug);
     }

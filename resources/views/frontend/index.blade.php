@@ -73,7 +73,7 @@
 
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 @foreach($categories as $category)
-                <a href="{{ route('services.index', ['category' => $category->slug]) }}" class="group block text-center">
+                <a href="{{ route('services.index', ['category[]' => $category->slug]) }}" class="group block text-center">
                     <div class="relative aspect-square rounded-[2rem] overflow-hidden mb-4 shadow-sm group-hover:shadow-xl transition-all duration-500 bg-white p-2 border border-gray-100">
                         <div class="w-full h-full rounded-[1.8rem] overflow-hidden relative">
                             @if($category->image)
