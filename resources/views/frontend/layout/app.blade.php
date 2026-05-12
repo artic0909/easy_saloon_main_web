@@ -15,6 +15,7 @@
     
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 <body class="bg-[#fdfbf7] text-[#2c1e14] overflow-x-hidden">
     
@@ -27,6 +28,6 @@
     @include('frontend.includes.footer')
     
     @include('frontend.includes.scripts')
-
+    @stack('scripts')
 </body>
 </html>
