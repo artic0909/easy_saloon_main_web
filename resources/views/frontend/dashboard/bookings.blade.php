@@ -230,7 +230,7 @@
                     <div class="pt-8 md:pt-10 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6 md:gap-8 bg-[#fdfbf7] -mx-6 md:-mx-16 px-6 md:px-16 pb-10 md:pb-12">
                         <div class="text-center sm:text-left">
                             <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1 md:mb-2">Total Amount Paid</p>
-                            <h3 class="text-3xl md:text-4xl font-black text-[#3d2b1f] tracking-tight" x-text="'₹' + parseFloat(selectedBooking.payable_amount).toLocaleString()"></h3>
+                            <h3 class="text-3xl md:text-4xl font-black text-[#3d2b1f] tracking-tight" x-text="'₹' + parseFloat(selectedBooking.payable_amount || selectedBooking.total_price || 0).toLocaleString()"></h3>
                         </div>
                         <div class="flex flex-col items-center sm:items-end gap-2 md:gap-3 w-full sm:w-auto">
                             <span class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl bg-white border border-green-100 text-green-600 text-[9px] md:text-[10px] font-black uppercase tracking-widest shadow-sm">
