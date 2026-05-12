@@ -9,14 +9,8 @@ Route::get('/services', [App\Http\Controllers\Frontend\ServiceListingController:
 
 Route::get('/services/{slug}', [App\Http\Controllers\Frontend\ServiceListingController::class, 'show'])->name('services.show');
 
-Route::get('/packages', function () {
-    return view('frontend.packages.index');
-})->name('packages.index');
-
-Route::get('/packages/{slug}', function ($slug) {
-    $package = \App\Models\Package::where('slug', $slug)->with('items.service')->firstOrFail();
-    return view('frontend.packages.show', compact('package'));
-})->name('packages.show');
+Route::get('/packages', [App\Http\Controllers\Frontend\PackageListingController::class, 'index'])->name('packages.index');
+Route::get('/packages/{slug}', [App\Http\Controllers\Frontend\PackageListingController::class, 'show'])->name('packages.show');
 
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {

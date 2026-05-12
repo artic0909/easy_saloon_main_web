@@ -61,19 +61,36 @@
                              @foreach($booking->items as $item)
                              <tr>
                                  <td>
-                                     <div class="fw-bold">{{ $item->service->name ?? 'Deleted Service' }}</div>
-                                     @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
-                                         <div class="mt-1 d-flex flex-wrap gap-1">
-                                             @foreach($item->service->subCategory->equipment as $eq)
-                                                 <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10 py-0 px-2" style="font-size: 0.6rem;">
-                                                     <i class="bi bi-tools me-1"></i>{{ $eq->name }}
-                                                 </span>
-                                             @endforeach
-                                         </div>
+                                     @if($item->item_type == 'package')
+                                         <div class="fw-bold text-primary"><i class="bi bi-box-seam me-2"></i>{{ $item->package->name ?? 'Deleted Package' }}</div>
+                                         <div class="small text-muted mt-1">Full Service Bundle</div>
+                                     @else
+                                         <div class="fw-bold">{{ $item->service->name ?? 'Deleted Service' }}</div>
+                                         @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
+                                             <div class="mt-1 d-flex flex-wrap gap-1">
+                                                 @foreach($item->service->subCategory->equipment as $eq)
+                                                     <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10 py-0 px-2" style="font-size: 0.6rem;">
+                                                         <i class="bi bi-tools me-1"></i>{{ $eq->name }}
+                                                     </span>
+                                                 @endforeach
+                                             </div>
+                                         @endif
                                      @endif
                                  </td>
-                                 <td><span class="badge bg-light text-muted border">{{ $item->service->category->name ?? 'N/A' }}</span></td>
-                                 <td class="text-end fw-bold">₹{{ number_format($item->price, 2) }}</td>
+                                 <td>
+                                     @if($item->item_type == 'package')
+                                         <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10">Bundle</span>
+                                     @else
+                                         <span class="badge bg-light text-muted border">{{ $item->service->category->name ?? 'N/A' }}</span>
+                                     @endif
+                                 </td>
+                                 <td class="text-end fw-bold">
+                                     @if($item->price > 0)
+                                         ₹{{ number_format($item->price, 2) }}
+                                     @else
+                                         <span class="text-success small fw-normal">Included</span>
+                                     @endif
+                                 </td>
                              </tr>
                              @endforeach
                         </tbody>

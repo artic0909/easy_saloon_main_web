@@ -9,46 +9,63 @@
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-            @foreach(\App\Models\Package::with('items.service')->get() as $package)
-                <div class="bg-white rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-10 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 group relative flex flex-col h-full">
-                    <div class="mb-4 md:absolute md:top-8 md:right-8 bg-[#c6a664]/10 text-[#c6a664] px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest inline-block w-fit">
-                        Save ₹{{ $package->original_price - $package->sale_price }}
-                    </div>
-                    
-                    <h3 class="text-xl md:text-2xl font-bold text-[#3d2b1f] mb-6 whitespace-normal break-words md:pr-24" style="font-family: 'Playfair Display', serif;">
-                        <a href="{{ route('packages.show', $package->slug) }}" class="hover:text-[#c6a664] transition-colors">
-                            {{ $package->name }}
-                        </a>
-                    </h3>
-                    
-                    <div class="flex-1">
-                        <ul class="space-y-4 mb-10">
-                            @foreach($package->items as $item)
-                                <li class="flex items-center gap-3">
-                                    <div class="w-2 h-2 bg-[#c6a664] rounded-full"></div>
-                                    <span class="text-sm font-medium text-gray-600">{{ $item->service->name }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
+            @forelse($packages as $package)
+                <div class="rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-700 group relative flex flex-col h-[400px] bg-[#3d2b1f]">
+                    <!-- Background Image with Professional Overlay -->
+                    <div class="absolute inset-0 z-0">
+                        @if($package->image)
+                            <img src="{{ asset('storage/' . $package->image) }}" class="w-full h-full object-cover opacity-80 transition-transform duration-1000 group-hover:scale-110">
+                        @else
+                            <img src="{{ asset('assets/img/service-bridal.png') }}" class="w-full h-full object-cover opacity-80 transition-transform duration-1000 group-hover:scale-110">
+                        @endif
+                        <!-- Multi-layer Gradient for Text Visibility -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#3d2b1f] via-[#3d2b1f]/60 to-transparent"></div>
+                        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors duration-700"></div>
                     </div>
 
-                    <div class="pt-8 border-t border-gray-50 flex flex-wrap justify-between items-end gap-4">
-                        <div class="flex-1">
-                            <p class="text-[10px] text-gray-400 font-black uppercase mb-1">Package Price</p>
-                            <span class="text-2xl md:text-3xl font-black text-[#3d2b1f]">₹{{ $package->sale_price }}</span>
-                            <span class="text-xs md:text-sm text-gray-300 line-through ml-2">₹{{ $package->original_price }}</span>
+                    <div class="relative z-10 p-8 md:p-10 flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-auto">
+                            <h3 class="text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-lg" style="font-family: 'Playfair Display', serif;">
+                                <a href="{{ route('packages.show', $package->slug) }}" class="hover:text-[#c6a664] transition-colors">
+                                    {{ $package->name }}
+                                </a>
+                            </h3>
+                            <div class="bg-[#c6a664] text-white px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl border border-white/10">
+                                Save ₹{{ $package->original_price - $package->sale_price }}
+                            </div>
                         </div>
-                        <a href="{{ route('packages.show', $package->slug) }}" class="w-full sm:w-auto bg-[#3d2b1f] text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-[#c6a664] transition-all text-sm text-center">Details</a>
+                        
+                        <div class="mb-10">
+                            <ul class="space-y-3">
+                                @foreach($package->items as $item)
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-1.5 h-1.5 bg-[#c6a664] rounded-full shadow-[0_0_8px_#c6a664]"></div>
+                                        <span class="text-xs md:text-sm font-bold text-white tracking-wide">{{ $item->service->name }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        <div class="pt-8 border-t border-white/10 flex justify-between items-center">
+                            <div>
+                                <p class="text-[9px] text-[#c6a664] font-black uppercase mb-1 tracking-[0.2em]">Limited Offer</p>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-3xl font-black text-white">₹{{ number_format($package->sale_price, 0) }}</span>
+                                    <span class="text-sm text-white/40 line-through">₹{{ number_format($package->original_price, 0) }}</span>
+                                </div>
+                            </div>
+                            <a href="{{ route('packages.show', $package->slug) }}" class="bg-white text-[#3d2b1f] px-8 py-4 rounded-[1.5rem] font-bold hover:bg-[#c6a664] hover:text-white transition-all text-sm shadow-xl transform group-hover:translate-x-1">
+                                Details
+                            </a>
+                        </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="col-12 py-32 text-center">
+                    <h4 class="text-2xl font-bold text-gray-300">Exclusive packages coming soon!</h4>
+                </div>
+            @endforelse
         </div>
-
-        @if(\App\Models\Package::count() === 0)
-            <div class="py-32 text-center">
-                <h4 class="text-2xl font-bold text-gray-300">Exclusive packages coming soon!</h4>
-            </div>
-        @endif
     </div>
 </div>
 @endsection
