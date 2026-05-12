@@ -50,4 +50,9 @@ class Booking extends Model
     {
         return $this->belongsTo(Address::class);
     }
+
+    public function getTypeAttribute()
+    {
+        return $this->items()->where('item_type', 'package')->exists() ? 'Package' : 'Service';
+    }
 }

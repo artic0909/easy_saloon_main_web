@@ -82,8 +82,8 @@
                             <div class="small text-muted text-uppercase tracking-widest">{{ $booking->time_slot }}</div>
                         </td>
                         <td>
-                            <span class="badge bg-light text-dark border px-2 py-1">
-                                {{ $booking->service_type == 'home' ? 'Home Visit' : 'Salon Visit' }}
+                            <span class="badge bg-primary-subtle text-primary border px-2 py-1">
+                                {{ $booking->type }}
                             </span>
                         </td>
                         <td>

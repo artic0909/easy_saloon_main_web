@@ -11,7 +11,7 @@
             <div class="card-body p-4 position-relative z-index-1">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <p class="text-white-50 small mb-1 uppercase tracking-wider fw-bold">Current Status ({{ ucfirst($booking->service_type) }})</p>
+                        <p class="text-white-50 small mb-1 uppercase tracking-wider fw-bold">Current Status ({{ $booking->type }})</p>
                         <h2 class="fw-black mb-0">
                             @if(!$booking->staff_id)
                                 Broadcasted

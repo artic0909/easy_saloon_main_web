@@ -89,7 +89,7 @@
                                 <div>
                                     <div class="fw-bold text-dark">
                                         {{ $booking->user->name }}
-                                        <span class="badge bg-light text-muted border ms-2" style="font-size: 8px; font-weight: 500;">{{ ucfirst($booking->service_type) }}</span>
+                                        <span class="badge bg-primary-subtle text-primary border ms-2" style="font-size: 8px; font-weight: 500;">{{ $booking->type }}</span>
                                     </div>
                                     <div class="text-muted small">{{ $booking->user->phone }}</div>
                                 </div>
