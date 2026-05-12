@@ -14,7 +14,7 @@ class IndexController extends Controller
     {
         $achievements = Achievement::latest()->get();
         $feedbacks = Feedback::latest()->get();
-        $blogs = Blog::latest()->get();
+        $blogs = Blog::latest()->take(3)->get();
         $categories = Category::where('is_active', true)->latest()->get();
         
         return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories'));

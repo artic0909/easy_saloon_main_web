@@ -170,24 +170,16 @@
                 <h2 class="text-5xl font-black tracking-tighter" style="font-family: 'Outfit', sans-serif;">MEDIA <br> COVERAGES</h2>
             </div>
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-left">
-                    <div class="flex items-center gap-2 mb-4"><div class="w-8 h-4 bg-red-600"></div> <span class="font-bold text-xs">News 18</span></div>
-                    <h5 class="font-bold mb-4">India's most trusted home salon brand is here.</h5>
-                    <div class="h-40 bg-gray-100 rounded-xl mb-4 overflow-hidden"><img src="/assets/img/hero.png" class="w-full h-full object-cover"></div>
-                    <p class="text-xs text-gray-500">Read more →</p>
+                @foreach($blogs->take(3) as $blog)
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-left h-full flex flex-col">
+                    <div class="flex items-center gap-2 mb-4"><div class="w-8 h-4 bg-red-600"></div> <span class="font-bold text-xs">{{ $blog->category }}</span></div>
+                    <h5 class="font-bold mb-4 line-clamp-2">{{ $blog->title }}</h5>
+                    <div class="h-40 bg-gray-100 rounded-xl mb-4 overflow-hidden mt-auto">
+                        <img src="{{ asset('storage/' . $blog->image) }}" class="w-full h-full object-cover">
+                    </div>
+                    <a href="{{ route('blogs.show', $blog->id) }}" class="text-xs text-gray-500 hover:text-[#c6a664] transition-colors">Read more →</a>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-left">
-                    <div class="flex items-center gap-2 mb-4"><div class="w-8 h-4 bg-red-600"></div> <span class="font-bold text-xs">The Economic Times</span></div>
-                    <h5 class="font-bold mb-4">How Easy Saloon is redefining the grooming industry.</h5>
-                    <div class="h-40 bg-gray-100 rounded-xl mb-4 overflow-hidden"><img src="/assets/img/cat-makeup.png" class="w-full h-full object-cover"></div>
-                    <p class="text-xs text-gray-500">Read more →</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-left">
-                    <div class="flex items-center gap-2 mb-4"><div class="w-8 h-4 bg-red-600"></div> <span class="font-bold text-xs">Times of India</span></div>
-                    <h5 class="font-bold mb-4">The rise of salon-at-home services in major cities.</h5>
-                    <div class="h-40 bg-gray-100 rounded-xl mb-4 overflow-hidden"><img src="/assets/img/cat-hair.png" class="w-full h-full object-cover"></div>
-                    <p class="text-xs text-gray-500">Read more →</p>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
