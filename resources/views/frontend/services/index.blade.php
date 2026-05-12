@@ -168,7 +168,7 @@
                                         <h4 class="text-lg font-bold text-[#3d2b1f] leading-snug group-hover:text-[#c6a664] transition-colors">{{ $service->name }}</h4>
                                         <div class="flex items-center gap-1 text-[#c6a664] text-[10px] font-black bg-[#c6a664]/10 px-2 py-1 rounded-lg">★ 4.9</div>
                                     </div>
-                                    <p class="text-[13px] text-gray-400 mb-8 line-clamp-2 leading-relaxed">{!! $service->details !!}</p>
+                                    <p class="text-[13px] text-gray-400 mb-8 line-clamp-2 leading-relaxed">{{ strip_tags($service->details) }}</p>
                                     <div class="flex items-center justify-between">
                                         <div>
                                             <span class="text-2xl font-black text-[#3d2b1f]">₹{{ number_format($service->sale_price, 2) }}</span>
