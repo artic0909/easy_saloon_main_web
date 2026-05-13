@@ -235,112 +235,79 @@
         <div class="max-w-7xl mx-auto px-4 mb-12">
             <h2 class="text-center text-4xl font-extrabold mb-16 text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Valuable Feedback from our customers</h2>
             
+            @php
+                $avgRating = number_format($feedbacks->avg('stars') ?? 4.9, 1);
+                $reviewCount = $feedbacks->count() > 0 ? $feedbacks->count() : '49.8k';
+                $displayCount = $feedbacks->count() > 0 ? $feedbacks->count() . ' reviews' : '49.8k reviews';
+            @endphp
+
             <div class="flex flex-col md:flex-row justify-center items-center gap-12 mb-12">
                 <div class="text-center md:text-left">
                     <p class="text-sm font-bold text-gray-400 mb-2 uppercase tracking-widest">Love from our customers</p>
                     <div class="flex items-center gap-4 justify-center md:justify-start">
-                        <span class="text-6xl font-black text-[#3d2b1f]">4.5</span>
+                        <span class="text-6xl font-black text-[#3d2b1f]">{{ $avgRating }}</span>
                         <div class="flex flex-col">
-                            <div class="flex text-[#c6a664] text-xl">★★★★★</div>
-                            <span class="text-xs font-bold text-gray-400">49.8k reviews</span>
+                            <div class="flex text-[#c6a664] text-xl">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= round($avgRating))
+                                        ★
+                                    @else
+                                        <span class="text-gray-200">★</span>
+                                    @endif
+                                @endfor
+                            </div>
+                            <span class="text-xs font-bold text-gray-400">{{ $displayCount }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="hidden md:block w-px h-20 bg-gray-100"></div>
                 <div class="flex -space-x-4">
-                    <img src="https://ui-avatars.com/api/?name=User+1&background=f4ece4&color=3d2b1f" class="w-14 h-14 rounded-full border-4 border-white shadow-sm">
-                    <img src="https://ui-avatars.com/api/?name=User+2&background=f4ece4&color=3d2b1f" class="w-14 h-14 rounded-full border-4 border-white shadow-sm">
-                    <img src="https://ui-avatars.com/api/?name=User+3&background=f4ece4&color=3d2b1f" class="w-14 h-14 rounded-full border-4 border-white shadow-sm">
-                    <img src="https://ui-avatars.com/api/?name=User+4&background=f4ece4&color=3d2b1f" class="w-14 h-14 rounded-full border-4 border-white shadow-sm">
-                    <div class="w-14 h-14 rounded-full bg-[#f4ece4] border-4 border-white flex items-center justify-center text-xs font-bold text-[#3d2b1f] shadow-sm">+10k</div>
+                    @forelse($feedbacks->take(4) as $f)
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($f->name) }}&background=f4ece4&color=3d2b1f" class="w-14 h-14 rounded-full border-4 border-white shadow-sm" alt="User">
+                    @empty
+                    <img src="https://ui-avatars.com/api/?name=User&background=f4ece4&color=3d2b1f" class="w-14 h-14 rounded-full border-4 border-white shadow-sm" alt="User">
+                    @endforelse
+                    <div class="w-14 h-14 rounded-full bg-[#f4ece4] border-4 border-white flex items-center justify-center text-xs font-bold text-[#3d2b1f] shadow-sm">+{{ $reviewCount }}</div>
                 </div>
             </div>
         </div>
         
         <div class="feedback-track">
-            <!-- First Set -->
+            <!-- Set 1 -->
+            @foreach($feedbacks as $feedback)
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Afreen+Hussain&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($feedback->name) }}&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="{{ $feedback->name }}">
                     <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Afreen Hussain</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
+                        <h6 class="font-bold text-[#3d2b1f]">{{ $feedback->name }}</h6>
+                        <div class="flex text-[#c6a664] text-[10px]">
+                            @for($i = 1; $i <= 5; $i++)
+                                {{ $i <= $feedback->stars ? '★' : '☆' }}
+                            @endfor
+                        </div>
                     </div>
                 </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Experience with Easy Saloon was really good, she was very professional and thorough... her hands were like magic. Massage and body polishing was up to the mark."</p>
+                <p class="text-[13px] text-gray-500 leading-relaxed italic">"{{ $feedback->description }}"</p>
             </div>
-            <div class="feedback-card">
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Srishti+Kanth&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
-                    <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Srishti Kanth</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
-                    </div>
-                </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"I recently booked a facial service with Preeti Chauhan, and I must say I am absolutely thrilled with the experience. Preeti's work is sincere and satisfying."</p>
-            </div>
-            <div class="feedback-card">
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
-                    <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Rahul Sharma</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
-                    </div>
-                </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"The men's grooming session was top-notch. Very clean and professional. Highly recommended for home services!"</p>
-            </div>
-            <div class="feedback-card">
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Priya+M&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
-                    <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Priya Mehra</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
-                    </div>
-                </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Easy Saloon has changed how I groom. The convenience of getting a high-end pedicure at home is unmatched."</p>
-            </div>
+            @endforeach
 
-            <!-- Second Set (Duplicate for Loop) -->
+            <!-- Set 2 (Duplicate for seamless marquee) -->
+            @foreach($feedbacks as $feedback)
             <div class="feedback-card">
                 <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Afreen+Hussain&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($feedback->name) }}&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="{{ $feedback->name }}">
                     <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Afreen Hussain</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
+                        <h6 class="font-bold text-[#3d2b1f]">{{ $feedback->name }}</h6>
+                        <div class="flex text-[#c6a664] text-[10px]">
+                            @for($i = 1; $i <= 5; $i++)
+                                {{ $i <= $feedback->stars ? '★' : '☆' }}
+                            @endfor
+                        </div>
                     </div>
                 </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Experience with Easy Saloon was really good, she was very professional and thorough... her hands were like magic. Massage and body polishing was up to the mark."</p>
+                <p class="text-[13px] text-gray-500 leading-relaxed italic">"{{ $feedback->description }}"</p>
             </div>
-            <div class="feedback-card">
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Srishti+Kanth&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
-                    <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Srishti Kanth</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
-                    </div>
-                </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"I recently booked a facial service with Preeti Chauhan, and I must say I am absolutely thrilled with the experience. Preeti's work is sincere and satisfying."</p>
-            </div>
-            <div class="feedback-card">
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
-                    <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Rahul Sharma</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
-                    </div>
-                </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"The men's grooming session was top-notch. Very clean and professional. Highly recommended for home services!"</p>
-            </div>
-            <div class="feedback-card">
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="https://ui-avatars.com/api/?name=Priya+M&background=f4ece4&color=3d2b1f" class="w-12 h-12 rounded-full border border-gray-100" alt="User">
-                    <div>
-                        <h6 class="font-bold text-[#3d2b1f]">Priya Mehra</h6>
-                        <div class="flex text-[#c6a664] text-[10px]">★★★★★</div>
-                    </div>
-                </div>
-                <p class="text-[13px] text-gray-500 leading-relaxed italic">"Easy Saloon has changed how I groom. The convenience of getting a high-end pedicure at home is unmatched."</p>
-            </div>
+            @endforeach
         </div>
     </section>
 
