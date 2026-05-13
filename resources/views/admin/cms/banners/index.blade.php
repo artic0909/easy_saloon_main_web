@@ -55,6 +55,9 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Banner Title</label>
                         <input type="text" name="title" class="form-control rounded-3" required>
+                        <small class="text-muted">Use *text* for bold & golden type color and | for new line</small>
+                        <br>
+                        <small class="text-muted">Ex: Best *Beauty* Service | For *Women*</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Subtitle / Description</label>

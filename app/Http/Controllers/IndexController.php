@@ -7,6 +7,7 @@ use App\Models\Achievement;
 use App\Models\Feedback;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\Banner;
 
 class IndexController extends Controller
 {
@@ -16,7 +17,8 @@ class IndexController extends Controller
         $feedbacks = Feedback::latest()->get();
         $blogs = Blog::latest()->take(3)->get();
         $categories = Category::where('is_active', true)->latest()->get();
+        $banners = Banner::where('is_active', true)->latest()->get();
         
-        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories'));
+        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories','banners'));
     }
 }

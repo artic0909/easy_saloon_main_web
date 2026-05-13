@@ -4,28 +4,46 @@
     <!-- Hero Section -->
     <section class="relative pt-20 h-[600px] overflow-hidden">
         <div id="hero-carousel" class="absolute inset-0">
-            <div class="hero-carousel-item active absolute inset-0">
-                <img src="/assets/img/hero.png" class="w-full h-full object-cover" alt="Slide 1">
+            @forelse($banners as $index => $banner)
+            <div class="hero-carousel-item {{ $index == 0 ? 'active' : '' }} absolute inset-0 w-full h-full">
+                <img src="{{ asset('storage/' . $banner->image) }}" class="w-full h-full object-cover" alt="{{ $banner->title }}">
                 <div class="absolute inset-0 bg-[#3d2b1f]/50"></div>
-            </div>
-            <div class="hero-carousel-item absolute inset-0">
-                <img src="/assets/img/cat-makeup.png" class="w-full h-full object-cover" alt="Slide 2">
-                <div class="absolute inset-0 bg-[#3d2b1f]/50"></div>
-            </div>
-        </div>
-        <div class="relative z-10 h-full flex items-center justify-center text-center px-4">
-            <div class="max-w-4xl">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-2xl hero-text" style="font-family: 'Playfair Display', serif;">
-                    Bringing <span class="text-[#c6a664]">Salon Expertise</span> <br> to Your Doorstep
-                </h1>
-                <p class="text-lg md:text-xl text-white font-medium mb-10 drop-shadow-lg opacity-90 max-w-2xl mx-auto">
-                    While Changing the Lives of Service Professionals
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <button class="btn-primary shadow-2xl">Download App</button>
-                    <button class="bg-[#c6a664] text-white px-8 py-3.5 rounded-full font-bold shadow-2xl hover:scale-105 transition-all">Register as Partner</button>
+                
+                <div class="absolute inset-0 flex items-center justify-center text-center px-4 z-10">
+                    <div class="max-w-4xl">
+                        <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-2xl hero-text" style="font-family: 'Playfair Display', serif;">
+                            {!! preg_replace('/\*(.*?)\*/', '<span class="text-[#c6a664]">$1</span>', str_replace('|', '<br>', $banner->title)) !!}
+                        </h1>
+                        <p class="text-lg md:text-xl text-white font-medium mb-10 drop-shadow-lg opacity-90 max-w-2xl mx-auto">
+                            {{ $banner->subtitle }}
+                        </p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                            <a href="{{ $banner->link }}" class="btn-primary shadow-2xl inline-flex items-center justify-center">Download App</a>
+                            <button class="bg-[#c6a664] text-white px-8 py-3.5 rounded-full font-bold shadow-2xl hover:scale-105 transition-all">Register as Partner</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+            @empty
+            <div class="hero-carousel-item active absolute inset-0 w-full h-full">
+                <img src="/assets/img/hero.png" class="w-full h-full object-cover" alt="Default Hero">
+                <div class="absolute inset-0 bg-[#3d2b1f]/50"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-center px-4 z-10">
+                    <div class="max-w-4xl">
+                        <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-2xl hero-text" style="font-family: 'Playfair Display', serif;">
+                            Bringing <span class="text-[#c6a664]">Salon Expertise</span> <br> to Your Doorstep
+                        </h1>
+                        <p class="text-lg md:text-xl text-white font-medium mb-10 drop-shadow-lg opacity-90 max-w-2xl mx-auto">
+                            While Changing the Lives of Service Professionals
+                        </p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                            <button class="btn-primary shadow-2xl">Download App</button>
+                            <button class="bg-[#c6a664] text-white px-8 py-3.5 rounded-full font-bold shadow-2xl hover:scale-105 transition-all">Register as Partner</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforelse
         </div>
     </section>
 
