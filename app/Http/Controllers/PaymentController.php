@@ -114,6 +114,7 @@ class PaymentController extends Controller
                     'user_id' => auth()->id(),
                     'transaction_id' => $request->razorpay_payment_id,
                     'booking_id' => ($type == 'regular' ? $booking->id : null),
+                    'custom_booking_id' => ($type == 'custom' ? $booking->id : null),
                     'status' => 'success',
                     'payment_mode' => 'razorpay',
                     'amount' => $type == 'regular' ? $booking->payable_amount : $booking->total_price,
