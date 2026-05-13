@@ -63,6 +63,7 @@
                         <th class="py-3 border-0">Date & Slot</th>
                         <th class="py-3 border-0">Service Type</th>
                         <th class="py-3 border-0">Assigned Staff</th>
+                        <th class="py-3 border-0 text-center">Payment</th>
                         <th class="py-3 border-0 text-center">Status</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
                     </tr>
@@ -96,6 +97,17 @@
                                 </div>
                             @else
                                 <span class="text-danger small fw-bold">Not Assigned</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($booking->is_paid)
+                                <span class="badge bg-success-subtle text-success px-2 py-1" style="font-size: 11px;">
+                                    <i class="bi bi-patch-check-fill"></i> Paid
+                                </span>
+                            @else
+                                <span class="badge bg-warning-subtle text-warning px-2 py-1" style="font-size: 11px;">
+                                    <i class="bi bi-clock-history"></i> Pending
+                                </span>
                             @endif
                         </td>
                         <td class="text-center">

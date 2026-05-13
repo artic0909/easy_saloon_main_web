@@ -64,6 +64,7 @@
                         <th>Customer</th>
                         <th>Date & Time</th>
                         <th>Service</th>
+                        <th>Payment</th>
                         <th>Status</th>
                         <th class="text-end pe-4">Actions</th>
                     </tr>
@@ -111,6 +112,17 @@
                                     @endforeach
                                 @endif
                             </div>
+                        </td>
+                        <td>
+                            @if($booking->is_paid)
+                                <span class="badge bg-success-subtle text-success">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Paid
+                                </span>
+                            @else
+                                <span class="badge bg-warning-subtle text-warning">
+                                    <i class="bi bi-clock-history me-1"></i> Pending
+                                </span>
+                            @endif
                         </td>
                         <td>
                             @if(!$booking->staff_id)

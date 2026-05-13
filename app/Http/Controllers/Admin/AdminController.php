@@ -8,17 +8,24 @@ use App\Models\User;
 use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Package;
-use DB;
+use App\Models\Transaction;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
+        $now = Carbon::now();
         $stats = [
             'users' => User::where('role', 'user')->count(),
             'bookings' => Booking::count(),
-            'revenue' => Booking::where('status', 'completed')->sum('payable_amount'),
+            'total_revenue' => Transaction::where('status', 'success')->sum('amount'),
+            'monthly_revenue' => Transaction::where('status', 'success')
+                ->whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year)
+                ->sum('amount'),
             'services' => Service::count(),
+            'transactions_count' => Transaction::count(),
         ];
 
         $recentBookings = Booking::with(['user', 'items'])
@@ -26,11 +33,11 @@ class AdminController extends Controller
             ->take(10)
             ->get();
 
-        $recentUsers = User::where('role', 'user')
+        $recentTransactions = Transaction::with('user')
             ->latest()
-            ->take(5)
+            ->take(10)
             ->get();
 
-        return view('admin.dashboard.index', compact('stats', 'recentBookings', 'recentUsers'));
+        return view('admin.dashboard.index', compact('stats', 'recentBookings', 'recentTransactions'));
     }
 }
