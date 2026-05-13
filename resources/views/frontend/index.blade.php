@@ -52,31 +52,49 @@
         <div class="max-w-7xl mx-auto px-4">
             <h2 class="text-center text-xl font-bold mb-10 text-[#3d2b1f]" style="font-family: 'Outfit', sans-serif;">Achievements so far</h2>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                @php
+                    $achievementColors = [
+                        ['bg' => 'bg-pink-50', 'text' => 'text-pink-600'],
+                        ['bg' => 'bg-blue-50', 'text' => 'text-blue-600'],
+                        ['bg' => 'bg-purple-50', 'text' => 'text-purple-600'],
+                        ['bg' => 'bg-orange-50', 'text' => 'text-orange-600'],
+                        ['bg' => 'bg-yellow-50', 'text' => 'text-yellow-600'],
+                    ];
+                @endphp
+                @foreach($achievements as $achievement)
+                @php 
+                    $color = $achievementColors[$loop->index % count($achievementColors)];
+                    $iconName = str_replace('bi-', '', $achievement->svg_icon);
+                    
+                    // Original Premium SVG Paths Mapping
+                    $svgPaths = [
+                        'people' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
+                        'download' => 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4',
+                        'calendar-check' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+                        'geo-alt' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z',
+                        'star' => 'M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z',
+                        'heart' => 'M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z',
+                        'shop' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z',
+                    ];
+                @endphp
                 <div class="text-center">
-                    <div class="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></div>
-                    <span class="text-lg font-bold">7000+</span>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold">Professionals</p>
+                    <div class="w-12 h-12 {{ $color['bg'] }} {{ $color['text'] }} rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm">
+                        <div class="flex items-center justify-center">
+                            @if(isset($svgPaths[$iconName]))
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="{{ $iconName == 'star' ? 'fill: currentColor;' : '' }}">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $svgPaths[$iconName] }}"></path>
+                                </svg>
+                            @elseif(str_contains($achievement->svg_icon, '<svg'))
+                                <div class="w-6 h-6">{!! $achievement->svg_icon !!}</div>
+                            @else
+                                <i class="bi bi-{{ $iconName }} text-xl"></i>
+                            @endif
+                        </div>
+                    </div>
+                    <span class="text-lg font-bold text-[#3d2b1f]">{{ $achievement->value }}</span>
+                    <p class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">{{ $achievement->title }}</p>
                 </div>
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></div>
-                    <span class="text-lg font-bold">6M+</span>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold">App Downloads</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                    <span class="text-lg font-bold">8M+</span>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold">Bookings</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg></div>
-                    <span class="text-lg font-bold">50+</span>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold">Cities</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-2"><svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg></div>
-                    <span class="text-lg font-bold">4.8 ★</span>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold">Rating</p>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
