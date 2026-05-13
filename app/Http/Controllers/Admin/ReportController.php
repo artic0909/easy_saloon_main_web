@@ -10,18 +10,32 @@ use DB;
 
 class ReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::with(['user', 'booking'])->latest()->paginate(15);
+        $query = Transaction::with(['user', 'booking', 'customBooking'])->latest();
+
+        // Filters
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $transactions = $query->paginate(15);
         
         $revenueStats = [
-            'total' => Booking::where('status', 'completed')->sum('payable_amount'),
-            'this_month' => Booking::where('status', 'completed')
+            'total' => Transaction::where('status', 'success')->sum('amount'),
+            'this_month' => Transaction::where('status', 'success')
                 ->whereMonth('created_at', now()->month)
-                ->sum('payable_amount'),
-            'today' => Booking::where('status', 'completed')
+                ->whereYear('created_at', now()->year)
+                ->sum('amount'),
+            'today' => Transaction::where('status', 'success')
                 ->whereDate('created_at', now()->today())
-                ->sum('payable_amount'),
+                ->sum('amount'),
         ];
 
         return view('admin.reports.index', compact('transactions', 'revenueStats'));
