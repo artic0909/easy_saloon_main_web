@@ -145,6 +145,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     function confirmCustomBooking() {
         const addressId = document.querySelector('input[name="address_id"]:checked')?.value;
@@ -188,15 +189,8 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Appointment Confirmed!',
-                    text: data.message,
-                    showConfirmButton: false,
-                    timer: 2000
-                }).then(() => {
-                    window.location.href = data.redirect;
-                });
+                // Initiate Payment
+                payWithRazorpay(data.booking_id, data.booking_type);
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -207,10 +201,131 @@
             }
         })
         .catch(error => {
+            console.error(error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Something went wrong. Please try again.',
+                confirmButtonColor: '#3d2b1f'
+            });
+        });
+    }
+
+    function payWithRazorpay(bookingId, bookingType) {
+        Swal.fire({
+            title: 'Preparing Payment Gateway...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        fetch('{{ route("payment.initiate") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                booking_id: bookingId,
+                type: bookingType
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.error);
+
+            const options = {
+                "key": data.key,
+                "amount": data.amount,
+                "currency": "INR",
+                "name": "Easy Saloon",
+                "description": "Custom Package Payment for #" + data.booking_number,
+                "order_id": data.order_id,
+                "handler": function (response) {
+                    verifyPayment(response, bookingType);
+                },
+                "prefill": {
+                    "name": data.user.name,
+                    "email": data.user.email,
+                    "contact": data.user.contact
+                },
+                "theme": {
+                    "color": "#3d2b1f"
+                },
+                "modal": {
+                    "ondismiss": function() {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Payment Cancelled',
+                            text: 'Your booking is pending. Please complete payment from dashboard.',
+                            confirmButtonColor: '#3d2b1f'
+                        }).then(() => {
+                            window.location.href = "{{ route('dashboard.bookings') }}";
+                        });
+                    }
+                }
+            };
+            const rzp = new Razorpay(options);
+            Swal.close();
+            rzp.open();
+        })
+        .catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Error',
+                text: err.message,
+                confirmButtonColor: '#3d2b1f'
+            });
+        });
+    }
+
+    function verifyPayment(rzpResponse, bookingType) {
+        Swal.fire({
+            title: 'Verifying Payment...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        fetch('{{ route("payment.verify") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                type: bookingType,
+                razorpay_order_id: rzpResponse.razorpay_order_id,
+                razorpay_payment_id: rzpResponse.razorpay_payment_id,
+                razorpay_signature: rzpResponse.razorpay_signature
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Successful!',
+                    text: 'Your custom appointment has been confirmed.',
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    window.location.href = "{{ route('dashboard.bookings') }}";
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Verification Failed',
+                    text: data.message,
+                    confirmButtonColor: '#3d2b1f'
+                });
+            }
+        })
+        .catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Could not verify payment. Please contact support.',
                 confirmButtonColor: '#3d2b1f'
             });
         });

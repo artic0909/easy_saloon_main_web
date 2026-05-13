@@ -18,6 +18,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/packages/custom-confirm', [App\Http\Controllers\CustomBookingController::class, 'confirm'])->name('packages.custom.confirm');
     Route::get('/checkout', [App\Http\Controllers\BookingController::class, 'checkout'])->name('checkout');
     Route::post('/booking/confirm', [App\Http\Controllers\BookingController::class, 'confirm'])->name('booking.confirm');
+    Route::post('/payment/initiate', [App\Http\Controllers\PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+    Route::post('/payment/verify', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('payment.verify');
     Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
     Route::group(['prefix' => 'dashboard'], function () {

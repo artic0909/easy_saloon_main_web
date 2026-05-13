@@ -90,7 +90,8 @@ class CustomBookingController extends Controller
         return response()->json([
             'success' => true, 
             'message' => 'Custom booking placed successfully!',
-            'redirect' => route('dashboard.bookings')
+            'booking_id' => $booking->id,
+            'booking_type' => 'custom'
         ]);
     }
 }
