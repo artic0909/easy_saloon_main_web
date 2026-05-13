@@ -1,5 +1,8 @@
 @extends('frontend.layout.app')
 
+@section('page_title', 'Checkout - Custom Package')
+@section('meta_description', 'Finalize your personalized beauty appointment. Secure luxury salon booking powered by Easy Saloon.')
+
 @section('content')
 <div class="pt-32 md:pt-48 pb-24 bg-[#fdfbf7]">
     <div class="max-w-7xl mx-auto px-4 md:px-8">

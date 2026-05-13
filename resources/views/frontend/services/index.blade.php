@@ -1,5 +1,8 @@
 @extends('frontend.layout.app')
 
+@section('page_title', 'Professional Salon Services at Home')
+@section('meta_description', 'Explore our wide range of luxury salon services available at your home. From facials to hair styling, our certified professionals bring the spa to you.')
+
 @section('content')
 <div x-data="{ 
     showFilter: false, 

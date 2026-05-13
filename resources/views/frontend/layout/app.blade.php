@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Easy Saloon | Luxury Grooming at Home</title>
+    <title>@yield('page_title', 'Luxury Grooming at Home') | Easy Saloon</title>
+    <meta name="description" content="@yield('meta_description', 'Experience premium salon services at the comfort of your home with Easy Saloon. Professional grooming, bridal packages, and bespoke beauty treatments.')">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -1,5 +1,8 @@
 @extends('frontend.layout.app')
 
+@section('page_title', 'Home Salon Services & Beauty at Home')
+@section('meta_description', 'Book premium salon services at home. Easy Saloon provides professional grooming, facials, and beauty treatments at your doorstep in India.')
+
 @section('content')
     <!-- Hero Section -->
     <section class="relative pt-20 h-[600px] overflow-hidden">

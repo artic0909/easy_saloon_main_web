@@ -1,5 +1,8 @@
 @extends('frontend.layout.app')
 
+@section('page_title', $service->name)
+@section('meta_description', 'Book ' . $service->name . ' at home. ' . Str::limit(strip_tags($service->details), 150))
+
 @section('content')
 <div class="pt-32 pb-24 bg-[#fdfbf7]">
     <div class="max-w-7xl mx-auto px-4">

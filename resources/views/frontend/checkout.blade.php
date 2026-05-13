@@ -1,5 +1,8 @@
 @extends('frontend.layout.app')
 
+@section('page_title', 'Finalize Your Booking')
+@section('meta_description', 'Complete your luxury salon appointment. Review your selection and confirm your professional grooming session with Easy Saloon.')
+
 @section('content')
 <div class="pt-32 md:pt-48 pb-24 bg-[#fdfbf7]">
     <div class="max-w-7xl mx-auto px-4 md:px-8">

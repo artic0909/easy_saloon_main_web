@@ -1,6 +1,7 @@
 @extends('frontend.layout.app')
 
-@section('title', 'Media Coverage - Easy Saloon')
+@section('page_title', 'Media Coverage & Latest Updates')
+@section('meta_description', 'Stay updated with the latest news, press releases, and media mentions about Easy Saloon, India\'s most trusted home salon brand.')
 
 @section('content')
 <!-- Hero Section -->

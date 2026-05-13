@@ -1,6 +1,7 @@
 @extends('frontend.layout.app')
 
-@section('title', $blog->title . ' - Easy Saloon')
+@section('page_title', $blog->title)
+@section('meta_description', Str::limit(strip_tags($blog->description), 150))
 
 @section('content')
 <!-- Article Header -->

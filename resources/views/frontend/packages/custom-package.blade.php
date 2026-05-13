@@ -1,5 +1,8 @@
 @extends('frontend.layout.app')
 
+@section('page_title', 'Build Your Custom Beauty Package')
+@section('meta_description', 'Create your own personalized salon experience. Select from our wide range of premium services and build a bespoke beauty package tailored just for you.')
+
 @section('content')
 <div x-data="customPackage()" class="bg-[#fdfbf7] min-h-screen selection:bg-[#c6a664]/30 pb-32 xl:pb-0">
     
