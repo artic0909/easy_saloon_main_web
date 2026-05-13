@@ -45,7 +45,7 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">ID</th>
+                        <th class="px-4 py-3 border-0">SL</th>
                         <th class="py-3 border-0">Hierarchy</th>
                         <th class="py-3 border-0">Equipment Name</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
@@ -54,7 +54,13 @@
                 <tbody>
                     @foreach($equipment as $item)
                     <tr>
-                        <td class="px-4 text-muted small">#{{ $item->id }}</td>
+                        <td class="px-4">
+                            @if($equipment instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ ($equipment->currentPage() - 1) * $equipment->perPage() + $loop->iteration }}
+                            @else
+                                {{ $loop->iteration }}
+                            @endif
+                        </td>
                         <td>
                             <span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold">{{ $item->subCategory->category->name }}</span>
                             <i class="bi bi-chevron-right mx-1 small text-muted"></i>

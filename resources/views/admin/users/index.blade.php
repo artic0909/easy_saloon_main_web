@@ -44,6 +44,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>SL</th>
                 <th>Member Profile</th>
                 <th>Contact Info</th>
                 <th>Platform Role</th>
@@ -54,6 +55,13 @@
         <tbody>
             @foreach($users as $user)
             <tr>
+                <td>
+                    @if($users instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                        {{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}
+                    @else
+                        {{ $loop->iteration }}
+                    @endif
+                </td>
                 <td>
                     <div class="d-flex align-items-center gap-3">
                         <div class="avatar-md bg-light text-dark d-flex align-items-center justify-content-center fw-bold shadow-sm" style="font-size: 1.2rem;">

@@ -45,7 +45,8 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">Professional</th>
+                        <th class="px-4 py-3 border-0">SL</th>
+                        <th class="py-3 border-0">Professional</th>
                         <th class="py-3 border-0">Designation</th>
                         <th class="py-3 border-0">Salon/Branch</th>
                         <th class="py-3 border-0 text-center">Exp.</th>
@@ -57,6 +58,13 @@
                     @foreach($staffMembers as $staff)
                     <tr>
                         <td class="px-4">
+                            @if($staffMembers instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ ($staffMembers->currentPage() - 1) * $staffMembers->perPage() + $loop->iteration }}
+                            @else
+                                {{ $loop->iteration }}
+                            @endif
+                        </td>
+                        <td>
                             <div class="d-flex align-items-center gap-3">
                                 <div class="avatar-sm bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 38px; height: 38px;">
                                     {{ substr($staff->name, 0, 1) }}

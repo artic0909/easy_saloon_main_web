@@ -55,7 +55,8 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">Service</th>
+                        <th class="px-4 py-3 border-0">SL</th>
+                        <th class="py-3 border-0">Service</th>
                         <th class="py-3 border-0">Category</th>
                         <th class="py-3 border-0">Price</th>
                         <th class="py-3 border-0">Duration</th>
@@ -67,6 +68,13 @@
                     @foreach($services as $service)
                     <tr>
                         <td class="px-4">
+                            @if($services instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ ($services->currentPage() - 1) * $services->perPage() + $loop->iteration }}
+                            @else
+                                {{ $loop->iteration }}
+                            @endif
+                        </td>
+                        <td>
                             <div class="d-flex align-items-center gap-3">
                                 <img src="{{ $service->image ? asset('storage/' . $service->image) : 'https://placehold.co/100x100?text=Service' }}" class="rounded-3 shadow-sm" style="width: 48px; height: 48px; object-fit: cover;">
                                 <div class="fw-bold text-dark">{{ $service->name }}</div>

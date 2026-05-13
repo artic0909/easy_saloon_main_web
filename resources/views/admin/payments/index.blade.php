@@ -52,7 +52,8 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted small text-uppercase">
                     <tr>
-                        <th class="px-4 py-3 border-0">TXN ID</th>
+                        <th class="px-4 py-3 border-0">SL</th>
+                        <th class="py-3 border-0">TXN ID</th>
                         <th class="py-3 border-0">Customer</th>
                         <th class="py-3 border-0">Booking #</th>
                         <th class="py-3 border-0">Amount</th>
@@ -66,6 +67,9 @@
                     @forelse($transactions as $txn)
                     <tr>
                         <td class="px-4">
+                            {{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}
+                        </td>
+                        <td>
                             <code class="text-primary fw-bold">{{ $txn->transaction_id }}</code>
                         </td>
                         <td>

@@ -58,7 +58,8 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">Booking #</th>
+                        <th class="px-4 py-3 border-0">SL</th>
+                        <th class="py-3 border-0">Booking #</th>
                         <th class="py-3 border-0">Customer</th>
                         <th class="py-3 border-0">Date & Slot</th>
                         <th class="py-3 border-0">Service Type</th>
@@ -72,6 +73,13 @@
                     @foreach($bookings as $booking)
                     <tr>
                         <td class="px-4">
+                            @if($bookings instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ ($bookings->currentPage() - 1) * $bookings->perPage() + $loop->iteration }}
+                            @else
+                                {{ $loop->iteration }}
+                            @endif
+                        </td>
+                        <td>
                             <span class="fw-bold text-dark">#{{ $booking->booking_number }}</span>
                         </td>
                         <td>

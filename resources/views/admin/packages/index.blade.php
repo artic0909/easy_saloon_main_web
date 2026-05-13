@@ -44,6 +44,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>SL</th>
                 <th>Package Details</th>
                 <th>Pricing Structure</th>
                 <th>Included Items</th>
@@ -53,6 +54,13 @@
         <tbody>
             @foreach($packages as $package)
             <tr>
+                <td>
+                    @if($packages instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                        {{ ($packages->currentPage() - 1) * $packages->perPage() + $loop->iteration }}
+                    @else
+                        {{ $loop->iteration }}
+                    @endif
+                </td>
                 <td>
                     <div class="d-flex align-items-center gap-3">
                         @if($package->image)

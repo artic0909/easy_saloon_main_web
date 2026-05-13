@@ -45,7 +45,7 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">ID</th>
+                        <th class="px-4 py-3 border-0">SL</th>
                         <th class="py-3 border-0">Parent Category</th>
                         <th class="py-3 border-0">Sub Category Name</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
@@ -54,7 +54,13 @@
                 <tbody>
                     @foreach($subcategories as $subcategory)
                     <tr>
-                        <td class="px-4 text-muted small">#{{ $subcategory->id }}</td>
+                        <td class="px-4">
+                            @if($subcategories instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ ($subcategories->currentPage() - 1) * $subcategories->perPage() + $loop->iteration }}
+                            @else
+                                {{ $loop->iteration }}
+                            @endif
+                        </td>
                         <td><span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold">{{ $subcategory->category->name }}</span></td>
                         <td class="fw-bold text-dark">{{ $subcategory->name }}</td>
                         <td class="px-4 text-end">

@@ -45,7 +45,8 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">Image</th>
+                        <th class="px-4 py-3 border-0">SL</th>
+                        <th class="py-3 border-0">Image</th>
                         <th class="py-3 border-0">Name</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
                     </tr>
@@ -54,6 +55,13 @@
                     @foreach($categories as $category)
                     <tr>
                         <td class="px-4">
+                            @if($categories instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ ($categories->currentPage() - 1) * $categories->perPage() + $loop->iteration }}
+                            @else
+                                {{ $loop->iteration }}
+                            @endif
+                        </td>
+                        <td>
                             @if($category->image)
                                 <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
                             @else

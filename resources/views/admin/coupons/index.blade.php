@@ -45,7 +45,8 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="px-4 py-3 border-0">Coupon</th>
+                        <th class="px-4 py-3 border-0">SL</th>
+                        <th class="py-3 border-0">Coupon</th>
                         <th class="py-3 border-0">Discount</th>
                         <th class="py-3 border-0 text-center">Min. Order</th>
                         <th class="py-3 border-0 text-center">Expiry</th>
@@ -57,6 +58,13 @@
                     @foreach($coupons as $coupon)
                     <tr>
                         <td class="px-4">
+                            @if($coupons instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ ($coupons->currentPage() - 1) * $coupons->perPage() + $loop->iteration }}
+                            @else
+                                {{ $loop->iteration }}
+                            @endif
+                        </td>
+                        <td>
                             <div class="fw-bold text-primary">{{ $coupon->code }}</div>
                             <div class="small text-muted">{{ $coupon->title }}</div>
                         </td>
