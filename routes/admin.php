@@ -54,6 +54,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/cms/banners', [CmsController::class, 'storeBanner'])->name('cms.banners.store');
     Route::delete('/cms/banners/{banner}', [CmsController::class, 'deleteBanner'])->name('cms.banners.destroy');
 
+    Route::resource('cms/promo', App\Http\Controllers\Admin\PromoBannerController::class)->names([
+        'index' => 'cms.promo.index',
+        'store' => 'cms.promo.store',
+        'update' => 'cms.promo.update',
+        'destroy' => 'cms.promo.destroy',
+    ]);
+
     // Profile Manage Routes
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/numbers', [ProfileController::class, 'numbers'])->name('numbers');

@@ -8,6 +8,7 @@ use App\Models\Feedback;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Banner;
+use App\Models\PromoBanner;
 
 class IndexController extends Controller
 {
@@ -18,7 +19,8 @@ class IndexController extends Controller
         $blogs = Blog::latest()->take(3)->get();
         $categories = Category::where('is_active', true)->latest()->get();
         $banners = Banner::where('is_active', true)->latest()->get();
+        $promo_banners = PromoBanner::where('is_active', true)->latest()->take(2)->get();
         
-        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories','banners'));
+        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories','banners', 'promo_banners'));
     }
 }

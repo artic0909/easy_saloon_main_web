@@ -521,9 +521,13 @@
                 <i class="bi bi-pie-chart-fill"></i>
                 <span>Reports</span>
             </a>
-            <a href="{{ route('admin.cms.banners.index') }}" class="nav-link {{ Route::is('admin.cms.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.cms.banners.index') }}" class="nav-link {{ Route::is('admin.cms.banners.*') ? 'active' : '' }}">
                 <i class="bi bi-layout-sidebar-inset"></i>
-                <span>CMS Content</span>
+                <span>Hero Banners</span>
+            </a>
+            <a href="{{ route('admin.cms.promo.index') }}" class="nav-link {{ Route::is('admin.cms.promo.*') ? 'active' : '' }}">
+                <i class="bi bi-megaphone-fill"></i>
+                <span>Promo Banners</span>
             </a>
         </div>
 

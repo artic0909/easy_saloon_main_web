@@ -163,6 +163,24 @@
     <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-2 gap-8">
+                @forelse($promo_banners as $promo)
+                <div class="relative rounded-[2.5rem] overflow-hidden min-h-[280px] group shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                    <img src="{{ asset('storage/' . $promo->image) }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="{{ $promo->title }}">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                    <div class="relative z-10 p-10 h-full flex flex-col justify-between items-start">
+                        <div>
+                            <p class="text-white/70 font-bold text-[10px] mb-2 uppercase tracking-[0.2em]">{{ $promo->subtitle }}</p>
+                            <h3 class="text-3xl md:text-4xl font-extrabold text-white mb-6 drop-shadow-2xl leading-tight">
+                                {!! preg_replace('/\*(.*?)\*/', '<span class="text-[#c6a664]">$1</span>', str_replace('|', '<br>', $promo->title)) !!}
+                            </h3>
+                        </div>
+                        <a href="{{ $promo->link ?? '#' }}" class="bg-white text-[#3d2b1f] px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-wider hover:bg-[#c6a664] hover:text-white transition-all transform hover:-translate-y-1 shadow-xl">
+                            Request Call Back
+                        </a>
+                    </div>
+                </div>
+                @empty
+                <!-- Fallback 1 -->
                 <div class="bg-[#e0f7fa] rounded-3xl p-10 flex flex-col justify-between items-start min-h-[250px]">
                     <div>
                         <p class="text-[#00838f] font-bold text-xs mb-1">Have questions about</p>
@@ -170,6 +188,7 @@
                     </div>
                     <button class="bg-[#00acc1] text-white px-8 py-3 rounded-xl font-bold">Request Call Back</button>
                 </div>
+                <!-- Fallback 2 -->
                 <div class="bg-[#f3e5f5] rounded-3xl p-10 flex flex-col justify-between items-start min-h-[250px]">
                     <div>
                         <p class="text-[#7b1fa2] font-bold text-xs mb-1">Have questions about</p>
@@ -177,6 +196,7 @@
                     </div>
                     <button class="bg-[#8e24aa] text-white px-8 py-3 rounded-xl font-bold">Request Call Back</button>
                 </div>
+                @endforelse
             </div>
         </div>
     </section>
