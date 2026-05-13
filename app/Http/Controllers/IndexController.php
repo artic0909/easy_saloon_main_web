@@ -9,6 +9,7 @@ use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Banner;
 use App\Models\PromoBanner;
+use App\Models\Service;
 
 class IndexController extends Controller
 {
@@ -20,7 +21,8 @@ class IndexController extends Controller
         $categories = Category::where('is_active', true)->latest()->get();
         $banners = Banner::where('is_active', true)->latest()->get();
         $promo_banners = PromoBanner::where('is_active', true)->latest()->take(2)->get();
+        $services = Service::where('is_active', true)->latest()->take(3)->get();
         
-        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories','banners', 'promo_banners'));
+        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories','banners', 'promo_banners', 'services'));
     }
 }
