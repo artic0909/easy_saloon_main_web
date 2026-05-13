@@ -55,7 +55,7 @@
                 </section>
 
                 <!-- Bookings Section Preview -->
-                <section class="bg-white rounded-[2.5rem] p-12 shadow-sm border border-gray-100">
+                <!-- <section class="bg-white rounded-[2.5rem] p-12 shadow-sm border border-gray-100">
                     <div class="flex justify-between items-center mb-10">
                         <h2 class="text-3xl font-bold text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">Recent Bookings</h2>
                         <a href="{{ route('dashboard.bookings') }}" class="text-xs font-bold text-[#c6a664] uppercase tracking-widest hover:text-[#3d2b1f] transition-all">View All</a>
@@ -88,7 +88,7 @@
                             </div>
                         @endforelse
                     </div>
-                </section>
+                </section> -->
             </main>
         </div>
     </div>
