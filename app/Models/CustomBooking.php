@@ -25,6 +25,11 @@ class CustomBooking extends Model
         'staff_id',
         'status',
         'notes',
+        'is_paid',
+        'payment_type',
+        'razorpay_order_id',
+        'razorpay_payment_id',
+        'razorpay_signature'
     ];
 
     protected $casts = [

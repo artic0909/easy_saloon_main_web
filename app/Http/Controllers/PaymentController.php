@@ -111,8 +111,9 @@ class PaymentController extends Controller
 
                 // Record Transaction
                 Transaction::create([
+                    'user_id' => auth()->id(),
                     'transaction_id' => $request->razorpay_payment_id,
-                    'booking_id' => ($type == 'regular' ? $booking->id : null), // Transactions table might only link to regular bookings, checking...
+                    'booking_id' => ($type == 'regular' ? $booking->id : null),
                     'status' => 'success',
                     'payment_mode' => 'razorpay',
                     'amount' => $type == 'regular' ? $booking->payable_amount : $booking->total_price,

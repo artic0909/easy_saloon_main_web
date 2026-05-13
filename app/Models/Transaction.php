@@ -11,9 +11,8 @@ class Transaction extends Model
         'booking_id',
         'transaction_id',
         'amount',
-        'payment_method',
+        'payment_mode',
         'status',
-        'type'
     ];
 
     public function user()

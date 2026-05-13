@@ -22,7 +22,10 @@ class Booking extends Model
         'payment_type',
         'address_id',
         'cancellation_reason',
-        'equipment'
+        'equipment',
+        'razorpay_order_id',
+        'razorpay_payment_id',
+        'razorpay_signature'
     ];
 
     protected $casts = [
