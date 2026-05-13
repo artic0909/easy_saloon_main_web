@@ -242,8 +242,11 @@
         <div class="bg-[#3d2b1f] rounded-[2rem] p-4 shadow-2xl border border-white/10 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div class="relative">
-                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                        <i class="bi bi-bag-check text-[#c6a664] text-xl"></i>
+                    <div class="w-12 h-12 bg-[#c6a664]/20 rounded-2xl flex items-center justify-center shadow-inner">
+                        <svg class="w-6 h-6 text-[#c6a664]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l3 3 3-3"></path>
+                        </svg>
                     </div>
                     <span class="absolute -top-2 -right-2 bg-[#c6a664] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg" x-text="selectedServices.length"></span>
                 </div>
