@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\Staff\DashboardController as StaffDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -30,12 +31,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     
-    // Role-based routes (examples)
+    // Role-based routes
     Route::middleware('role:admin')->get('/admin/dashboard', function() {
         return response()->json(['message' => 'Welcome Admin']);
     });
     
-    Route::middleware('role:staff')->get('/staff/dashboard', function() {
-        return response()->json(['message' => 'Welcome Staff']);
+    Route::middleware('role:staff')->group(function() {
+        Route::get('/staff/dashboard', [StaffDashboardController::class, 'index']);
     });
 });
