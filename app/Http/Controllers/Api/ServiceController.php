@@ -26,7 +26,8 @@ class ServiceController extends Controller
                 }
             });
         } elseif ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $categoryIds = is_array($request->category_id) ? $request->category_id : explode(',', $request->category_id);
+            $query->whereIn('category_id', $categoryIds);
         }
 
         // Filter by SubCategory (Support IDs or Slugs/Array)
@@ -40,7 +41,8 @@ class ServiceController extends Controller
                 }
             });
         } elseif ($request->filled('subcategory_id')) {
-            $query->where('sub_category_id', $request->subcategory_id);
+            $subcategoryIds = is_array($request->subcategory_id) ? $request->subcategory_id : explode(',', $request->subcategory_id);
+            $query->whereIn('sub_category_id', $subcategoryIds);
         }
 
         // Filter by Price
@@ -100,17 +102,36 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function bySubCategory($subCategoryId)
+    {
+        $services = Service::where('sub_category_id', $subCategoryId)
+            ->where('is_active', true)
+            ->get()
+            ->map(function ($service) {
+                if ($service->image && !filter_var($service->image, FILTER_VALIDATE_URL)) {
+                    $service->image = asset('storage/' . $service->image);
+                }
+                return $service;
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $services
+        ]);
+    }
+
     public function filters()
     {
         $categories = Category::where('is_active', true)->get();
         $subcategories = SubCategory::all();
+        $maxPrice = Service::max('sale_price') ?? 5000;
         
         return response()->json([
             'status' => 'success',
             'data' => [
                 'categories' => $categories,
                 'subcategories' => $subcategories,
-                'max_price' => Service::max('sale_price') ?? 5000,
+                'max_price' => $maxPrice + 1000, // Highest price + 1000
             ]
         ]);
     }
