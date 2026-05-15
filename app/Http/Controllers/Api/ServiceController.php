@@ -13,19 +13,37 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Service::where('is_active', true);
+        $query = Service::with(['category', 'subCategory'])->where('is_active', true);
 
-        // Filter by Category (ID or Slug)
-        if ($request->filled('category_id')) {
+        // Filter by Category (Support IDs or Slugs/Array)
+        if ($request->filled('category')) {
+            $categories = is_array($request->category) ? $request->category : explode(',', $request->category);
+            $query->whereHas('category', function($q) use ($categories) {
+                if (is_numeric($categories[0])) {
+                    $q->whereIn('id', $categories);
+                } else {
+                    $q->whereIn('slug', $categories);
+                }
+            });
+        } elseif ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        // Filter by SubCategory (ID)
-        if ($request->filled('subcategory_id')) {
+        // Filter by SubCategory (Support IDs or Slugs/Array)
+        if ($request->filled('subcategory')) {
+            $subcategories = is_array($request->subcategory) ? $request->subcategory : explode(',', $request->subcategory);
+            $query->whereHas('subCategory', function($q) use ($subcategories) {
+                if (is_numeric($subcategories[0])) {
+                    $q->whereIn('id', $subcategories);
+                } else {
+                    $q->whereIn('slug', $subcategories);
+                }
+            });
+        } elseif ($request->filled('subcategory_id')) {
             $query->where('sub_category_id', $request->subcategory_id);
         }
 
-        // Filter by Max Price
+        // Filter by Price
         if ($request->filled('max_price')) {
             $query->where('sale_price', '<=', $request->max_price);
         }
