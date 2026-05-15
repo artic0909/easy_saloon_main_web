@@ -25,7 +25,7 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
-        // Today's schedule matching web logic (Assigned to me OR Unassigned)
+        // Today's schedule (Assigned to me OR Unassigned)
         $today_bookings = Booking::where(function($q) use ($user) {
                 $q->where('staff_id', $user->id)->orWhereNull('staff_id');
             })
@@ -34,21 +34,11 @@ class DashboardController extends Controller
             ->orderBy('time_slot', 'asc')
             ->get();
 
-        // Recent appointments matching web logic (Assigned to me OR Unassigned)
-        $recent_appointments = Booking::where(function($q) use ($user) {
-                $q->where('staff_id', $user->id)->orWhereNull('staff_id');
-            })
-            ->with(['user:id,name,phone', 'items.service:id,name,image'])
-            ->latest()
-            ->limit(10)
-            ->get();
-
         return response()->json([
             'status' => 'success',
             'data' => [
                 'stats' => $stats,
-                'today_bookings' => $today_bookings,
-                'recent_appointments' => $recent_appointments
+                'today_bookings' => $today_bookings
             ]
         ]);
     }
