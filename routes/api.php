@@ -13,6 +13,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/banners', [BannerController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/services', [ServiceController::class, 'index']);
+Route::get('/services/filters', [ServiceController::class, 'filters']);
 Route::get('/services/category/{id}', [ServiceController::class, 'byCategory']);
 Route::get('/coupons', [CouponController::class, 'index']);
 Route::post('/coupons/verify', [CouponController::class, 'verify']);
