@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,9 @@ Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/filters', [ServiceController::class, 'filters']);
 Route::get('/services/category/{id}', [ServiceController::class, 'byCategory']);
 Route::get('/services/subcategory/{id}', [ServiceController::class, 'bySubCategory']);
+Route::get('/packages', [PackageController::class, 'index']);
+Route::get('/packages/custom-data', [PackageController::class, 'customPackageData']);
+Route::get('/packages/{id}', [PackageController::class, 'show']);
 Route::get('/coupons', [CouponController::class, 'index']);
 Route::post('/coupons/verify', [CouponController::class, 'verify']);
 
