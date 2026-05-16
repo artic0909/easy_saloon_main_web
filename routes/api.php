@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
     Route::post('/bookings/service', [App\Http\Controllers\Api\BookingController::class, 'storeServiceBooking']);
+    Route::post('/bookings/package', [App\Http\Controllers\Api\BookingController::class, 'storePackageBooking']);
     
     // Role-based routes
     Route::middleware('role:admin')->get('/admin/dashboard', function() {

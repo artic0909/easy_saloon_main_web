@@ -65,4 +65,59 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
+    public function storePackageBooking(Request $request)
+    {
+        $request->validate([
+            'package_id' => 'required|exists:packages,id',
+            'type' => 'required|in:home,salon',
+            'date' => 'required|date',
+            'slot' => 'required|string',
+        ]);
+
+        $package = \App\Models\Package::with('items.service')->findOrFail($request->package_id);
+
+        try {
+            DB::beginTransaction();
+
+            $booking = Booking::create([
+                'user_id' => auth()->id(),
+                'booking_number' => 'PBK-' . strtoupper(Str::random(8)),
+                'booking_date' => $request->date,
+                'time_slot' => $request->slot,
+                'service_type' => $request->type,
+                'total_price' => $package->sale_price,
+                'payable_amount' => $package->sale_price,
+                'status' => 'pending',
+                'is_paid' => false,
+                'payment_type' => 'cod',
+            ]);
+
+            foreach ($package->items as $item) {
+                BookingItem::create([
+                    'booking_id' => $booking->id,
+                    'service_id' => $item->service_id,
+                    'package_id' => $package->id,
+                    'item_type' => 'package',
+                    'price' => $item->service->sale_price ?? 0,
+                    'quantity' => 1,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Package booking created successfully',
+                'data' => $booking->load('items')
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create booking: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
