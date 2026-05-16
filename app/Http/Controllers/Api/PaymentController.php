@@ -30,9 +30,11 @@ class PaymentController extends Controller
             $booking = CustomBooking::findOrFail($request->booking_id);
         }
 
+        $amount = isset($booking->payable_amount) ? $booking->payable_amount : $booking->total_price;
+
         $orderData = [
             'receipt'         => $booking->booking_number,
-            'amount'          => $booking->payable_amount * 100, // amount in the smallest currency unit
+            'amount'          => $amount * 100, // amount in the smallest currency unit
             'currency'        => 'INR'
         ];
 

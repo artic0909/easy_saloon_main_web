@@ -180,7 +180,7 @@ class BookingController extends Controller
                 'total_duration' => $totalDuration,
                 'status' => 'pending',
                 'is_paid' => false,
-                'payment_type' => 'cod',
+                'payment_type' => $request->payment_method ?? 'cod',
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
             ]);
