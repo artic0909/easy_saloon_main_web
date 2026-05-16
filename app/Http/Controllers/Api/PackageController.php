@@ -44,7 +44,7 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        $package = Package::with('items.service')
+        $package = Package::with('items.service.subCategory.equipment')
             ->where(function($query) use ($id) {
                 if (is_numeric($id)) {
                     $query->where('id', $id);

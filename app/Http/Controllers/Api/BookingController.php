@@ -20,6 +20,7 @@ class BookingController extends Controller
             'date' => 'required|date',
             'slot' => 'required|string',
             'equipment' => 'nullable|array',
+            'address_id' => 'nullable|exists:addresses,id',
         ]);
 
         $service = Service::findOrFail($request->service_id);
@@ -32,13 +33,14 @@ class BookingController extends Controller
                 'booking_number' => 'BK-' . strtoupper(Str::random(8)),
                 'booking_date' => $request->date,
                 'time_slot' => $request->slot,
-                'service_type' => $request->type,
+                'service_type' => $request->type == 'salon' ? 'salon_visit' : 'home',
                 'total_price' => $service->sale_price,
                 'payable_amount' => $service->sale_price,
                 'status' => 'pending',
                 'is_paid' => false,
-                'payment_type' => 'cod', // Default for now
+                'payment_type' => 'cod',
                 'equipment' => $request->equipment,
+                'address_id' => $request->type == 'home' ? $request->address_id : null,
             ]);
 
             BookingItem::create([
@@ -50,6 +52,13 @@ class BookingController extends Controller
             ]);
 
             DB::commit();
+
+            // Send Notification
+            try {
+                auth()->user()->notify(new \App\Notifications\BookingConfirmation($booking));
+            } catch (\Exception $e) {
+                // Silently fail notification if mail not configured
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -73,6 +82,8 @@ class BookingController extends Controller
             'type' => 'required|in:home,salon',
             'date' => 'required|date',
             'slot' => 'required|string',
+            'equipment' => 'nullable|array',
+            'address_id' => 'nullable|exists:addresses,id',
         ]);
 
         $package = \App\Models\Package::with('items.service')->findOrFail($request->package_id);
@@ -82,29 +93,47 @@ class BookingController extends Controller
 
             $booking = Booking::create([
                 'user_id' => auth()->id(),
-                'booking_number' => 'PBK-' . strtoupper(Str::random(8)),
+                'booking_number' => 'BK-' . strtoupper(Str::random(8)),
                 'booking_date' => $request->date,
                 'time_slot' => $request->slot,
-                'service_type' => $request->type,
+                'service_type' => $request->type == 'salon' ? 'salon_visit' : 'home',
                 'total_price' => $package->sale_price,
                 'payable_amount' => $package->sale_price,
                 'status' => 'pending',
                 'is_paid' => false,
                 'payment_type' => 'cod',
+                'equipment' => $request->equipment,
+                'address_id' => $request->type == 'home' ? $request->address_id : null,
             ]);
 
-            foreach ($package->items as $item) {
+            // Record the package as a main item
+            BookingItem::create([
+                'booking_id' => $booking->id,
+                'package_id' => $package->id,
+                'item_type' => 'package',
+                'price' => $package->sale_price,
+                'quantity' => 1,
+            ]);
+
+            // Record individual services included (with 0 price to match web)
+            foreach ($package->items as $pItem) {
                 BookingItem::create([
                     'booking_id' => $booking->id,
-                    'service_id' => $item->service_id,
-                    'package_id' => $package->id,
-                    'item_type' => 'package',
-                    'price' => $item->service->sale_price ?? 0,
+                    'service_id' => $pItem->service_id,
+                    'item_type' => 'service',
+                    'price' => 0.00,
                     'quantity' => 1,
                 ]);
             }
 
             DB::commit();
+
+            // Send Notification
+            try {
+                auth()->user()->notify(new \App\Notifications\BookingConfirmation($booking));
+            } catch (\Exception $e) {
+                // Silently fail notification
+            }
 
             return response()->json([
                 'status' => 'success',
