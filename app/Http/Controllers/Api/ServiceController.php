@@ -120,6 +120,35 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $service = Service::with(['category', 'subCategory.equipment'])
+            ->where(function($query) use ($id) {
+                if (is_numeric($id)) {
+                    $query->where('id', $id);
+                } else {
+                    $query->where('slug', $id);
+                }
+            })
+            ->first();
+
+        if (!$service) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Service not found'
+            ], 404);
+        }
+
+        if ($service->image && !filter_var($service->image, FILTER_VALIDATE_URL)) {
+            $service->image = asset('storage/' . $service->image);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $service
+        ]);
+    }
+
     public function filters()
     {
         $categories = Category::where('is_active', true)->get();

@@ -16,6 +16,7 @@ Route::get('/banners', [BannerController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/filters', [ServiceController::class, 'filters']);
+Route::get('/services/{id}', [ServiceController::class, 'show']);
 Route::get('/services/category/{id}', [ServiceController::class, 'byCategory']);
 Route::get('/services/subcategory/{id}', [ServiceController::class, 'bySubCategory']);
 Route::get('/packages', [PackageController::class, 'index']);
@@ -30,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+
+    Route::post('/bookings/service', [App\Http\Controllers\Api\BookingController::class, 'storeServiceBooking']);
     
     // Role-based routes
     Route::middleware('role:admin')->get('/admin/dashboard', function() {
