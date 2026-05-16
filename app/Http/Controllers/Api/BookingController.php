@@ -149,4 +149,71 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
+    public function storeCustomPackageBooking(Request $request)
+    {
+        $request->validate([
+            'service_ids' => 'required|array',
+            'service_ids.*' => 'exists:services,id',
+            'type' => 'required|in:home,salon',
+            'date' => 'required|date',
+            'slot' => 'required|string',
+            'equipment' => 'nullable|array',
+            'address_id' => 'nullable|exists:addresses,id',
+        ]);
+
+        $services = Service::whereIn('id', $request->service_ids)->get();
+        $totalPrice = $services->sum('sale_price');
+
+        try {
+            DB::beginTransaction();
+
+            $booking = Booking::create([
+                'user_id' => auth()->id(),
+                'booking_number' => 'CBK-' . strtoupper(Str::random(8)),
+                'booking_date' => $request->date,
+                'time_slot' => $request->slot,
+                'service_type' => $request->type == 'salon' ? 'salon_visit' : 'home',
+                'total_price' => $totalPrice,
+                'payable_amount' => $totalPrice,
+                'status' => 'pending',
+                'is_paid' => false,
+                'payment_type' => 'cod',
+                'equipment' => $request->equipment,
+                'address_id' => $request->type == 'home' ? $request->address_id : null,
+                'is_custom' => true,
+            ]);
+
+            foreach ($services as $service) {
+                BookingItem::create([
+                    'booking_id' => $booking->id,
+                    'service_id' => $service->id,
+                    'item_type' => 'service',
+                    'price' => $service->sale_price,
+                    'quantity' => 1,
+                ]);
+            }
+
+            DB::commit();
+
+            try {
+                auth()->user()->notify(new \App\Notifications\BookingConfirmation($booking));
+            } catch (\Exception $e) {
+                // Silently fail notification
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Custom package booking created successfully',
+                'data' => $booking->load('items.service')
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create booking: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

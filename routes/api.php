@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/bookings/service', [App\Http\Controllers\Api\BookingController::class, 'storeServiceBooking']);
     Route::post('/bookings/package', [App\Http\Controllers\Api\BookingController::class, 'storePackageBooking']);
+    Route::post('/bookings/custom-package', [App\Http\Controllers\Api\BookingController::class, 'storeCustomPackageBooking']);
     
     // Role-based routes
     Route::middleware('role:admin')->get('/admin/dashboard', function() {
