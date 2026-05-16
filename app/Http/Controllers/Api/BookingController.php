@@ -164,35 +164,26 @@ class BookingController extends Controller
 
         $services = Service::whereIn('id', $request->service_ids)->get();
         $totalPrice = $services->sum('sale_price');
+        $totalDuration = $services->sum('duration_minutes');
 
         try {
             DB::beginTransaction();
 
-            $booking = Booking::create([
+            $booking = \App\Models\CustomBooking::create([
                 'user_id' => auth()->id(),
                 'booking_number' => 'CBK-' . strtoupper(Str::random(8)),
+                'service_ids' => $request->service_ids,
                 'booking_date' => $request->date,
                 'time_slot' => $request->slot,
-                'service_type' => $request->type == 'salon' ? 'salon_visit' : 'home',
+                'service_type' => $request->type,
                 'total_price' => $totalPrice,
-                'payable_amount' => $totalPrice,
+                'total_duration' => $totalDuration,
                 'status' => 'pending',
                 'is_paid' => false,
                 'payment_type' => 'cod',
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
-                'is_custom' => true,
             ]);
-
-            foreach ($services as $service) {
-                BookingItem::create([
-                    'booking_id' => $booking->id,
-                    'service_id' => $service->id,
-                    'item_type' => 'service',
-                    'price' => $service->sale_price,
-                    'quantity' => 1,
-                ]);
-            }
 
             DB::commit();
 
@@ -205,7 +196,8 @@ class BookingController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Custom package booking created successfully',
-                'data' => $booking->load('items.service')
+                'data' => $booking,
+                'booking_type' => 'custom'
             ]);
 
         } catch (\Exception $e) {

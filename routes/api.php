@@ -31,6 +31,11 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/payments/create-order', [App\Http\Controllers\Api\PaymentController::class, 'createOrder']);
+    Route::post('/payments/verify', [App\Http\Controllers\Api\PaymentController::class, 'verifyPayment']);
+    
+    Route::get('/addresses', [App\Http\Controllers\Api\AddressController::class, 'index']);
+    Route::post('/addresses', [App\Http\Controllers\Api\AddressController::class, 'store']);
 
     Route::post('/bookings/service', [App\Http\Controllers\Api\BookingController::class, 'storeServiceBooking']);
     Route::post('/bookings/package', [App\Http\Controllers\Api\BookingController::class, 'storePackageBooking']);
