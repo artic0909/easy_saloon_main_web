@@ -47,7 +47,8 @@ class PaymentController extends Controller
                 'status' => 'success',
                 'order_id' => $razorpayOrder['id'],
                 'amount' => $orderData['amount'],
-                'currency' => $orderData['currency']
+                'currency' => $orderData['currency'],
+                'razorpay_key' => config('services.razorpay.key')
             ]);
         } catch (\Exception $e) {
             return response()->json([
