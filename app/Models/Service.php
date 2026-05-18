@@ -18,11 +18,12 @@ class Service extends Model
         'sale_price',
         'duration_minutes',
         'is_active',
-        'image',
+        'images',
     ];
 
     protected $casts = [
         'what_included' => 'array',
+        'images' => 'array',
     ];
 
     public function category(): BelongsTo

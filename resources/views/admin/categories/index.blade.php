@@ -126,8 +126,8 @@
                                             @forelse($category->services as $service)
                                             <tr>
                                                 <td class="ps-4">
-                                                    @if($service->image)
-                                                        <img src="{{ asset('storage/' . $service->image) }}" class="rounded-3 shadow-sm" style="width: 40px; height: 40px; object-fit: cover;">
+                                                    @if(!empty($service->images))
+                                                        <img src="{{ asset('storage/' . $service->images[0]) }}" class="rounded-3 shadow-sm" style="width: 40px; height: 40px; object-fit: cover;">
                                                     @else
                                                         <div class="bg-light rounded-3 d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px;">
                                                             <i class="bi bi-image text-muted"></i>
@@ -256,11 +256,10 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label fw-bold">Service Image</label>
-                            <div class="mb-3" id="service_image_preview" style="display: none;">
-                                <img src="" class="rounded-3 shadow-sm" style="width: 150px;">
-                            </div>
-                            <input type="file" name="image" class="form-control rounded-3 py-2">
+                            <label class="form-label fw-bold">Service Images</label>
+                            <div class="mb-3 d-flex flex-wrap gap-2" id="service_images_preview"></div>
+                            <input type="file" name="images[]" class="form-control rounded-3 py-2" multiple accept="image/*">
+                            <small class="text-muted">You can select multiple images.</small>
                         </div>
                         
                         <div class="col-12 mt-4 text-end">
@@ -286,7 +285,9 @@
             </div>
             <div class="modal-body p-4">
                 <div class="d-flex align-items-center gap-4 mb-4">
-                    <img id="view_service_image" src="" class="rounded-4 shadow-sm" style="width: 120px; height: 120px; object-fit: cover;">
+                    <div id="view_service_images_carousel" class="d-flex gap-2 overflow-auto pb-2" style="max-width: 300px;">
+                        <img id="view_service_image_main" src="" class="rounded-4 shadow-sm" style="width: 120px; height: 120px; object-fit: cover; flex-shrink: 0;">
+                    </div>
                     <div>
                         <h3 class="fw-black mb-1" id="view_service_name"></h3>
                         <div class="text-muted mb-2" id="view_service_category"></div>
@@ -389,7 +390,7 @@
                 <button type="button" class="btn btn-outline-success add-field border"><i class="bi bi-plus-lg"></i></button>
             </div>
         `);
-        $('#service_image_preview').hide();
+        $('#service_images_preview').empty();
         
         $('#serviceModal').modal('show');
     }
@@ -435,11 +436,20 @@
         // Details
         $('#service_details').summernote('code', service.details || '');
         
-        // Image
-        if (service.image) {
-            $('#service_image_preview').show().find('img').attr('src', '/storage/' + service.image);
-        } else {
-            $('#service_image_preview').hide();
+        // Images
+        $('#service_images_preview').empty();
+        if (service.images && service.images.length > 0) {
+            service.images.forEach(function(img) {
+                $('#service_images_preview').append(`
+                    <div class="position-relative d-inline-block">
+                        <img src="/storage/${img}" class="rounded-3 shadow-sm" style="width: 100px; height: 100px; object-fit: cover;">
+                        <input type="hidden" name="existing_images[]" value="${img}">
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle p-1" style="transform: translate(30%, -30%); line-height: 1;" onclick="this.parentElement.remove()">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                `);
+            });
         }
         
         $('#serviceModal').modal('show');
@@ -452,10 +462,15 @@
         $('#view_service_sale_price').text(service.sale_price);
         $('#view_service_original_price').text(service.original_price);
         
-        if (service.image) {
-            $('#view_service_image').attr('src', '/storage/' + service.image).show();
+        if (service.images && service.images.length > 0) {
+            $('#view_service_images_carousel').empty();
+            service.images.forEach(function(img) {
+                $('#view_service_images_carousel').append(`
+                    <img src="/storage/${img}" class="rounded-4 shadow-sm" style="width: 120px; height: 120px; object-fit: cover; flex-shrink: 0;">
+                `);
+            });
         } else {
-            $('#view_service_image').attr('src', 'https://placehold.co/120x120?text=No+Image').show();
+            $('#view_service_images_carousel').html(`<img src="https://placehold.co/120x120?text=No+Image" class="rounded-4 shadow-sm" style="width: 120px; height: 120px; object-fit: cover; flex-shrink: 0;">`);
         }
 
         $('#view_service_details').html(service.details || 'No description provided.');
@@ -529,7 +544,7 @@
             }
 
             // Since it's a validation error, we don't reload the image preview, we just hide it (or we could show the old image if we had it, but standard forms just ask to re-upload or keep existing if edit)
-            $('#service_image_preview').hide();
+            $('#service_images_preview').empty();
             
             $('#serviceModal').modal('show');
             

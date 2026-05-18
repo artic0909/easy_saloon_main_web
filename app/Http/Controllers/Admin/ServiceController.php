@@ -62,16 +62,21 @@ class ServiceController extends Controller
             'details' => 'nullable|string',
             'what_included' => 'nullable|array',
             'what_included.*' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:2048',
         ]);
 
-        $data = $request->except(['image', 'equipment', 'what_included']);
+        $data = $request->except(['images', 'equipment', 'what_included', 'image']);
         $data['what_included'] = array_filter($request->what_included ?? []);
         $data['slug'] = Str::slug($request->name);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('services', 'public');
+        $uploadedImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $uploadedImages[] = $file->store('services', 'public');
+            }
         }
+        $data['images'] = $uploadedImages;
 
         $service = Service::create($data);
 
@@ -100,19 +105,33 @@ class ServiceController extends Controller
             'details' => 'nullable|string',
             'what_included' => 'nullable|array',
             'what_included.*' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:2048',
+            'existing_images' => 'nullable|array',
+            'existing_images.*' => 'string'
         ]);
 
-        $data = $request->except(['image', 'equipment', 'what_included']);
+        $data = $request->except(['images', 'equipment', 'what_included', 'image', 'existing_images']);
         $data['what_included'] = array_filter($request->what_included ?? []);
         $data['slug'] = Str::slug($request->name);
 
-        if ($request->hasFile('image')) {
-            if ($service->image) {
-                Storage::disk('public')->delete($service->image);
+        $uploadedImages = $request->existing_images ?? [];
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $uploadedImages[] = $file->store('services', 'public');
             }
-            $data['image'] = $request->file('image')->store('services', 'public');
         }
+
+        if ($service->images) {
+            foreach ($service->images as $oldImage) {
+                if (!in_array($oldImage, $uploadedImages)) {
+                    Storage::disk('public')->delete($oldImage);
+                }
+            }
+        }
+        
+        $data['images'] = $uploadedImages;
 
         $service->update($data);
 
@@ -127,8 +146,10 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
-        if ($service->image) {
-            Storage::disk('public')->delete($service->image);
+        if ($service->images) {
+            foreach ($service->images as $img) {
+                Storage::disk('public')->delete($img);
+            }
         }
         $service->delete();
         return redirect()->route('admin.categories.index')->with('success', 'Service deleted successfully.');
