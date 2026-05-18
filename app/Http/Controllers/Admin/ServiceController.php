@@ -36,20 +36,17 @@ class ServiceController extends Controller
             $services = $query->latest()->paginate($perPage)->withQueryString();
         }
 
-        return view('admin.services.index', compact('services'));
+        return redirect()->route('admin.categories.index');
     }
 
     public function show(Service $service)
     {
-        $service->load(['category', 'equipment']);
-        return view('admin.services.show', compact('service'));
+        return redirect()->route('admin.categories.index');
     }
 
     public function create()
     {
-        $categories = Category::all();
-        $equipment = Equipment::all();
-        return view('admin.services.create', compact('categories', 'equipment'));
+        return redirect()->route('admin.categories.index');
     }
 
     public function store(Request $request)
@@ -82,14 +79,12 @@ class ServiceController extends Controller
             $service->equipment()->sync($request->equipment);
         }
 
-        return redirect()->route('admin.services.index')->with('success', 'Service created successfully.');
+        return redirect()->route('admin.categories.index')->with('success', 'Service created successfully.');
     }
 
     public function edit(Service $service)
     {
-        $categories = Category::all();
-        $equipment = Equipment::all();
-        return view('admin.services.edit', compact('service', 'categories', 'equipment'));
+        return redirect()->route('admin.categories.index');
     }
 
     public function update(Request $request, Service $service)
@@ -127,7 +122,7 @@ class ServiceController extends Controller
             $service->equipment()->sync([]);
         }
 
-        return redirect()->route('admin.services.index')->with('success', 'Service updated successfully.');
+        return redirect()->route('admin.categories.index')->with('success', 'Service updated successfully.');
     }
 
     public function destroy(Service $service)
@@ -136,7 +131,7 @@ class ServiceController extends Controller
             Storage::disk('public')->delete($service->image);
         }
         $service->delete();
-        return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
+        return redirect()->route('admin.categories.index')->with('success', 'Service deleted successfully.');
     }
 
 

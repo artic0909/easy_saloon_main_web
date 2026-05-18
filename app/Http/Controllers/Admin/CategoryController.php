@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::query();
+        $query = Category::with('services.equipment');
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -23,7 +23,9 @@ class CategoryController extends Controller
             $categories = $query->latest()->paginate($perPage)->withQueryString();
         }
 
-        return view('admin.categories.index', compact('categories'));
+        $equipments = \App\Models\Equipment::all();
+
+        return view('admin.categories.index', compact('categories', 'equipments'));
     }
 
     public function create()
