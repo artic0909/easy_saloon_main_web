@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::with('services.equipment');
+        $query = Category::with(['services.equipment', 'services.category']);
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');

@@ -150,10 +150,10 @@
                                                         <button type="button" class="btn-action btn-edit" onclick='openEditServiceModal(@json($service))' title="Edit Service">
                                                             <i class="bi bi-pencil"></i>
                                                         </button>
-                                                        <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="d-inline">
+                                                        <form id="delete-service-form-{{ $service->id }}" action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn-action btn-delete" onclick="if(confirm('Are you sure?')) this.closest('form').submit()" title="Delete Service">
+                                                            <button type="button" class="btn-action btn-delete" onclick="confirmDelete('{{ $service->id }}', 'delete-service-form-{{ $service->id }}')" title="Delete Service">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
@@ -193,6 +193,7 @@
                 <form id="serviceForm" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="_method" id="serviceMethod" value="POST">
+                    <input type="hidden" name="service_id" id="service_id" value="">
                     
                     <div class="row g-4">
                         <div class="col-md-6">
@@ -373,6 +374,7 @@
     function openAddServiceModal(categoryId, categoryName) {
         $('#serviceForm').attr('action', '{{ route('admin.services.store') }}');
         $('#serviceMethod').val('POST');
+        $('#service_id').val('');
         $('#serviceModalTitle').text('Add New Service in ' + categoryName);
         
         // Clear form
@@ -395,6 +397,7 @@
     function openEditServiceModal(service) {
         $('#serviceForm').attr('action', '/admin/services/' + service.id);
         $('#serviceMethod').val('PUT');
+        $('#service_id').val(service.id);
         $('#serviceModalTitle').text('Edit Service');
         
         $('#service_name').val(service.name);
@@ -479,6 +482,64 @@
 
         $('#viewServiceModal').modal('show');
     }
+
+    @if($errors->any() && old('category_id'))
+        // Auto-reopen modal if there are validation errors on service form submission
+        $(document).ready(function() {
+            let isEdit = '{{ old("_method") }}' === 'PUT';
+            let actionUrl = isEdit ? '/admin/services/{{ old("service_id") }}' : '{{ route("admin.services.store") }}';
+            
+            $('#serviceForm').attr('action', actionUrl);
+            $('#serviceMethod').val('{{ old("_method") }}');
+            $('#serviceModalTitle').text(isEdit ? 'Edit Service' : 'Add New Service');
+            
+            $('#service_name').val(@json(old("name")));
+            $('#service_category_id').val('{{ old("category_id") }}');
+            
+            let oldEquipments = @json(old('equipment', []));
+            $('#service_equipment').val(oldEquipments).trigger('change');
+            
+            $('#service_original_price').val('{{ old("original_price") }}');
+            $('#service_sale_price').val('{{ old("sale_price") }}');
+            $('#service_duration_minutes').val('{{ old("duration_minutes") }}');
+            
+            $('#service_details').summernote('code', @json(old('details', '')));
+            
+            // what included
+            let oldIncluded = @json(old('what_included', ['']));
+            $('#what_included_container').empty();
+            if(oldIncluded.length > 0 && oldIncluded[0] !== '') {
+                oldIncluded.forEach(function(item) {
+                    $('#what_included_container').append(`
+                        <div class="input-group mb-2 what-included-item">
+                            <input type="text" name="what_included[]" class="form-control rounded-start-3" value="${item.replace(/"/g, '&quot;')}">
+                            <button type="button" class="btn btn-outline-danger remove-field border"><i class="bi bi-x-lg"></i></button>
+                            <button type="button" class="btn btn-outline-success add-field border"><i class="bi bi-plus-lg"></i></button>
+                        </div>
+                    `);
+                });
+            } else {
+                $('#what_included_container').html(`
+                    <div class="input-group mb-2 what-included-item">
+                        <input type="text" name="what_included[]" class="form-control rounded-start-3" placeholder="Enter what is included...">
+                        <button type="button" class="btn btn-outline-danger remove-field border"><i class="bi bi-x-lg"></i></button>
+                        <button type="button" class="btn btn-outline-success add-field border"><i class="bi bi-plus-lg"></i></button>
+                    </div>
+                `);
+            }
+
+            // Since it's a validation error, we don't reload the image preview, we just hide it (or we could show the old image if we had it, but standard forms just ask to re-upload or keep existing if edit)
+            $('#service_image_preview').hide();
+            
+            $('#serviceModal').modal('show');
+            
+            Swal.fire({
+                title: 'Validation Error',
+                html: '<ul class="text-start mb-0 ps-3">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                icon: 'error'
+            });
+        });
+    @endif
 </script>
 @endsection
 @endsection
