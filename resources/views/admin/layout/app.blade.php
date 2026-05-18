@@ -472,11 +472,7 @@
                 <span>Discounts</span>
             </a>
 
-            <!-- Sub Category wise -->
-            <a href="{{ route('admin.subcategories.index') }}" class="nav-link {{ Route::is('admin.subcategories.*') ? 'active' : '' }}">
-                <i class="bi bi-layers-fill"></i>
-                <span>Sub Categories</span>
-            </a>
+
 
             <!-- Equipment -->
             <a href="{{ route('admin.equipment_uses.index') }}" class="nav-link {{ Route::is('admin.equipment_uses.*') ? 'active' : '' }}">

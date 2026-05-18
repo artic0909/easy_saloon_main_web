@@ -34,18 +34,7 @@
                             @error('category_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Sub Category</label>
-                            <select name="sub_category_id" id="sub_category" class="form-select select2 rounded-3 py-2 @error('sub_category_id') is-invalid @enderror" data-placeholder="Select Sub Category">
-                                <option value=""></option>
-                                @foreach($subcategories as $subcategory)
-                                    <option value="{{ $subcategory->id }}" {{ (old('sub_category_id', $service->sub_category_id ?? '') == $subcategory->id) ? 'selected' : '' }}>
-                                        {{ $subcategory->category->name }} > {{ $subcategory->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('sub_category_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                        </div>
+
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Equipment Use</label>
@@ -149,50 +138,7 @@
             }
         });
 
-        // Dependent Dropdowns
-        $('#category').on('change', function() {
-            var category_id = $(this).val();
-            if (category_id) {
-                $.ajax({
-                    url: '/admin/get-subcategories/' + category_id,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('#sub_category').empty();
-                        $('#sub_category').append('<option value=""></option>');
-                        $.each(data, function(key, value) {
-                            $('#sub_category').append('<option value="' + value.id + '">' + value.name + '</option>');
-                        });
-                        $('#sub_category').trigger('change');
-                    }
-                });
-            } else {
-                $('#sub_category').empty();
-                $('#sub_category').append('<option value=""></option>');
-                $('#sub_category').trigger('change');
-            }
-        });
 
-        $('#sub_category').on('change', function() {
-            var subcategory_id = $(this).val();
-            if (subcategory_id) {
-                $.ajax({
-                    url: '/admin/get-equipment/' + subcategory_id,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('#equipment').empty();
-                        $.each(data, function(key, value) {
-                            $('#equipment').append('<option value="' + value.id + '">' + value.name + '</option>');
-                        });
-                        $('#equipment').trigger('change');
-                    }
-                });
-            } else {
-                $('#equipment').empty();
-                $('#equipment').trigger('change');
-            }
-        });
 
         // Dynamic "What Included" fields
         $(document).on('click', '.add-field', function() {

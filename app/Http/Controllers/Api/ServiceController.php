@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 
 use App\Models\Service;
 use App\Models\Category;
-use App\Models\SubCategory;
+
 
 class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Service::with(['category', 'subCategory'])->where('is_active', true);
+        $query = Service::with(['category'])->where('is_active', true);
 
         // Filter by Category (Support IDs or Slugs/Array)
         if ($request->filled('category')) {
@@ -30,20 +30,6 @@ class ServiceController extends Controller
             $query->whereIn('category_id', $categoryIds);
         }
 
-        // Filter by SubCategory (Support IDs or Slugs/Array)
-        if ($request->filled('subcategory')) {
-            $subcategories = is_array($request->subcategory) ? $request->subcategory : explode(',', $request->subcategory);
-            $query->whereHas('subCategory', function($q) use ($subcategories) {
-                if (is_numeric($subcategories[0])) {
-                    $q->whereIn('id', $subcategories);
-                } else {
-                    $q->whereIn('slug', $subcategories);
-                }
-            });
-        } elseif ($request->filled('subcategory_id')) {
-            $subcategoryIds = is_array($request->subcategory_id) ? $request->subcategory_id : explode(',', $request->subcategory_id);
-            $query->whereIn('sub_category_id', $subcategoryIds);
-        }
 
         // Filter by Price
         if ($request->filled('max_price')) {
@@ -102,27 +88,11 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function bySubCategory($subCategoryId)
-    {
-        $services = Service::where('sub_category_id', $subCategoryId)
-            ->where('is_active', true)
-            ->get()
-            ->map(function ($service) {
-                if ($service->image && !filter_var($service->image, FILTER_VALIDATE_URL)) {
-                    $service->image = asset('storage/' . $service->image);
-                }
-                return $service;
-            });
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $services
-        ]);
-    }
 
     public function show($id)
     {
-        $service = Service::with(['category', 'subCategory.equipment'])
+        $service = Service::with(['category'])
             ->where(function($query) use ($id) {
                 if (is_numeric($id)) {
                     $query->where('id', $id);
@@ -152,14 +122,12 @@ class ServiceController extends Controller
     public function filters()
     {
         $categories = Category::where('is_active', true)->get();
-        $subcategories = SubCategory::all();
         $maxPrice = Service::max('sale_price') ?? 5000;
         
         return response()->json([
             'status' => 'success',
             'data' => [
                 'categories' => $categories,
-                'subcategories' => $subcategories,
                 'max_price' => $maxPrice + 1000, // Highest price + 1000
             ]
         ]);

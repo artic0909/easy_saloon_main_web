@@ -18,7 +18,7 @@ Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/filters', [ServiceController::class, 'filters']);
 Route::get('/services/{id}', [ServiceController::class, 'show']);
 Route::get('/services/category/{id}', [ServiceController::class, 'byCategory']);
-Route::get('/services/subcategory/{id}', [ServiceController::class, 'bySubCategory']);
+
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/custom-data', [PackageController::class, 'customPackageData']);
 Route::get('/packages/{id}', [PackageController::class, 'show']);

@@ -23,7 +23,7 @@
                     <img src="{{ $service->image ? asset('storage/' . $service->image) : 'https://placehold.co/200x200?text=Service' }}" class="rounded-4 shadow-sm" style="width: 120px; height: 120px; object-fit: cover;">
                     <div>
                         <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
-                            {{ $service->category->name }} &gt; {{ $service->subCategory->name }}
+                            {{ $service->category->name }}
                         </span>
                         <h2 class="fw-black mb-1">{{ $service->name }}</h2>
                         <div class="text-muted small">Created on {{ $service->created_at->format('M d, Y') }}</div>
@@ -96,7 +96,6 @@
                             </div>
                             <div>
                                 <div class="fw-bold small">{{ $item->name }}</div>
-                                <div class="text-muted" style="font-size: 10px;">{{ $item->subCategory->name }}</div>
                             </div>
                         </div>
                     @empty

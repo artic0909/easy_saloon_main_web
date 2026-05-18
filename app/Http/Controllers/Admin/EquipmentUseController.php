@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Equipment;
-use App\Models\SubCategory;
 
 class EquipmentUseController extends Controller
 {

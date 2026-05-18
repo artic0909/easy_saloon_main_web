@@ -15,7 +15,7 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Service::with(['category', 'subCategory']);
+        $query = Service::with(['category']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -41,16 +41,15 @@ class ServiceController extends Controller
 
     public function show(Service $service)
     {
-        $service->load(['category', 'subCategory', 'equipment']);
+        $service->load(['category', 'equipment']);
         return view('admin.services.show', compact('service'));
     }
 
     public function create()
     {
         $categories = Category::all();
-        $subcategories = collect();
-        $equipment = collect();
-        return view('admin.services.create', compact('categories', 'subcategories', 'equipment'));
+        $equipment = Equipment::all();
+        return view('admin.services.create', compact('categories', 'equipment'));
     }
 
     public function store(Request $request)
@@ -58,7 +57,6 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'sub_category_id' => 'nullable|exists:sub_categories,id',
             'equipment' => 'nullable|array',
             'equipment.*' => 'exists:equipment,id',
             'original_price' => 'required|numeric|min:0',
@@ -90,9 +88,8 @@ class ServiceController extends Controller
     public function edit(Service $service)
     {
         $categories = Category::all();
-        $subcategories = SubCategory::where('category_id', $service->category_id)->get();
-        $equipment = Equipment::where('sub_category_id', $service->sub_category_id)->get();
-        return view('admin.services.edit', compact('service', 'categories', 'subcategories', 'equipment'));
+        $equipment = Equipment::all();
+        return view('admin.services.edit', compact('service', 'categories', 'equipment'));
     }
 
     public function update(Request $request, Service $service)
@@ -100,7 +97,6 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'sub_category_id' => 'nullable|exists:sub_categories,id',
             'equipment' => 'nullable|array',
             'equipment.*' => 'exists:equipment,id',
             'original_price' => 'required|numeric|min:0',
@@ -143,13 +139,5 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
     }
 
-    public function getSubCategories($category_id)
-    {
-        return response()->json(SubCategory::where('category_id', $category_id)->get());
-    }
 
-    public function getEquipment($subcategory_id)
-    {
-        return response()->json(Equipment::where('sub_category_id', $subcategory_id)->get());
-    }
 }

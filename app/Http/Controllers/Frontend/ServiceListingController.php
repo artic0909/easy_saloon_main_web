@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Category;
-use App\Models\SubCategory;
+
 
 class ServiceListingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Service::with(['category', 'subCategory']);
+        $query = Service::with(['category']);
 
         // Filter by Category
         if ($request->filled('category')) {
@@ -22,13 +22,7 @@ class ServiceListingController extends Controller
             });
         }
 
-        // Filter by SubCategory
-        if ($request->filled('subcategory')) {
-            $subSlugs = is_array($request->subcategory) ? $request->subcategory : explode(',', $request->subcategory);
-            $query->whereHas('subCategory', function($q) use ($subSlugs) {
-                $q->whereIn('slug', $subSlugs);
-            });
-        }
+
 
         // Filter by Price
         if ($request->filled('max_price')) {
@@ -58,26 +52,18 @@ class ServiceListingController extends Controller
 
         $services = $query->paginate(12)->withQueryString();
         
-        $categories = Category::with('subCategories')->where('is_active', true)->get();
+        $categories = Category::where('is_active', true)->get();
         
-        // Get relevant subcategories if a category is selected
         $selectedCategories = $request->filled('category') 
             ? (is_array($request->category) ? $request->category : explode(',', $request->category))
             : [];
-            
-        $relevantSubCategories = collect();
-        if (!empty($selectedCategories)) {
-            $relevantSubCategories = SubCategory::whereHas('category', function($q) use ($selectedCategories) {
-                $q->whereIn('slug', $selectedCategories);
-            })->get();
-        }
 
-        return view('frontend.services.index', compact('services', 'categories', 'relevantSubCategories'));
+        return view('frontend.services.index', compact('services', 'categories'));
     }
 
     public function show($slug)
     {
-        $service = Service::where('slug', $slug)->with(['category', 'subCategory.equipment'])->firstOrFail();
+        $service = Service::where('slug', $slug)->with(['category', 'equipment'])->firstOrFail();
         return view('frontend.services.show', compact('service'));
     }
 }

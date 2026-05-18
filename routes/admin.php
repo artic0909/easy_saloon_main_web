@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\TrackingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\SubCategoryController;
+
 use App\Http\Controllers\Admin\EquipmentUseController;
 use App\Http\Controllers\Admin\PaymentController;
 
@@ -26,7 +26,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/{id}', [PaymentController::class, 'show'])->name('payments.show');
     Route::resource('categories', CategoryController::class);
-    Route::resource('subcategories', SubCategoryController::class);
+
     Route::resource('equipment_uses', EquipmentUseController::class)->parameters([
         'equipment_uses' => 'equipment_use'
     ]);
@@ -89,7 +89,4 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
         Route::post('/settings', [ProfileController::class, 'updateSettings'])->name('settings.update');
     });
-    // AJAX Routes for dependent dropdowns
-    Route::get('/get-subcategories/{category_id}', [ServiceController::class, 'getSubCategories']);
-    Route::get('/get-equipment/{subcategory_id}', [ServiceController::class, 'getEquipment']);
 });
