@@ -10,19 +10,12 @@
                 <h5 class="fw-bold mb-0">Equipment Details</h5>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('admin.equipment_uses.store') }}" method="POST">
+                <form action="{{ route('admin.equipment_uses.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Sub Category</label>
-                        <select name="sub_category_id" class="form-select select2 rounded-3" data-placeholder="Select Sub Category" required>
-                            <option value=""></option>
-                            @foreach($subcategories as $subcategory)
-                                <option value="{{ $subcategory->id }}" {{ old('sub_category_id') == $subcategory->id ? 'selected' : '' }}>
-                                    {{ $subcategory->category->name }} > {{ $subcategory->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('sub_category_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <label class="form-label fw-bold">Equipment Image</label>
+                        <input type="file" name="image" class="form-control rounded-3 py-2 @error('image') is-invalid @enderror" accept="image/*">
+                        @error('image') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-4">

@@ -478,10 +478,10 @@
                 <span>Sub Categories</span>
             </a>
 
-            <!-- Equipment Use -->
+            <!-- Equipment -->
             <a href="{{ route('admin.equipment_uses.index') }}" class="nav-link {{ Route::is('admin.equipment_uses.*') ? 'active' : '' }}">
-                <i class="bi bi-layers-fill"></i>
-                <span>Equipment Use</span>
+                <i class="bi bi-tools"></i>
+                <span>Equipments</span>
             </a>
         </div>
 

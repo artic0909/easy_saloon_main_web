@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('page_title', 'Equipment Use Management')
+@section('page_title', 'Equipments Management')
 
 @section('content')
 <div class="card">
@@ -46,7 +46,7 @@
                 <thead class="bg-light">
                     <tr>
                         <th class="px-4 py-3 border-0">SL</th>
-                        <th class="py-3 border-0">Hierarchy</th>
+                        <th class="py-3 border-0">Image</th>
                         <th class="py-3 border-0">Equipment Name</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
                     </tr>
@@ -62,9 +62,13 @@
                             @endif
                         </td>
                         <td>
-                            <span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold">{{ $item->subCategory->category->name }}</span>
-                            <i class="bi bi-chevron-right mx-1 small text-muted"></i>
-                            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold">{{ $item->subCategory->name }}</span>
+                            @if($item->image)
+                                <img src="{{ asset($item->image) }}" alt="{{ $item->name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                            @else
+                                <div class="bg-light d-flex align-items-center justify-content-center text-muted" style="width: 50px; height: 50px; border-radius: 8px;">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                            @endif
                         </td>
                         <td class="fw-bold text-dark">{{ $item->name }}</td>
                         <td class="px-4 text-end">

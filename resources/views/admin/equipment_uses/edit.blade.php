@@ -10,20 +10,19 @@
                 <h5 class="fw-bold mb-0">Update Equipment</h5>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('admin.equipment_uses.update', $equipment_use->id) }}" method="POST">
+                <form action="{{ route('admin.equipment_uses.update', $equipment_use->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+                    
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Sub Category</label>
-                        <select name="sub_category_id" class="form-select select2 rounded-3" data-placeholder="Select Sub Category" required>
-                            <option value=""></option>
-                            @foreach($subcategories as $subcategory)
-                                <option value="{{ $subcategory->id }}" {{ old('sub_category_id', $equipment_use->sub_category_id) == $subcategory->id ? 'selected' : '' }}>
-                                    {{ $subcategory->category->name }} > {{ $subcategory->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('sub_category_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <label class="form-label fw-bold">Equipment Image</label>
+                        @if($equipment_use->image)
+                            <div class="mb-2">
+                                <img src="{{ asset($equipment_use->image) }}" alt="{{ $equipment_use->name }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                            </div>
+                        @endif
+                        <input type="file" name="image" class="form-control rounded-3 py-2 @error('image') is-invalid @enderror" accept="image/*">
+                        @error('image') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-4">

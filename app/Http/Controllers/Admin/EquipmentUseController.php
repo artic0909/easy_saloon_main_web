@@ -12,7 +12,7 @@ class EquipmentUseController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Equipment::with('subCategory.category');
+        $query = Equipment::query();
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -30,33 +30,47 @@ class EquipmentUseController extends Controller
 
     public function create()
     {
-        $subcategories = SubCategory::all();
-        return view('admin.equipment_uses.create', compact('subcategories'));
+        return view('admin.equipment_uses.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'sub_category_id' => 'required|exists:sub_categories,id',
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        Equipment::create($request->all());
+
+        $data = $request->all();
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images/equipments'), $imageName);
+            $data['image'] = 'images/equipments/' . $imageName;
+        }
+
+        Equipment::create($data);
         return redirect()->route('admin.equipment_uses.index')->with('success', 'Equipment created successfully.');
     }
 
     public function edit(Equipment $equipment_use)
     {
-        $subcategories = SubCategory::all();
-        return view('admin.equipment_uses.edit', compact('equipment_use', 'subcategories'));
+        return view('admin.equipment_uses.edit', compact('equipment_use'));
     }
 
     public function update(Request $request, Equipment $equipment_use)
     {
         $request->validate([
-            'sub_category_id' => 'required|exists:sub_categories,id',
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        $equipment_use->update($request->all());
+
+        $data = $request->all();
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images/equipments'), $imageName);
+            $data['image'] = 'images/equipments/' . $imageName;
+        }
+
+        $equipment_use->update($data);
         return redirect()->route('admin.equipment_uses.index')->with('success', 'Equipment updated successfully.');
     }
 
