@@ -451,7 +451,7 @@
 
         @if(auth()->user()->role == 'admin')
         <div class="nav-section mt-4">
-            <p class="nav-label">Core Dashboard</p>
+            <p class="nav-label">Manage Services</p>
             <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Analytics</span>
@@ -459,8 +459,17 @@
 
             <!-- Category wise -->
             <a href="{{ route('admin.categories.index') }}" class="nav-link {{ Route::is('admin.categories.*') ? 'active' : '' }}">
-                <i class="bi bi-layers-fill"></i>
-                <span>Categories</span>
+                <i class="bi bi-scissors"></i>
+                <span>Services</span>
+            </a>
+
+            <a href="{{ route('admin.packages.index') }}" class="nav-link {{ Route::is('admin.packages.*') ? 'active' : '' }}">
+                <i class="bi bi-box-fill"></i>
+                <span>Packages</span>
+            </a>
+            <a href="{{ route('admin.coupons.index') }}" class="nav-link {{ Route::is('admin.coupons.*') ? 'active' : '' }}">
+                <i class="bi bi-ticket-perforated-fill"></i>
+                <span>Discounts</span>
             </a>
 
             <!-- Sub Category wise -->
@@ -480,7 +489,11 @@
             <p class="nav-label">Operations</p>
             <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ Route::is('admin.bookings.*') || Route::is('admin.custom_bookings.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar2-check-fill"></i>
-                <span>Bookings</span>
+                <span>Pending Bookings</span>
+            </a>
+            <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ Route::is('admin.bookings.*') || Route::is('admin.custom_bookings.*') ? 'active' : '' }}">
+                <i class="bi bi-check-circle"></i>
+                <span>Complete Bookings</span>
             </a>
             <a href="{{ route('admin.tracking.index') }}" class="nav-link {{ Route::is('admin.tracking.*') ? 'active' : '' }}">
                 <i class="bi bi-geo-alt-fill"></i>
@@ -489,7 +502,7 @@
         </div>
 
         <div class="nav-section">
-            <p class="nav-label">Management</p>
+            <p class="nav-label">User Management</p>
 
             <a href="{{ route('admin.staff.index') }}" class="nav-link {{ Route::is('admin.staff.*') ? 'active' : '' }}">
                 <i class="bi bi-person-badge-fill"></i>
@@ -501,18 +514,10 @@
                 <span>Customers</span>
             </a>
 
-            <a href="{{ route('admin.services.index') }}" class="nav-link {{ Route::is('admin.services.*') ? 'active' : '' }}">
+            <!-- <a href="{{ route('admin.services.index') }}" class="nav-link {{ Route::is('admin.services.*') ? 'active' : '' }}">
                 <i class="bi bi-scissors"></i>
                 <span>Services</span>
-            </a>
-            <a href="{{ route('admin.packages.index') }}" class="nav-link {{ Route::is('admin.packages.*') ? 'active' : '' }}">
-                <i class="bi bi-box-fill"></i>
-                <span>Packages</span>
-            </a>
-            <a href="{{ route('admin.coupons.index') }}" class="nav-link {{ Route::is('admin.coupons.*') ? 'active' : '' }}">
-                <i class="bi bi-ticket-perforated-fill"></i>
-                <span>Discounts</span>
-            </a>
+            </a> -->
         </div>
 
         <div class="nav-section">
@@ -543,7 +548,7 @@
             </a>
             <a href="{{ route('admin.profile.media_coverage') }}" class="nav-link {{ Route::is('admin.profile.media_coverage*') ? 'active' : '' }}">
                 <i class="bi bi-newspaper"></i>
-                <span>Media Coverage</span>
+                <span>Blogs Upload</span>
             </a>
             <a href="{{ route('admin.profile.settings') }}" class="nav-link {{ Route::is('admin.profile.settings') ? 'active' : '' }}">
                 <i class="bi bi-person-gear"></i>
