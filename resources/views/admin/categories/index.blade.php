@@ -195,12 +195,12 @@
                     <input type="hidden" name="_method" id="serviceMethod" value="POST">
                     
                     <div class="row g-4">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <label class="form-label fw-bold">Service Name</label>
                             <input type="text" name="name" id="service_name" class="form-control rounded-3 py-2" required>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="d-none">
                             <label class="form-label fw-bold">Category</label>
                             <select name="category_id" id="service_category_id" class="form-select rounded-3 py-2" required>
                                 <option value=""></option>
@@ -212,24 +212,24 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Equipment Use</label>
-                            <select name="equipment[]" id="service_equipment" class="form-select select2 rounded-3 py-2" data-placeholder="Select Equipment" multiple style="width: 100%;">
+                            <select name="equipment[]" id="service_equipment" class="select2 rounded-3" data-placeholder="Select Equipment..." multiple style="width: 100%;">
                                 @foreach($equipments as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <label class="form-label fw-bold">Regular Price (₹)</label>
                             <input type="number" name="original_price" id="service_original_price" class="form-control rounded-3 py-2" required min="0">
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <label class="form-label fw-bold">Sale Price (₹)</label>
                             <input type="number" name="sale_price" id="service_sale_price" class="form-control rounded-3 py-2" required min="0">
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <label class="form-label fw-bold">Duration (Min)</label>
                             <input type="number" name="duration_minutes" id="service_duration_minutes" class="form-control rounded-3 py-2" required min="1">
                         </div>

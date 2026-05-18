@@ -736,6 +736,7 @@
             padding: 0;
             margin: 0;
             width: 100%;
+            align-items: center;
         }
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
@@ -775,8 +776,10 @@
 
         .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
             margin: 0 !important;
-            padding: 8px 0 !important;
+            padding: 4px 0 !important;
             font-family: inherit;
+            height: auto !important;
+            line-height: 1.5;
         }
 
         /* Pagination Styling */
