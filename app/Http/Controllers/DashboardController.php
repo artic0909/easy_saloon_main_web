@@ -99,6 +99,31 @@ class DashboardController extends Controller
         return response()->json(['success' => true, 'message' => 'Booking cancelled successfully.']);
     }
 
+    public function rateBooking(Request $request, $id)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'type' => 'required|string|in:booking,custom_booking'
+        ]);
+
+        $rating = $request->input('rating');
+        $type = $request->input('type');
+
+        if ($type === 'custom_booking') {
+            $booking = \App\Models\CustomBooking::where('user_id', auth()->id())->findOrFail($id);
+        } else {
+            $booking = Booking::where('user_id', auth()->id())->findOrFail($id);
+        }
+
+        $booking->update(['rating' => $rating]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Rating submitted successfully!',
+            'rating' => $rating
+        ]);
+    }
+
     public function addresses()
     {
         $addresses = Address::where('user_id', auth()->id())

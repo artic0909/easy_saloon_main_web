@@ -1,5 +1,6 @@
 @extends('frontend.layout.app')
-
+@section('page_title', 'My Bookings')
+@section('meta_description', 'My Bookings - Easy Saloon')
 @section('content')
 <div class="pt-40 pb-24 bg-[#fdfbf7]" x-data="{ 
     showModal: false, 
@@ -69,6 +70,20 @@
                                                     <span class="text-[11px] md:text-xs font-bold text-[#3d2b1f]">{{ $booking->time_slot }}</span>
                                                 </div>
                                             </div>
+                                            @if($booking->status == 'completed')
+                                                <div class="mt-5 pt-4 border-t border-gray-100/50 flex flex-col sm:flex-row items-center gap-3">
+                                                    <span class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Rate Experience:</span>
+                                                    <div class="flex items-center gap-1" data-booking-id="{{ $booking->id }}" data-booking-type="{{ $booking->getTable() == 'custom_bookings' ? 'custom_booking' : 'booking' }}" data-rating="{{ $booking->rating ?? 0 }}">
+                                                        @for($i = 1; $i <= 5; $i++)
+                                                            <button onclick="submitRating(this, {{ $i }})" class="star-btn p-1 focus:outline-none transition-transform hover:scale-125" data-index="{{ $i }}">
+                                                                <svg class="w-6 h-6 transition-all duration-300 {{ ($booking->rating ?? 0) >= $i ? 'text-amber-400 fill-amber-400' : 'text-gray-300 fill-transparent' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                                                </svg>
+                                                            </button>
+                                                        @endfor
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="flex flex-col justify-between items-center md:items-end gap-6 border-t border-gray-50 pt-6 md:border-none md:pt-0">
@@ -280,6 +295,34 @@
                         </div>
                     </div>
 
+                    <!-- Rating Experience Section (Only if Completed) -->
+                    <template x-if="selectedBooking.status == 'completed'">
+                        <div class="p-6 md:p-8 rounded-[2rem] bg-[#fdfbf7] border border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">
+                            <div>
+                                <h5 class="text-base font-bold text-[#3d2b1f] mb-1" style="font-family: 'Playfair Display', serif;">Rate Your Experience</h5>
+                                <p class="text-xs text-gray-400 font-medium">How was your service experience with us?</p>
+                            </div>
+                            <div class="flex items-center gap-1" x-data="{ hoverRating: 0 }">
+                                <template x-for="i in [1, 2, 3, 4, 5]" :key="i">
+                                    <button 
+                                        @click="
+                                            selectedBooking.rating = i;
+                                            submitModalRating(selectedBooking.id, selectedBooking.service_ids ? 'custom_booking' : 'booking', i);
+                                        " 
+                                        @mouseenter="hoverRating = i"
+                                        @mouseleave="hoverRating = 0"
+                                        class="p-1 focus:outline-none transition-transform hover:scale-125">
+                                        <svg class="w-8 h-8 transition-all duration-300" 
+                                             :class="(hoverRating ? hoverRating >= i : selectedBooking.rating >= i) ? 'text-amber-400 fill-amber-400' : 'text-gray-300 fill-transparent'"
+                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                        </svg>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
                     <!-- Final Summary Section -->
                     <div class="pt-8 md:pt-10 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6 md:gap-8 bg-[#fdfbf7] -mx-6 md:-mx-16 px-6 md:px-16 pb-10 md:pb-12">
                         <div class="text-center sm:text-left">
@@ -371,5 +414,141 @@
             }
         });
     }
+
+    function submitRating(button, ratingValue) {
+        const container = button.closest('[data-booking-id]');
+        const bookingId = container.getAttribute('data-booking-id');
+        const bookingType = container.getAttribute('data-booking-type');
+        
+        // Optimistic UI update
+        container.setAttribute('data-rating', ratingValue);
+        const stars = container.querySelectorAll('.star-btn svg');
+        stars.forEach((star, index) => {
+            if (index < ratingValue) {
+                star.classList.add('text-amber-400', 'fill-amber-400');
+                star.classList.remove('text-gray-300', 'fill-transparent');
+            } else {
+                star.classList.remove('text-amber-400', 'fill-amber-400');
+                star.classList.add('text-gray-300', 'fill-transparent');
+            }
+        });
+
+        sendRatingRequest(bookingId, bookingType, ratingValue);
+    }
+
+    function submitModalRating(bookingId, bookingType, ratingValue) {
+        // Find static container and sync
+        const container = document.querySelector(`[data-booking-id="${bookingId}"][data-booking-type="${bookingType}"]`);
+        if (container) {
+            container.setAttribute('data-rating', ratingValue);
+            const stars = container.querySelectorAll('.star-btn svg');
+            stars.forEach((star, index) => {
+                if (index < ratingValue) {
+                    star.classList.add('text-amber-400', 'fill-amber-400');
+                    star.classList.remove('text-gray-300', 'fill-transparent');
+                } else {
+                    star.classList.remove('text-amber-400', 'fill-amber-400');
+                    star.classList.add('text-gray-300', 'fill-transparent');
+                }
+            });
+        }
+
+        sendRatingRequest(bookingId, bookingType, ratingValue);
+    }
+
+    function sendRatingRequest(bookingId, bookingType, ratingValue) {
+        fetch(`/dashboard/bookings/${bookingId}/rate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                rating: ratingValue,
+                type: bookingType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Thank you for your rating!'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.message || 'Something went wrong!',
+                    confirmButtonColor: '#3d2b1f'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting rating:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Could not connect to the server!',
+                confirmButtonColor: '#3d2b1f'
+            });
+        });
+    }
+
+    // Set up hover states for static stars using event delegation
+    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('mouseover', function(e) {
+            const starBtn = e.target.closest('.star-btn');
+            if (!starBtn) return;
+            
+            const index = parseInt(starBtn.getAttribute('data-index'));
+            const container = starBtn.closest('[data-booking-id]');
+            if (!container) return;
+            
+            const stars = container.querySelectorAll('.star-btn svg');
+            stars.forEach((star, i) => {
+                if (i < index) {
+                    star.classList.add('text-amber-400', 'fill-amber-400');
+                    star.classList.remove('text-gray-300', 'fill-transparent');
+                } else {
+                    star.classList.remove('text-amber-400', 'fill-amber-400');
+                    star.classList.add('text-gray-300', 'fill-transparent');
+                }
+            });
+        });
+
+        document.addEventListener('mouseout', function(e) {
+            const starBtn = e.target.closest('.star-btn');
+            if (!starBtn) return;
+            
+            const container = starBtn.closest('[data-booking-id]');
+            if (!container) return;
+            
+            const currentRating = parseInt(container.getAttribute('data-rating') || 0);
+            const stars = container.querySelectorAll('.star-btn svg');
+            stars.forEach((star, i) => {
+                if (i < currentRating) {
+                    star.classList.add('text-amber-400', 'fill-amber-400');
+                    star.classList.remove('text-gray-300', 'fill-transparent');
+                } else {
+                    star.classList.remove('text-amber-400', 'fill-amber-400');
+                    star.classList.add('text-gray-300', 'fill-transparent');
+                }
+            });
+        });
+    });
 </script>
 @endsection

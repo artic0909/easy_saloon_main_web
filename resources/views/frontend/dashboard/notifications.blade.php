@@ -1,5 +1,6 @@
 @extends('frontend.layout.app')
-
+@section('page_title', 'Notifications')
+@section('meta_description', 'Notifications - Easy Saloon')
 @section('content')
 <div class="pt-40 pb-24 bg-[#fdfbf7]">
     <div class="max-w-7xl mx-auto px-4 md:px-8">

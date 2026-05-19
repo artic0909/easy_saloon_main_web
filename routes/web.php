@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('/bookings', [App\Http\Controllers\DashboardController::class, 'bookings'])->name('dashboard.bookings');
         Route::post('/bookings/{id}/cancel', [App\Http\Controllers\DashboardController::class, 'cancelBooking'])->name('dashboard.bookings.cancel');
+        Route::post('/bookings/{id}/rate', [App\Http\Controllers\DashboardController::class, 'rateBooking'])->name('dashboard.bookings.rate');
         
         Route::get('/addresses', [App\Http\Controllers\DashboardController::class, 'addresses'])->name('dashboard.addresses');
         Route::post('/addresses/save', [App\Http\Controllers\DashboardController::class, 'saveAddress'])->name('dashboard.addresses.save');
