@@ -22,7 +22,14 @@ class IndexController extends Controller
         $banners = Banner::where('is_active', true)->latest()->get();
         $promo_banners = PromoBanner::where('is_active', true)->latest()->take(2)->get();
         $services = Service::where('is_active', true)->latest()->take(3)->get();
+        $coupons = \App\Models\Coupon::where('is_active', true)
+            ->where(function($q) {
+                $q->whereNull('expiry_date')
+                  ->orWhere('expiry_date', '>=', now());
+            })
+            ->latest()
+            ->get();
         
-        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories','banners', 'promo_banners', 'services'));
+        return view('frontend.index', compact('achievements', 'feedbacks', 'blogs', 'categories','banners', 'promo_banners', 'services', 'coupons'));
     }
 }

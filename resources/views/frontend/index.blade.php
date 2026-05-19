@@ -50,6 +50,69 @@
         </div>
     </section>
 
+    <!-- Offers(coupons) scroll like marquee -->
+    @if(isset($coupons) && $coupons->isNotEmpty())
+    @php
+        $count = $coupons->count();
+        $repeats = $count > 0 ? ceil(12 / $count) : 1;
+    @endphp
+    <section class="coupons-marquee-container">
+        <div class="coupons-track">
+            <!-- First Set -->
+            @for($i = 0; $i < $repeats; $i++)
+                @foreach($coupons as $coupon)
+                <div class="coupon-card">
+                    <div class="coupon-left">
+                        <span class="discount-value">
+                            @if($coupon->discount_type == 'percentage')
+                                {{ intval($coupon->discount_value) }}%
+                            @else
+                                ₹{{ intval($coupon->discount_value) }}
+                            @endif
+                        </span>
+                        <span class="discount-label">OFF</span>
+                    </div>
+                    <div class="coupon-divider"></div>
+                    <div class="coupon-right">
+                        <h5 class="coupon-title">{{ $coupon->title }}</h5>
+                        <div class="coupon-code-wrap">
+                            <span class="code-label">CODE:</span>
+                            <span class="coupon-code">{{ $coupon->code }}</span>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            @endfor
+
+            <!-- Second Set (Duplicate for seamless scrolling) -->
+            @for($i = 0; $i < $repeats; $i++)
+                @foreach($coupons as $coupon)
+                <div class="coupon-card">
+                    <div class="coupon-left">
+                        <span class="discount-value">
+                            @if($coupon->discount_type == 'percentage')
+                                {{ intval($coupon->discount_value) }}%
+                            @else
+                                ₹{{ intval($coupon->discount_value) }}
+                            @endif
+                        </span>
+                        <span class="discount-label">OFF</span>
+                    </div>
+                    <div class="coupon-divider"></div>
+                    <div class="coupon-right">
+                        <h5 class="coupon-title">{{ $coupon->title }}</h5>
+                        <div class="coupon-code-wrap">
+                            <span class="code-label">CODE:</span>
+                            <span class="coupon-code">{{ $coupon->code }}</span>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            @endfor
+        </div>
+    </section>
+    @endif
+    
     <!-- Achievements -->
     <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4">
