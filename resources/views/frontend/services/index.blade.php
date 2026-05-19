@@ -24,7 +24,7 @@
             <button @click="showFilter = true" class="w-full flex items-center justify-center gap-3 bg-white py-4 rounded-2xl shadow-sm border border-gray-100 font-bold text-[#3d2b1f] hover:bg-gray-50 transition-all">
                 <i class="bi bi-funnel"></i>
                 <span>Filter Services</span>
-                @if(request('category') || request('max_price'))
+                @if(request('category'))
                     <span class="w-2 h-2 bg-[#c6a664] rounded-full"></span>
                 @endif
             </button>
@@ -60,14 +60,15 @@
                             </div>
                             
                             <!-- Categories -->
-                            <div class="mb-10">
+                            <div class="mb-5">
                                 <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Categories</h6>
                                 <div class="flex flex-col gap-4">
                                     @foreach($categories as $cat)
                                         <label class="flex items-center gap-3 cursor-pointer group custom-checkbox">
                                             <input type="checkbox" name="category[]" value="{{ $cat->slug }}" 
                                                 class="hidden peer"
-                                                x-model="selectedCategories">
+                                                x-model="selectedCategories"
+                                                @change="$nextTick(() => $el.form.submit())">
                                             <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
                                                 <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                             </div>
@@ -75,36 +76,6 @@
                                         </label>
                                     @endforeach
                                 </div>
-                            </div>
-
-                            <!-- Price Range -->
-                            <div class="mb-10">
-                                <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Max Price</h6>
-                                <div class="space-y-5">
-                                    <input type="range" name="max_price" min="0" max="10000" step="100" 
-                                        value="{{ request('max_price', 10000) }}"
-                                        class="w-full accent-[#c6a664]"
-                                        oninput="priceDisplay.innerText = '₹' + this.value">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-[10px] font-bold text-gray-400 uppercase">₹0</span>
-                                        <span id="priceDisplay" class="text-sm font-black text-[#3d2b1f] bg-gray-50 px-3 py-1 rounded-lg">₹{{ request('max_price', 10000) }}</span>
-                                        <span class="text-[10px] font-bold text-gray-400 uppercase">₹10,000+</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Sort By -->
-                            <div class="mb-10">
-                                <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Sort By</h6>
-                                <select name="sort" class="w-full bg-[#fdfbf7] border-none rounded-2xl text-sm font-bold text-[#3d2b1f] py-3.5 focus:ring-2 focus:ring-[#c6a664] cursor-pointer">
-                                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
-                                    <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                                    <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                                </select>
-                            </div>
-                            
-                            <div class="mt-8">
-                                <button type="submit" class="w-full bg-[#3d2b1f] text-white py-4 rounded-2xl font-bold hover:bg-[#c6a664] transition-all shadow-lg shadow-black/10">Apply Filters</button>
                             </div>
                         </div>
                     </form>
