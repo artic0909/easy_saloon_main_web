@@ -19,43 +19,61 @@
     <!-- Left Column: Customer & Service Info -->
     <div class="col-lg-8">
         <!-- Status Management Card -->
-        <div class="card border-0 mb-4 bg-primary text-white shadow-lg overflow-hidden position-relative">
-            <div class="card-body p-4 position-relative z-index-1">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
+        @if($booking->status == 'completed')
+            <div class="card border-0 mb-4 bg-success text-white shadow-lg overflow-hidden position-relative animate-fade-in">
+                <div class="card-body p-4 position-relative z-index-1 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
                         <p class="text-white-50 small mb-1 uppercase tracking-wider fw-bold">Current Status ({{ $booking->type }})</p>
-                        <h2 class="fw-black mb-0">
-                                @if(!$booking->staff_id)
-                                    Broadcasted
-                                @else
-                                    {{ ucwords(str_replace('_', ' ', $booking->status)) }}
-                                @endif
-                        </h2>
+                        <h2 class="fw-black mb-0"><i class="bi bi-check-circle-fill me-2"></i>Service Completed</h2>
                     </div>
-                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                        <form action="{{ route('staff.bookings.status', $booking->id) }}" method="POST" id="statusForm">
-                            @csrf
-                            <select name="status" class="form-select border-0 rounded-pill px-4" onchange="confirmStatusChange(this)">
-                                @if(!$booking->staff_id)
-                                    <option value="" selected disabled>Available Booking</option>
-                                    <option value="Accepted">Accept & Claim Booking</option>
-                                @else
-                                    @php $s = $booking->status; @endphp
-                                    <option value="Pending" {{ $s == 'pending' ? 'selected' : '' }}>Pending (Assigned)</option>
-                                    <option value="Accepted" {{ $s == 'accepted' ? 'selected' : '' }}>Accepted</option>
-                                    <option value="On the way" {{ $s == 'on_the_way' ? 'selected' : '' }}>On the way</option>
-                                    <option value="Started" {{ $s == 'started' ? 'selected' : '' }}>Service Started</option>
-                                    <option value="Completed" {{ $s == 'completed' ? 'selected' : '' }}>Service Completed</option>
-                                    <option value="Rejected" {{ $s == 'cancelled' ? 'selected' : '' }}>Reject Booking</option>
-                                @endif
-                            </select>
-                        </form>
+                    <span class="badge bg-white bg-opacity-20 text-white border border-white border-opacity-25 px-4 py-2.5 rounded-pill fw-bold">
+                        <i class="bi bi-shield-check me-2"></i>COMPLETED
+                    </span>
+                </div>
+                <div class="position-absolute top-0 end-0 translate-middle-y bg-white opacity-10 rounded-circle" style="width: 200px; height: 200px; margin-right: -50px;"></div>
+            </div>
+        @else
+            <div class="card border-0 mb-4 bg-primary text-white shadow-lg overflow-hidden position-relative">
+                <div class="card-body p-4 position-relative z-index-1">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <p class="text-white-50 small mb-1 uppercase tracking-wider fw-bold">Current Status ({{ $booking->type }})</p>
+                            <h2 class="fw-black mb-0">
+                                    @if(!$booking->staff_id)
+                                        Broadcasted
+                                    @else
+                                        {{ ucwords(str_replace('_', ' ', $booking->status)) }}
+                                    @endif
+                            </h2>
+                        </div>
+                        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                            <form action="{{ route('staff.bookings.status', $booking->id) }}" method="POST" id="statusForm">
+                                @csrf
+                                <select name="status" class="form-select border-0 rounded-pill px-4" onchange="confirmStatusChange(this)">
+                                    @if(!$booking->staff_id)
+                                        <option value="" selected disabled>Available Booking</option>
+                                        <option value="Accepted">Accept & Claim Booking</option>
+                                    @else
+                                        @php 
+                                            $s = strtolower($booking->status);
+                                            $isVerified = (bool) $booking->verify;
+                                        @endphp
+                                        <option value="Pending" {{ $s == 'pending' ? 'selected' : '' }} disabled>Pending (Assigned)</option>
+                                        <option value="Accepted" {{ $s == 'accepted' ? 'selected' : '' }} disabled>Accepted</option>
+                                        <option value="On the way" {{ $s == 'on_the_way' ? 'selected' : '' }} {{ ($s == 'pending' || $s == 'accepted') ? '' : 'disabled' }}>On the way</option>
+                                        <option value="Started" {{ $s == 'started' ? 'selected' : '' }} {{ ($s == 'on_the_way' && $isVerified) ? '' : 'disabled' }}>Service Started {{ ($s == 'on_the_way' && !$isVerified) ? '(Requires OTP)' : '' }}</option>
+                                        <option value="Completed" {{ $s == 'completed' ? 'selected' : '' }} {{ ($s == 'started') ? '' : 'disabled' }}>Service Completed</option>
+                                        <option value="Rejected" {{ $s == 'cancelled' ? 'selected' : '' }} disabled>Reject Booking</option>
+                                    @endif
+                                </select>
+                            </form>
+                        </div>
                     </div>
                 </div>
+                <!-- Decorative circle -->
+                <div class="position-absolute top-0 end-0 translate-middle-y bg-white opacity-10 rounded-circle" style="width: 200px; height: 200px; margin-right: -50px;"></div>
             </div>
-            <!-- Decorative circle -->
-            <div class="position-absolute top-0 end-0 translate-middle-y bg-white opacity-10 rounded-circle" style="width: 200px; height: 200px; margin-right: -50px;"></div>
-        </div>
+        @endif
 
         <div class="card border-0 mb-4">
             <div class="card-header"><h5 class="mb-0 fw-bold">Service Information</h5></div>
