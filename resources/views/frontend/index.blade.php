@@ -169,7 +169,7 @@
     <section class="py-16 bg-[#fffaf5]">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-extrabold text-[#3d2b1f] mb-3" style="font-family: 'Playfair Display', serif;">Explore by Category</h2>
+                <h2 class="text-3xl font-extrabold text-[#3d2b1f] mb-3" style="font-family: 'Playfair Display', serif;">Explore by Services</h2>
                 <div class="w-16 h-1 bg-[#c6a664] mx-auto rounded-full"></div>
             </div>
 
@@ -209,7 +209,9 @@
             <div class="grid md:grid-cols-3 gap-10">
                 @forelse($services as $service)
                 <a href="{{ route('services.show', $service->slug) }}" class="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl hover:-translate-y-2 transition-all duration-500 {{ $loop->iteration == 2 ? 'mt-0 md:mt-12' : '' }}">
-                    @if($service->image)
+                    @if(!empty($service->images) && is_array($service->images) && count($service->images) > 0)
+                    <img src="{{ asset('storage/' . $service->images[0]) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="{{ $service->name }}">
+                    @elseif(!empty($service->image))
                     <img src="{{ asset('storage/' . $service->image) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="{{ $service->name }}">
                     @else
                     <div class="w-full h-full bg-gray-100 flex items-center justify-center">
