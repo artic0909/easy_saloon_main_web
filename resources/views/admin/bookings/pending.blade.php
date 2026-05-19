@@ -1,17 +1,17 @@
 @extends('admin.layout.app')
 
-@section('page_title', 'Booking Management')
+@section('page_title', 'Pending Bookings')
 
 @section('content')
 <div class="card">
     <div class="card-header bg-white py-3">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h5 class="fw-bold mb-0">Completed Appointments</h5>
+            <h5 class="fw-bold mb-0">Active & Pending Appointments</h5>
         </div>
         
         <!-- Filters Area -->
-        <form action="{{ route('admin.bookings.index') }}" method="GET" class="row g-3 align-items-end">
-            <div class="col-md-6">
+        <form action="{{ route('admin.bookings.pending') }}" method="GET" class="row g-3 align-items-end">
+            <div class="col-md-4">
                 <label class="form-label small fw-bold text-muted">Search Booking</label>
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
@@ -22,6 +22,18 @@
             <div class="col-md-2">
                 <label class="form-label small fw-bold text-muted">Filter Date</label>
                 <input type="date" name="date" class="form-control" value="{{ request('date') }}">
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted">Active Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Active</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                    <option value="accepted" {{ request('status') == 'accepted' ? 'selected' : '' }}>Accepted</option>
+                    <option value="on_the_way" {{ request('status') == 'on_the_way' ? 'selected' : '' }}>On The Way</option>
+                    <option value="started" {{ request('status') == 'started' ? 'selected' : '' }}>Started</option>
+                </select>
             </div>
 
             <div class="col-md-2">
@@ -37,7 +49,7 @@
             <div class="col-md-2">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
-                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-light border w-100"><i class="bi bi-arrow-counterclockwise"></i></a>
+                    <a href="{{ route('admin.bookings.pending') }}" class="btn btn-light border w-100"><i class="bi bi-arrow-counterclockwise"></i></a>
                 </div>
             </div>
         </form>
@@ -130,7 +142,9 @@
         </div>
     </div>
     <div class="card-footer bg-white py-3">
-        {{ $bookings->links() }}
+        @if($bookings instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            {{ $bookings->links() }}
+        @endif
     </div>
 </div>
 @endsection

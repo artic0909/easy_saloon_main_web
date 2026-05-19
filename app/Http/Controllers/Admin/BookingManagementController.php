@@ -13,8 +13,65 @@ class BookingManagementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Booking::with(['user', 'staff', 'items']);
-        $customQuery = \App\Models\CustomBooking::with(['user', 'staff']);
+        $query = Booking::with(['user', 'staff', 'items'])->where('status', 'completed');
+        $customQuery = \App\Models\CustomBooking::with(['user', 'staff'])->where('status', 'completed');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  })
+                  ->orWhereHas('staff', function($sq) use ($search) {
+                      $sq->where('name', 'like', "%$search%");
+                  });
+            });
+            
+            $customQuery->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  })
+                  ->orWhereHas('staff', function($sq) use ($search) {
+                      $sq->where('name', 'like', "%$search%");
+                  });
+            });
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('booking_date', $request->date);
+            $customQuery->whereDate('booking_date', $request->date);
+        }
+
+        $perPage = $request->get('per_page', 10);
+        
+        $bookings = $query->latest()->get();
+        $customBookings = $customQuery->latest()->get();
+        
+        // Merge and sort
+        $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at');
+        
+        if ($perPage != 'all') {
+            $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+            $items = $allBookings->forPage($currentPage, $perPage);
+            $bookings = new \Illuminate\Pagination\LengthAwarePaginator($items, $allBookings->count(), $perPage, $currentPage, [
+                'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]);
+        } else {
+            $bookings = $allBookings;
+        }
+
+        return view('admin.bookings.index', compact('bookings'));
+    }
+
+    public function pending(Request $request)
+    {
+        $query = Booking::with(['user', 'staff', 'items'])->whereNotIn('status', ['completed', 'cancelled']);
+        $customQuery = \App\Models\CustomBooking::with(['user', 'staff'])->whereNotIn('status', ['completed', 'cancelled']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -70,7 +127,7 @@ class BookingManagementController extends Controller
             $bookings = $allBookings;
         }
 
-        return view('admin.bookings.index', compact('bookings'));
+        return view('admin.bookings.pending', compact('bookings'));
     }
 
     public function show(Booking $booking)

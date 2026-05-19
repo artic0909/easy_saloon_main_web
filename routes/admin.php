@@ -36,6 +36,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/coupons/{coupon}/notify', [CouponController::class, 'notifyUsers'])->name('coupons.notify');
     
     Route::get('/bookings', [BookingManagementController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/pending', [BookingManagementController::class, 'pending'])->name('bookings.pending');
     Route::get('/bookings/{booking}', [BookingManagementController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/assign', [BookingManagementController::class, 'assignStaff'])->name('bookings.assign');
     Route::patch('/bookings/{booking}/status', [BookingManagementController::class, 'updateStatus'])->name('bookings.status');

@@ -483,11 +483,11 @@
 
         <div class="nav-section">
             <p class="nav-label">Operations</p>
-            <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ Route::is('admin.bookings.*') || Route::is('admin.custom_bookings.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.bookings.pending') }}" class="nav-link {{ Route::is('admin.bookings.pending') || ((Route::is('admin.bookings.show') || Route::is('admin.custom_bookings.show')) && isset($booking) && $booking->status !== 'completed') ? 'active' : '' }}">
                 <i class="bi bi-calendar2-check-fill"></i>
                 <span>Pending Bookings</span>
             </a>
-            <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ Route::is('admin.bookings.*') || Route::is('admin.custom_bookings.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ Route::is('admin.bookings.index') || ((Route::is('admin.bookings.show') || Route::is('admin.custom_bookings.show')) && isset($booking) && $booking->status === 'completed') ? 'active' : '' }}">
                 <i class="bi bi-check-circle"></i>
                 <span>Complete Bookings</span>
             </a>
