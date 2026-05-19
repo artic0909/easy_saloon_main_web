@@ -12,19 +12,34 @@
             </div>
             <div class="card-body">
                 <div class="row g-4">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="small text-muted text-uppercase fw-bold tracking-widest">Customer Details</label>
-                        <div class="mt-2 p-3 bg-light rounded-3">
+                        <div class="mt-2 p-3 bg-light rounded-3 h-100">
                             <h6 class="fw-bold mb-1">{{ $booking->user->name }}</h6>
-                            <p class="text-muted mb-1"><i class="bi bi-envelope me-2"></i>{{ $booking->user->email }}</p>
-                            <p class="text-muted mb-0"><i class="bi bi-telephone me-2"></i>{{ $booking->user->phone }}</p>
+                            <p class="text-muted mb-1 small text-truncate"><i class="bi bi-envelope me-2"></i>{{ $booking->user->email }}</p>
+                            <p class="text-muted mb-0 small"><i class="bi bi-telephone me-2"></i>{{ $booking->user->phone }}</p>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="small text-muted text-uppercase fw-bold tracking-widest">Service Schedule</label>
-                        <div class="mt-2 p-3 bg-light rounded-3">
+                        <div class="mt-2 p-3 bg-light rounded-3 h-100">
                             <h6 class="fw-bold mb-1"><i class="bi bi-calendar3 me-2"></i>{{ \Carbon\Carbon::parse($booking->booking_date)->format('D, d M Y') }}</h6>
-                            <p class="text-muted mb-0"><i class="bi bi-clock me-2 text-uppercase"></i>{{ $booking->time_slot }} Slot</p>
+                            <p class="text-muted mb-0 small"><i class="bi bi-clock me-2 text-uppercase"></i>{{ $booking->time_slot }} Slot</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="small text-muted text-uppercase fw-bold tracking-widest">Payment Information</label>
+                        <div class="mt-2 p-3 bg-light rounded-3 h-100">
+                            <p class="mb-1 small"><span class="text-muted">Method:</span> <strong class="text-uppercase text-dark">{{ $booking->pay_type ?? $booking->payment_type ?? 'online' }}</strong></p>
+                            <p class="mb-1 small">
+                                <span class="text-muted">Status:</span> 
+                                <span class="badge {{ $booking->is_paid ? 'bg-success' : 'bg-warning' }} px-2.5 py-1 text-xs">
+                                    {{ $booking->is_paid ? 'Paid' : 'Unpaid' }}
+                                </span>
+                            </p>
+                            @if($booking->coupon_code)
+                                <p class="mb-0 small"><span class="text-muted">Coupon:</span> <strong class="text-success">{{ $booking->coupon_code }}</strong></p>
+                            @endif
                         </div>
                     </div>
                     @if($booking->service_type == 'home' && $booking->address)
@@ -116,9 +131,19 @@
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr class="bg-light">
-                            <td colspan="2" class="px-4 py-3 fw-bold text-end">Total Amount Paid</td>
-                            <td class="px-4 py-3 text-end fw-black h5 mb-0 text-primary">₹{{ number_format($booking->payable_amount) }}</td>
+                        <tr class="bg-light text-muted small">
+                            <td colspan="2" class="px-4 py-2 fw-bold text-end">Subtotal Price</td>
+                            <td class="px-4 py-2 text-end fw-bold">₹{{ number_format($booking->total_price ?? $booking->payable_amount, 2) }}</td>
+                        </tr>
+                        @if($booking->discount_amount > 0)
+                        <tr class="bg-light text-success small">
+                            <td colspan="2" class="px-4 py-2 fw-bold text-end">Coupon Discount ({{ $booking->coupon_code }})</td>
+                            <td class="px-4 py-2 text-end fw-bold">- ₹{{ number_format($booking->discount_amount, 2) }}</td>
+                        </tr>
+                        @endif
+                        <tr class="bg-light text-primary">
+                            <td colspan="2" class="px-4 py-3 fw-bold text-end h5 mb-0">Total Payable / Paid</td>
+                            <td class="px-4 py-3 text-end fw-black h5 mb-0">₹{{ number_format($booking->payable_amount ?? $booking->total_price, 2) }}</td>
                         </tr>
                     </tfoot>
                 </table>
