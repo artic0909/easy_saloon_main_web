@@ -19,7 +19,71 @@
             <!-- Left: Service Info -->
             <div class="lg:col-span-7">
                 <div class="relative rounded-[3rem] overflow-hidden shadow-2xl mb-12 aspect-video group">
-                    @if($service->image)
+                    @if(!empty($service->images) && is_array($service->images) && count($service->images) > 0)
+                        <div x-data="{ 
+                            activeSlide: 0, 
+                            slides: {{ json_encode($service->images) }},
+                            autoPlayInterval: null,
+                            next() {
+                                this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+                            },
+                            prev() {
+                                this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
+                            },
+                            startAutoPlay() {
+                                this.autoPlayInterval = setInterval(() => {
+                                    this.next();
+                                }, 3000);
+                            },
+                            stopAutoPlay() {
+                                clearInterval(this.autoPlayInterval);
+                            }
+                        }" 
+                        x-init="startAutoPlay()"
+                        @mouseenter="stopAutoPlay()"
+                        @mouseleave="startAutoPlay()"
+                        class="absolute inset-0 w-full h-full">
+                            
+                            <!-- Slide Tracks -->
+                            <div class="relative w-full h-full">
+                                <template x-for="(slide, index) in slides" :key="index">
+                                    <div x-show="activeSlide === index" 
+                                         x-transition:enter="transition ease-out duration-700"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         x-transition:leave="transition ease-in duration-700"
+                                         x-transition:leave-start="opacity-100"
+                                         x-transition:leave-end="opacity-0"
+                                         class="absolute inset-0 w-full h-full">
+                                        <img :src="'/storage/' + slide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Service Image">
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Next/Prev Buttons (only if slides > 1) -->
+                            <template x-if="slides.length > 1">
+                                <div class="absolute inset-y-0 inset-x-5 flex justify-between items-center pointer-events-none z-10">
+                                    <button @click.prevent="prev()" class="pointer-events-auto w-10 h-10 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full flex items-center justify-center text-[#3d2b1f] hover:text-[#c6a664] transition-all duration-300 shadow-lg">
+                                        <i class="bi bi-chevron-left text-sm font-black"></i>
+                                    </button>
+                                    <button @click.prevent="next()" class="pointer-events-auto w-10 h-10 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full flex items-center justify-center text-[#3d2b1f] hover:text-[#c6a664] transition-all duration-300 shadow-lg">
+                                        <i class="bi bi-chevron-right text-sm font-black"></i>
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- Indicators (only if slides > 1) -->
+                            <template x-if="slides.length > 1">
+                                <div class="absolute bottom-5 right-10 flex gap-2 z-20">
+                                    <template x-for="(slide, index) in slides" :key="index">
+                                        <button @click.prevent="activeSlide = index" 
+                                                class="w-2 h-2 rounded-full transition-all duration-300"
+                                                :class="activeSlide === index ? 'bg-[#c6a664] w-5' : 'bg-white/50 hover:bg-white/80'"></button>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    @elseif($service->image)
                         <img src="{{ asset('storage/' . $service->image) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     @else
                         @php 
