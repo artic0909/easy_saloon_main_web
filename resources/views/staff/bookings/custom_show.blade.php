@@ -192,7 +192,7 @@
                 <div class="card-body">
                     @if($booking->verify)
                         <div class="text-center py-3">
-                            <div class="avatar-sm bg-success bg-opacity-10 text-success rounded-circle mx-auto d-flex align-items-center justify-center mb-3" style="width: 50px; height: 50px;">
+                            <div class="avatar-sm bg-success bg-opacity-10 text-success rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
                                 <i class="bi bi-shield-check fs-3"></i>
                             </div>
                             <h6 class="fw-bold text-success mb-1">OTP Verified</h6>
