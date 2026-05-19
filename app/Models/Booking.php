@@ -29,7 +29,8 @@ class Booking extends Model
         'razorpay_payment_id',
         'razorpay_signature',
         'otp',
-        'verify'
+        'verify',
+        'rating'
     ];
 
     protected $casts = [

@@ -558,9 +558,17 @@
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ route('staff.bookings.index') }}" class="nav-link {{ Route::is('staff.bookings.*') || Route::is('staff.custom_bookings.*') ? 'active' : '' }}">
+            <a href="{{ route('staff.bookings.index') }}" class="nav-link {{ Route::is('staff.bookings.index') || Route::is('staff.bookings.show') || Route::is('staff.custom_bookings.show') ? 'active' : '' }}">
                 <i class="bi bi-calendar2-check-fill"></i>
-                <span>My Bookings</span>
+                <span>Upcomming Bookings</span>
+            </a>
+            <a href="{{ route('staff.bookings.pending') }}" class="nav-link {{ Route::is('staff.bookings.pending') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span>Pending Bookings</span>
+            </a>
+            <a href="{{ route('staff.bookings.completed') }}" class="nav-link {{ Route::is('staff.bookings.completed') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span>Completed Bookings</span>
             </a>
         </div>
 

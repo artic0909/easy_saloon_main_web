@@ -10,14 +10,12 @@ class BookingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Booking::where(function($q) {
-                $q->where('staff_id', auth()->id())->orWhereNull('staff_id');
-            })
+        $query = Booking::whereNull('staff_id')
+            ->whereNotIn('status', ['completed', 'cancelled'])
             ->with(['user', 'address', 'items.service']);
 
-        $customQuery = \App\Models\CustomBooking::where(function($q) {
-                $q->where('staff_id', auth()->id())->orWhereNull('staff_id');
-            })
+        $customQuery = \App\Models\CustomBooking::whereNull('staff_id')
+            ->whereNotIn('status', ['completed', 'cancelled'])
             ->with(['user', 'address']);
 
         // Search Filter
@@ -214,5 +212,127 @@ class BookingController extends Controller
         ]);
 
         return back()->with('success', 'OTP verified successfully!');
+    }
+
+    public function pending(Request $request)
+    {
+        $query = Booking::where('staff_id', auth()->id())
+            ->whereNotIn('status', ['completed', 'cancelled'])
+            ->with(['user', 'address', 'items.service']);
+
+        $customQuery = \App\Models\CustomBooking::where('staff_id', auth()->id())
+            ->whereNotIn('status', ['completed', 'cancelled'])
+            ->with(['user', 'address']);
+
+        // Search Filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  });
+            });
+            
+            $customQuery->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  });
+            });
+        }
+
+        // Date Filter
+        if ($request->filled('date')) {
+            $query->whereDate('booking_date', $request->date);
+            $customQuery->whereDate('booking_date', $request->date);
+        }
+
+        // Status Filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+            $customQuery->where('status', $request->status);
+        }
+
+        // Pagination
+        $perPage = $request->get('per_page', 10);
+        
+        $bookings = $query->latest()->get();
+        $customBookings = $customQuery->latest()->get();
+        
+        $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at');
+
+        if ($perPage != 'all') {
+            $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+            $items = $allBookings->forPage($currentPage, $perPage);
+            $bookings = new \Illuminate\Pagination\LengthAwarePaginator($items, $allBookings->count(), $perPage, $currentPage, [
+                'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]);
+        } else {
+            $bookings = $allBookings;
+        }
+
+        return view('staff.bookings.pending', compact('bookings'));
+    }
+
+    public function completed(Request $request)
+    {
+        $query = Booking::where('staff_id', auth()->id())
+            ->where('status', 'completed')
+            ->with(['user', 'address', 'items.service']);
+
+        $customQuery = \App\Models\CustomBooking::where('staff_id', auth()->id())
+            ->where('status', 'completed')
+            ->with(['user', 'address']);
+
+        // Search Filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  });
+            });
+            
+            $customQuery->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  });
+            });
+        }
+
+        // Date Filter
+        if ($request->filled('date')) {
+            $query->whereDate('booking_date', $request->date);
+            $customQuery->whereDate('booking_date', $request->date);
+        }
+
+        // Pagination
+        $perPage = $request->get('per_page', 10);
+        
+        $bookings = $query->latest()->get();
+        $customBookings = $customQuery->latest()->get();
+        
+        $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at');
+
+        if ($perPage != 'all') {
+            $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+            $items = $allBookings->forPage($currentPage, $perPage);
+            $bookings = new \Illuminate\Pagination\LengthAwarePaginator($items, $allBookings->count(), $perPage, $currentPage, [
+                'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]);
+        } else {
+            $bookings = $allBookings;
+        }
+
+        return view('staff.bookings.complete', compact('bookings'));
     }
 }

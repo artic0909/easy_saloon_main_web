@@ -53,6 +53,7 @@
                         <th class="py-3 border-0">Date & Slot</th>
                         <th class="py-3 border-0">Service Type</th>
                         <th class="py-3 border-0">Assigned Staff</th>
+                        <th class="py-3 border-0 text-center">Rating</th>
                         <th class="py-3 border-0 text-center">Payment</th>
                         <th class="py-3 border-0 text-center">Status</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
@@ -94,6 +95,17 @@
                                 </div>
                             @else
                                 <span class="text-danger small fw-bold">Not Assigned</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($booking->rating)
+                                <div class="text-warning small text-nowrap">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <i class="bi {{ $i <= $booking->rating ? 'bi-star-fill' : 'bi-star' }}"></i>
+                                    @endfor
+                                </div>
+                            @else
+                                <span class="text-muted small">-</span>
                             @endif
                         </td>
                         <td class="text-center">

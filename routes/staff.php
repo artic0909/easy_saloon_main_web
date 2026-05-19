@@ -11,6 +11,8 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
     
     // Booking Management
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/pending-bookings', [BookingController::class, 'pending'])->name('bookings.pending');
+    Route::get('/completed-bookings', [BookingController::class, 'completed'])->name('bookings.completed');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.status');
     Route::post('/bookings/{booking}/verify-otp', [BookingController::class, 'verifyOtp'])->name('bookings.verify_otp');
