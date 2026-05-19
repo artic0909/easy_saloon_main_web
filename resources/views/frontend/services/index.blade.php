@@ -24,7 +24,7 @@
             <button @click="showFilter = true" class="w-full flex items-center justify-center gap-3 bg-white py-4 rounded-2xl shadow-sm border border-gray-100 font-bold text-[#3d2b1f] hover:bg-gray-50 transition-all">
                 <i class="bi bi-funnel"></i>
                 <span>Filter Services</span>
-                @if(request('category') || request('subcategory') || request('max_price'))
+                @if(request('category') || request('max_price'))
                     <span class="w-2 h-2 bg-[#c6a664] rounded-full"></span>
                 @endif
             </button>
@@ -77,28 +77,6 @@
                                 </div>
                             </div>
 
-                            <!-- Sub Categories (Dynamic via Alpine) -->
-                            <div class="mb-10" x-show="selectedCategories.length > 0" x-transition>
-                                <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Sub Categories</h6>
-                                <div class="flex flex-col gap-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                    @foreach($categories as $cat)
-                                        <div x-show="isCategorySelected('{{ $cat->slug }}')">
-                                            @foreach($cat->subCategories as $sub)
-                                                <label class="flex items-center gap-3 cursor-pointer group custom-checkbox mb-3">
-                                                    <input type="checkbox" name="subcategory[]" value="{{ $sub->slug }}" 
-                                                        class="hidden peer"
-                                                        {{ in_array($sub->slug, (array)request('subcategory')) ? 'checked' : '' }}>
-                                                    <div class="w-5 h-5 rounded-md border-2 border-gray-200 flex items-center justify-center peer-checked:bg-[#c6a664] peer-checked:border-[#c6a664] transition-all duration-300">
-                                                        <svg class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                                    </div>
-                                                    <span class="text-sm font-medium text-gray-600 group-hover:text-[#3d2b1f] transition-colors">{{ $sub->name }}</span>
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
                             <!-- Price Range -->
                             <div class="mb-10">
                                 <h6 class="text-[11px] font-black uppercase text-gray-400 mb-5 tracking-widest border-b border-gray-50 pb-2">Max Price</h6>
@@ -146,18 +124,25 @@
                             <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group border border-gray-100">
                                 <div class="relative h-56 overflow-hidden">
                                     @php 
-                                        $imageMap = [
-                                            'Facial' => 'cat-facial.png',
-                                            'Massage' => 'cat-massage.png',
-                                            'Makeup' => 'cat-makeup.png',
-                                            'Hair' => 'cat-hair.png'
-                                        ];
-                                        $bgImage = '/assets/img/service-bridal.png';
-                                        foreach($imageMap as $key => $img) {
-                                            if(str_contains($service->category->name, $key)) {
-                                                $bgImage = '/assets/img/' . $img;
-                                                break;
+                                        if(!empty($service->images) && is_array($service->images) && count($service->images) > 0) {
+                                            $bgImage = asset('storage/' . $service->images[0]);
+                                        } elseif(!empty($service->image)) {
+                                            $bgImage = asset('storage/' . $service->image);
+                                        } else {
+                                            $imageMap = [
+                                                'Facial' => 'cat-facial.png',
+                                                'Massage' => 'cat-massage.png',
+                                                'Makeup' => 'cat-makeup.png',
+                                                'Hair' => 'cat-hair.png'
+                                            ];
+                                            $fallback = 'service-bridal.png';
+                                            foreach($imageMap as $key => $img) {
+                                                if(str_contains($service->category->name, $key)) {
+                                                    $fallback = $img;
+                                                    break;
+                                                }
                                             }
+                                            $bgImage = asset('assets/img/' . $fallback);
                                         }
                                     @endphp
                                     <img src="{{ $bgImage }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
