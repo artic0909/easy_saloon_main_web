@@ -15,7 +15,7 @@
             <!-- Left: Selection Review -->
             <div class="lg:col-span-7 space-y-8">
                 <!-- Service Summary -->
-                <div class="bg-white rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-10 shadow-sm border border-gray-100">
+                <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] p-5 sm:p-8 md:p-10 shadow-sm border border-gray-100">
                     <div class="flex flex-col sm:flex-row items-center sm:items-start gap-8">
                         <div class="w-24 h-24 md:w-32 md:h-32 bg-[#fdfbf7] rounded-[2rem] flex items-center justify-center text-[#c6a664] shadow-sm flex-shrink-0">
                             <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
@@ -58,14 +58,14 @@
                 </div>
 
                 <!-- Location Details -->
-                <div class="bg-white rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-10 shadow-sm border border-gray-100">
+                <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] p-5 sm:p-8 md:p-10 shadow-sm border border-gray-100">
                     @if($type == 'home')
                         <h3 class="text-xl font-bold text-[#3d2b1f] mb-8" style="font-family: 'Playfair Display', serif;">Select Service Address</h3>
                         <div class="grid md:grid-cols-2 gap-4" x-data="{ selectedAddress: '{{ $userAddresses->where('is_primary', true)->first()->id ?? ($userAddresses->first()->id ?? '') }}' }">
                             @forelse($userAddresses as $address)
                                 <label class="relative cursor-pointer group">
                                     <input type="radio" name="address_id" value="{{ $address->id }}" x-model="selectedAddress" class="absolute opacity-0">
-                                    <div :class="selectedAddress == {{ $address->id }} ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-xl' : 'bg-[#fdfbf7] text-gray-500 border-gray-50'" class="p-6 rounded-3xl border-2 transition-all group-hover:-translate-y-1">
+                                    <div :class="selectedAddress == {{ $address->id }} ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-xl' : 'bg-[#fdfbf7] text-gray-500 border-gray-50'" class="p-5 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all group-hover:-translate-y-1">
                                         <div class="flex items-center justify-between mb-4">
                                             <span class="text-[10px] font-black uppercase tracking-widest">{{ $address->title }}</span>
                                             <div x-show="selectedAddress == {{ $address->id }}" class="w-4 h-4 bg-[#c6a664] rounded-full flex items-center justify-center">
@@ -99,7 +99,7 @@
 
             <!-- Right: Price Breakdown -->
             <div class="lg:col-span-5">
-                <div class="bg-white rounded-[3rem] p-10 md:p-12 shadow-2xl shadow-gray-200/50 border border-gray-100 sticky top-40">
+                <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] p-5 sm:p-8 md:p-12 shadow-2xl shadow-gray-200/50 border border-gray-100 sticky top-40">
                     <h3 class="text-xl font-bold text-[#3d2b1f] mb-8" style="font-family: 'Playfair Display', serif;">Order Summary</h3>
                     
                     <div class="space-y-6 mb-8 pb-8 border-b border-gray-50">
@@ -122,7 +122,7 @@
                     </div>
 
                     <!-- Coupon Code Input -->
-                    <div class="mb-8 p-6 bg-[#fdfbf7] rounded-[2rem] border border-gray-100/50">
+                    <div class="mb-8 p-5 sm:p-6 bg-[#fdfbf7] rounded-[1.5rem] sm:rounded-[2rem] border border-gray-100/50">
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Apply Coupon Code</label>
                         <div class="flex gap-2">
                             <input type="text" id="coupon_input" placeholder="Enter coupon..." class="flex-1 bg-white border border-gray-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#3d2b1f] font-semibold text-[#3d2b1f] uppercase tracking-wider">
@@ -138,7 +138,7 @@
                             <!-- Online Payment Option -->
                             <label class="relative cursor-pointer group">
                                 <input type="radio" name="payment_method" value="online" x-model="paymentMethod" class="absolute opacity-0" checked>
-                                <div :class="paymentMethod == 'online' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-4 rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
+                                <div :class="paymentMethod == 'online' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                                     <span class="text-[10px] font-black uppercase tracking-wider">Pay Online</span>
                                 </div>
@@ -146,7 +146,7 @@
                             <!-- Cash Payment Option -->
                             <label class="relative cursor-pointer group">
                                 <input type="radio" name="payment_method" value="cash" x-model="paymentMethod" class="absolute opacity-0">
-                                <div :class="paymentMethod == 'cash' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-4 rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
+                                <div :class="paymentMethod == 'cash' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                     <span class="text-[10px] font-black uppercase tracking-wider">Pay Cash</span>
                                 </div>
