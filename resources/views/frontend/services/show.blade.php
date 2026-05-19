@@ -263,6 +263,18 @@
                     <button onclick="document.getElementById('bookingForm').submit()" class="w-full bg-[#c6a664] text-white py-5 rounded-[2.5rem] font-bold text-lg shadow-2xl hover:bg-[#d4b574] transition-all transform active:scale-95">
                         Book Now
                     </button>
+
+                    <!-- Contact Buttons -->
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <a href="https://wa.me/919999999999?text=Hello%20Esy%20Saloon,%20I%20want%20to%20book%20{{ rawurlencode($service->name) }}%20service." target="_blank" class="w-full bg-white/10 text-white border border-white/20 py-4 rounded-[2rem] font-bold text-sm shadow-lg hover:bg-white/20 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                            <i class="bi bi-whatsapp text-lg"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="tel:919999999999" class="w-full bg-white/10 text-white border border-white/20 py-4 rounded-[2rem] font-bold text-sm shadow-lg hover:bg-white/20 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                            <i class="bi bi-telephone-fill text-sm"></i>
+                            <span>Call Now</span>
+                        </a>
+                    </div>
                     
                     <p class="text-center text-white/20 text-[10px] font-bold uppercase mt-8 tracking-widest">Secure Checkout Powered by Easy Saloon</p>
                 </div>
