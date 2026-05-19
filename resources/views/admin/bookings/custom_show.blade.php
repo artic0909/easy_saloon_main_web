@@ -12,9 +12,15 @@
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-info text-white">Bespoke Selection</span>
                     @if($booking->otp)
-                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill font-black" style="font-size: 0.85rem; letter-spacing: 0.05em;">
-                            <i class="bi bi-shield-lock-fill me-2 text-warning"></i>SECURITY OTP: {{ $booking->otp }}
-                        </span>
+                        @if($booking->verify)
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill font-black animate-pulse" style="font-size: 0.85rem; letter-spacing: 0.05em;">
+                                <i class="bi bi-shield-check me-2 text-success"></i>OTP VERIFIED
+                            </span>
+                        @else
+                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill font-black" style="font-size: 0.85rem; letter-spacing: 0.05em;">
+                                <i class="bi bi-shield-lock-fill me-2 text-warning"></i>SECURITY OTP: {{ $booking->otp }} <span class="ms-1 font-semibold text-danger">(NOT VERIFIED)</span>
+                            </span>
+                        @endif
                     @endif
                 </div>
             </div>

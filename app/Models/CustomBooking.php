@@ -34,13 +34,15 @@ class CustomBooking extends Model
         'razorpay_order_id',
         'razorpay_payment_id',
         'razorpay_signature',
-        'otp'
+        'otp',
+        'verify'
     ];
 
     protected $casts = [
         'service_ids' => 'array',
         'equipment' => 'array',
         'booking_date' => 'date',
+        'verify' => 'boolean'
     ];
 
     public function user()

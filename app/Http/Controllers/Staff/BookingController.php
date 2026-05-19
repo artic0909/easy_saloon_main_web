@@ -90,9 +90,12 @@ class BookingController extends Controller
         if ($booking->staff_id !== auth()->id()) {
             // If it's unassigned and they are trying to accept it
             if ($booking->staff_id === null && $request->status === 'Accepted') {
+                $otp = $booking->otp ?? rand(1000, 9999);
                 $booking->update([
                     'staff_id' => auth()->id(),
-                    'status' => 'accepted'
+                    'status' => 'accepted',
+                    'otp' => $otp,
+                    'verify' => 0
                 ]);
                 return back()->with('success', 'Booking accepted successfully.');
             }
@@ -113,9 +116,13 @@ class BookingController extends Controller
 
         $dbStatus = $statusMap[$request->status] ?? $request->status;
 
-        $booking->update([
-            'status' => $dbStatus
-        ]);
+        $updateData = ['status' => $dbStatus];
+        if (($dbStatus === 'accepted' || $dbStatus === 'confirmed') && !$booking->otp) {
+            $updateData['otp'] = rand(1000, 9999);
+            $updateData['verify'] = 0;
+        }
+
+        $booking->update($updateData);
 
         return back()->with('success', 'Booking status updated to ' . $request->status);
     }
@@ -137,9 +144,12 @@ class BookingController extends Controller
         
         if ($booking->staff_id !== auth()->id()) {
             if ($booking->staff_id === null && $request->status === 'Accepted') {
+                $otp = $booking->otp ?? rand(1000, 9999);
                 $booking->update([
                     'staff_id' => auth()->id(),
-                    'status' => 'accepted'
+                    'status' => 'accepted',
+                    'otp' => $otp,
+                    'verify' => 0
                 ]);
                 return back()->with('success', 'Custom booking accepted successfully.');
             }
@@ -160,8 +170,49 @@ class BookingController extends Controller
 
         $dbStatus = $statusMap[$request->status] ?? $request->status;
 
-        $booking->update(['status' => $dbStatus]);
+        $updateData = ['status' => $dbStatus];
+        if (($dbStatus === 'accepted' || $dbStatus === 'confirmed') && !$booking->otp) {
+            $updateData['otp'] = rand(1000, 9999);
+            $updateData['verify'] = 0;
+        }
+
+        $booking->update($updateData);
 
         return back()->with('success', 'Custom booking status updated to ' . $request->status);
+    }
+
+    public function verifyOtp(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'otp' => 'required'
+        ]);
+
+        if ($booking->otp !== $request->otp) {
+            return back()->with('error', 'Invalid OTP. Please try again.');
+        }
+
+        $booking->update([
+            'verify' => 1
+        ]);
+
+        return back()->with('success', 'OTP verified successfully!');
+    }
+
+    public function customVerifyOtp(Request $request, $id)
+    {
+        $booking = \App\Models\CustomBooking::findOrFail($id);
+        $request->validate([
+            'otp' => 'required'
+        ]);
+
+        if ($booking->otp !== $request->otp) {
+            return back()->with('error', 'Invalid OTP. Please try again.');
+        }
+
+        $booking->update([
+            'verify' => 1
+        ]);
+
+        return back()->with('success', 'OTP verified successfully!');
     }
 }

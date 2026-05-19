@@ -3,6 +3,18 @@
 @section('page_title', 'Custom Booking Details - #' . $booking->booking_number)
 
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 <div class="row g-4">
     <!-- Left Column: Customer & Service Info -->
     <div class="col-lg-8">
@@ -150,6 +162,39 @@
             </div>
         </div>
 
+        <!-- OTP Verification Card -->
+        @if($booking->otp)
+            <div class="card border-0 mb-4 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold d-flex align-items-center">
+                        <i class="bi bi-shield-lock me-2 text-warning"></i> OTP Verification
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if($booking->verify)
+                        <div class="text-center py-3">
+                            <div class="avatar-sm bg-success bg-opacity-10 text-success rounded-circle mx-auto d-flex align-items-center justify-center mb-3" style="width: 50px; height: 50px;">
+                                <i class="bi bi-shield-check fs-3"></i>
+                            </div>
+                            <h6 class="fw-bold text-success mb-1">OTP Verified</h6>
+                            <p class="text-muted small mb-0">This booking is verified and secure.</p>
+                        </div>
+                    @else
+                        <form action="{{ route('staff.custom_bookings.verify_otp', $booking->id) }}" method="POST">
+                            @csrf
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Enter Customer's OTP</label>
+                                <input type="text" name="otp" class="form-control rounded-pill text-center tracking-widest fw-black" placeholder="XXXX" required maxlen="6" style="font-size: 1.25rem;">
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold text-white shadow-sm">
+                                <i class="bi bi-check-circle-fill me-2"></i> Verify OTP
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3"><h5 class="mb-0 fw-bold">Schedule Info</h5></div>
             <div class="card-body">
@@ -165,10 +210,18 @@
                     <span class="text-muted small">Duration</span>
                     <span class="fw-bold text-primary">{{ $booking->total_duration }} mins total</span>
                 </div>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between {{ $booking->otp ? 'mb-3 pb-3 border-bottom' : '' }}">
                     <span class="text-muted small">Service Type</span>
                     <span class="badge bg-light text-dark border">{{ strtoupper($booking->service_type) }}</span>
                 </div>
+                @if($booking->otp)
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted small">OTP Verification</span>
+                    <span class="badge {{ $booking->verify ? 'bg-success bg-opacity-10 text-success border border-success border-opacity-10' : 'bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10' }} py-1 px-2.5">
+                        {{ $booking->verify ? 'Verified' : 'Not Verified' }}
+                    </span>
+                </div>
+                @endif
             </div>
         </div>
     </div>

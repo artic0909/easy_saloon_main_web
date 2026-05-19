@@ -28,13 +28,15 @@ class Booking extends Model
         'razorpay_order_id',
         'razorpay_payment_id',
         'razorpay_signature',
-        'otp'
+        'otp',
+        'verify'
     ];
 
     protected $casts = [
         'equipment' => 'array',
         'booking_date' => 'date',
-        'is_paid' => 'boolean'
+        'is_paid' => 'boolean',
+        'verify' => 'boolean'
     ];
 
     public function items()
