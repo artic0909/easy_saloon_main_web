@@ -181,7 +181,7 @@
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-muted">Override Status</label>
                         <select name="status" class="form-select rounded-3 py-2" required>
-                            @foreach(['pending', 'confirmed', 'accepted', 'on_the_way', 'started', 'completed', 'cancelled'] as $status)
+                            @foreach(['pending', 'confirmed', 'completed', 'cancelled'] as $status)
                                 <option value="{{ $status }}" {{ $booking->status == $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
                             @endforeach
                         </select>
