@@ -72,12 +72,21 @@
                                         </div>
                                     </div>
                                     <div class="flex flex-col justify-between items-center md:items-end gap-6 border-t border-gray-50 pt-6 md:border-none md:pt-0">
-                                        <div class="text-center md:text-right">
-                                            <span class="inline-block px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest 
-                                                {{ $booking->status == 'completed' ? 'bg-green-100 text-green-600' : ($booking->status == 'cancelled' ? 'bg-red-100 text-red-600' : 'bg-[#c6a664]/10 text-[#c6a664]') }}">
-                                                {{ $booking->status }}
-                                            </span>
-                                            <h3 class="text-2xl md:text-3xl font-black text-[#3d2b1f] mt-3">₹{{ number_format($booking->payable_amount ?? $booking->total_price, 2) }}</h3>
+                                        <div class="text-center md:text-right space-y-3">
+                                            <div class="flex flex-wrap items-center justify-center md:justify-end gap-2">
+                                                <span class="inline-block px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest 
+                                                    {{ $booking->status == 'completed' ? 'bg-green-100 text-green-600' : ($booking->status == 'cancelled' ? 'bg-red-100 text-red-600' : 'bg-[#c6a664]/10 text-[#c6a664]') }}">
+                                                    {{ $booking->status }}
+                                                </span>
+                                                <span class="inline-block px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-gray-100 text-gray-600">
+                                                    {{ strtoupper($booking->pay_type ?? $booking->payment_type ?? 'ONLINE') }}
+                                                </span>
+                                                <span class="inline-block px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest 
+                                                    {{ $booking->is_paid ? 'bg-emerald-500 text-white shadow-sm' : 'bg-amber-500 text-white shadow-sm' }}">
+                                                    {{ $booking->is_paid ? 'PAID' : 'UNPAID' }}
+                                                </span>
+                                            </div>
+                                            <h3 class="text-2xl md:text-3xl font-black text-[#3d2b1f] mt-2">₹{{ number_format($booking->payable_amount ?? $booking->total_price, 2) }}</h3>
                                         </div>
                                         <div class="flex flex-wrap justify-center md:justify-end gap-3 w-full sm:w-auto">
                                             @if(in_array($booking->status, ['pending', 'confirmed']))
@@ -179,6 +188,37 @@
                         </div>
                     </div>
 
+                    <!-- Payment Details Section -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-8">
+                        <div class="group">
+                            <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 md:mb-3">Payment Method</p>
+                            <div class="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl md:rounded-3xl bg-[#fdfbf7] border border-gray-50 group-hover:border-[#c6a664]/30 transition-colors">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white shadow-sm flex items-center justify-center text-[#c6a664]">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                </div>
+                                <span class="text-[10px] md:text-sm font-bold text-[#3d2b1f] uppercase tracking-wider" x-text="selectedBooking.pay_type || selectedBooking.payment_type || 'ONLINE'"></span>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 md:mb-3">Payment Status</p>
+                            <div class="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl md:rounded-3xl bg-[#fdfbf7] border border-gray-50 group-hover:border-[#c6a664]/30 transition-colors">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white shadow-sm flex items-center justify-center" :class="selectedBooking.is_paid ? 'text-emerald-500' : 'text-amber-500'">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <span class="text-[10px] md:text-sm font-bold animate-pulse" :class="selectedBooking.is_paid ? 'text-emerald-600' : 'text-amber-600'" x-text="selectedBooking.is_paid ? 'PAID' : 'UNPAID'"></span>
+                            </div>
+                        </div>
+                        <div class="group col-span-2 sm:col-span-1" x-show="selectedBooking.coupon_code">
+                            <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 md:mb-3">Coupon Applied</p>
+                            <div class="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl md:rounded-3xl bg-green-50/50 border border-green-100 group-hover:border-green-300 transition-colors">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white shadow-sm flex items-center justify-center text-green-500">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <span class="text-[10px] md:text-sm font-black text-green-600 uppercase tracking-widest" x-text="selectedBooking.coupon_code"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Services List Section -->
                     <div>
                         <div class="flex items-center justify-between mb-6 md:mb-8">
@@ -233,14 +273,23 @@
                             <h3 class="text-3xl md:text-4xl font-black text-[#3d2b1f] tracking-tight" x-text="'₹' + parseFloat(selectedBooking.payable_amount || selectedBooking.total_price || 0).toLocaleString()"></h3>
                         </div>
                         <div class="flex flex-col items-center sm:items-end gap-2 md:gap-3 w-full sm:w-auto">
-                            <span class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl bg-white border border-green-100 text-green-600 text-[9px] md:text-[10px] font-black uppercase tracking-widest shadow-sm">
+                            <!-- Paid State -->
+                            <span x-show="selectedBooking.is_paid" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl bg-white border border-green-100 text-green-600 text-[9px] md:text-[10px] font-black uppercase tracking-widest shadow-sm">
                                 <span class="relative flex h-2 w-2">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                     <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                 </span>
                                 Payment Verified
                             </span>
-                            <p class="text-[8px] md:text-[9px] text-gray-300 font-bold uppercase tracking-widest italic">Digital Invoice Sent</p>
+                            <!-- Unpaid State -->
+                            <span x-show="!selectedBooking.is_paid" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl bg-white border border-amber-100 text-amber-600 text-[9px] md:text-[10px] font-black uppercase tracking-widest shadow-sm">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                                </span>
+                                Payment Pending
+                            </span>
+                            <p class="text-[8px] md:text-[9px] text-gray-300 font-bold uppercase tracking-widest italic" x-text="selectedBooking.is_paid ? 'Digital Invoice Sent' : 'Awaiting Settlement'"></p>
                         </div>
                     </div>
                 </div>

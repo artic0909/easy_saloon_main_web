@@ -20,6 +20,8 @@ class Booking extends Model
         'status',
         'is_paid',
         'payment_type',
+        'pay_type',
+        'coupon_code',
         'address_id',
         'cancellation_reason',
         'equipment',

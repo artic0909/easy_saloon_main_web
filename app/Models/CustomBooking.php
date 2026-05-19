@@ -29,6 +29,8 @@ class CustomBooking extends Model
         'notes',
         'is_paid',
         'payment_type',
+        'pay_type',
+        'coupon_code',
         'razorpay_order_id',
         'razorpay_payment_id',
         'razorpay_signature'

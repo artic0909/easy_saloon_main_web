@@ -104,7 +104,9 @@ class CustomBookingController extends Controller
 
         $booking->discount_amount = $discountAmount;
         $booking->payable_amount = max(0, $totalPrice - $discountAmount);
-        $booking->payment_type = $request->payment_method ?? 'online';
+        $booking->payment_type = $request->payment_method === 'cash' ? 'cod' : 'online';
+        $booking->pay_type = $request->payment_method ?? 'online';
+        $booking->coupon_code = $request->filled('coupon_code') ? $request->coupon_code : null;
 
         if ($request->service_type == 'home') {
             $booking->address_id = $request->address_id;
