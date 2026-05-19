@@ -33,7 +33,8 @@ class CustomBooking extends Model
         'coupon_code',
         'razorpay_order_id',
         'razorpay_payment_id',
-        'razorpay_signature'
+        'razorpay_signature',
+        'otp'
     ];
 
     protected $casts = [

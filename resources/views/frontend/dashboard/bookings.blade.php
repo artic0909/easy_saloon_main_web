@@ -167,7 +167,7 @@
                 <!-- Scrollable Content -->
                 <div class="px-6 md:px-16 py-8 md:py-12 overflow-y-auto flex-1 custom-scrollbar space-y-10 md:space-y-12">
                     <!-- Date & Status Section -->
-                    <div class="grid grid-cols-2 gap-4 md:gap-8">
+                    <div class="grid grid-cols-2 gap-4 md:gap-8" :class="selectedBooking.otp ? 'md:grid-cols-3' : 'md:grid-cols-2'">
                         <div class="group">
                             <p class="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 md:mb-3">Appointment Date</p>
                             <div class="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl md:rounded-3xl bg-[#fdfbf7] border border-gray-50 group-hover:border-[#c6a664]/30 transition-colors">
@@ -184,6 +184,16 @@
                                     <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
                                 <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest" :class="selectedBooking.status == 'completed' ? 'text-green-600' : (selectedBooking.status == 'cancelled' ? 'text-red-600' : 'text-[#c6a664]')" x-text="selectedBooking.status"></span>
+                            </div>
+                        </div>
+                        <!-- Security OTP -->
+                        <div class="group col-span-2 md:col-span-1" x-show="selectedBooking.otp">
+                            <p class="text-[9px] md:text-[10px] font-black text-[#c6a664] uppercase tracking-[0.2em] mb-2 md:mb-3">Security OTP</p>
+                            <div class="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl md:rounded-3xl bg-amber-50/50 border border-amber-100 group-hover:border-amber-300 transition-colors">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white shadow-sm flex items-center justify-center text-amber-500">
+                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                </div>
+                                <span class="text-[12px] md:text-base font-black text-amber-600 tracking-[0.25em]" x-text="selectedBooking.otp"></span>
                             </div>
                         </div>
                     </div>

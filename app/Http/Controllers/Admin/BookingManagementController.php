@@ -142,9 +142,12 @@ class BookingManagementController extends Controller
             'staff_id' => 'required|exists:users,id',
         ]);
 
+        $otp = $booking->otp ?? rand(1000, 9999);
+
         $booking->update([
             'staff_id' => $request->staff_id,
-            'status' => 'confirmed'
+            'status' => 'confirmed',
+            'otp' => $otp
         ]);
 
         $booking->user->notify(new BookingStatusNotification($booking, 'assigned'));
@@ -158,7 +161,12 @@ class BookingManagementController extends Controller
             'status' => 'required|in:pending,confirmed,accepted,on_the_way,started,completed,cancelled',
         ]);
 
-        $booking->update(['status' => $request->status]);
+        $updateData = ['status' => $request->status];
+        if ($request->status === 'confirmed' && !$booking->otp) {
+            $updateData['otp'] = rand(1000, 9999);
+        }
+
+        $booking->update($updateData);
 
         $booking->user->notify(new BookingStatusNotification($booking, $request->status));
 
@@ -185,9 +193,12 @@ class BookingManagementController extends Controller
             'staff_id' => 'required|exists:users,id',
         ]);
 
+        $otp = $booking->otp ?? rand(1000, 9999);
+
         $booking->update([
             'staff_id' => $request->staff_id,
-            'status' => 'confirmed'
+            'status' => 'confirmed',
+            'otp' => $otp
         ]);
 
         $booking->user->notify(new BookingStatusNotification($booking, 'assigned'));
@@ -202,7 +213,12 @@ class BookingManagementController extends Controller
             'status' => 'required|in:pending,confirmed,accepted,on_the_way,started,completed,cancelled',
         ]);
 
-        $booking->update(['status' => $request->status]);
+        $updateData = ['status' => $request->status];
+        if ($request->status === 'confirmed' && !$booking->otp) {
+            $updateData['otp'] = rand(1000, 9999);
+        }
+
+        $booking->update($updateData);
 
         $booking->user->notify(new BookingStatusNotification($booking, $request->status));
 

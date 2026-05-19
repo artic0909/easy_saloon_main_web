@@ -27,7 +27,8 @@ class Booking extends Model
         'equipment',
         'razorpay_order_id',
         'razorpay_payment_id',
-        'razorpay_signature'
+        'razorpay_signature',
+        'otp'
     ];
 
     protected $casts = [

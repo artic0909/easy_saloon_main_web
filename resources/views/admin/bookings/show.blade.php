@@ -7,8 +7,13 @@
     <!-- Booking Details -->
     <div class="col-lg-8">
         <div class="card mb-4">
-            <div class="card-header bg-white py-3">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0">Appointment Information</h5>
+                @if($booking->otp)
+                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill font-black" style="font-size: 0.85rem; letter-spacing: 0.05em;">
+                        <i class="bi bi-shield-lock-fill me-2 text-warning"></i>SECURITY OTP: {{ $booking->otp }}
+                    </span>
+                @endif
             </div>
             <div class="card-body">
                 <div class="row g-4">
