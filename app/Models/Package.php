@@ -15,6 +15,7 @@ class Package extends Model
         'sale_price',
         'is_active',
         'image',
+        'unique_id',
     ];
 
     public function items(): HasMany

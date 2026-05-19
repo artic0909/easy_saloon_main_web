@@ -72,6 +72,9 @@
                         @endif
                         <div>
                             <div class="fw-bold text-dark fs-6">{{ $package->name }}</div>
+                            @if($package->unique_id)
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-0.5 rounded-pill mt-1" style="font-size: 10px; font-family: monospace;">{{ $package->unique_id }}</span>
+                            @endif
                         </div>
                     </div>
                 </td>

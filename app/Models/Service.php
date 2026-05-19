@@ -19,6 +19,7 @@ class Service extends Model
         'duration_minutes',
         'is_active',
         'images',
+        'unique_id',
     ];
 
     protected $casts = [

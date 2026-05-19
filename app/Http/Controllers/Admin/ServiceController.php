@@ -70,6 +70,15 @@ class ServiceController extends Controller
         $data['what_included'] = array_filter($request->what_included ?? []);
         $data['slug'] = Str::slug($request->name);
 
+        $category = Category::find($request->category_id);
+        $categorySlug = strtoupper(Str::slug($category->name));
+        $index = Service::where('category_id', $category->id)->count() + 1;
+        do {
+            $uniqueId = 'SR-' . $categorySlug . '-' . str_pad($index, 2, '0', STR_PAD_LEFT);
+            $index++;
+        } while (Service::where('unique_id', $uniqueId)->exists());
+        $data['unique_id'] = $uniqueId;
+
         $uploadedImages = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
@@ -114,6 +123,18 @@ class ServiceController extends Controller
         $data = $request->except(['images', 'equipment', 'what_included', 'image', 'existing_images']);
         $data['what_included'] = array_filter($request->what_included ?? []);
         $data['slug'] = Str::slug($request->name);
+
+        // Self-heal: Generate unique_id if pre-existing service does not have one
+        if (empty($service->unique_id)) {
+            $category = Category::find($request->category_id);
+            $categorySlug = strtoupper(Str::slug($category->name));
+            $index = Service::where('category_id', $category->id)->count() + 1;
+            do {
+                $uniqueId = 'SR-' . $categorySlug . '-' . str_pad($index, 2, '0', STR_PAD_LEFT);
+                $index++;
+            } while (Service::where('unique_id', $uniqueId)->exists());
+            $data['unique_id'] = $uniqueId;
+        }
 
         $uploadedImages = $request->existing_images ?? [];
 

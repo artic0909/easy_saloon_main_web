@@ -134,7 +134,12 @@
                                                         </div>
                                                     @endif
                                                 </td>
-                                                <td>{{ $service->name }}</td>
+                                                <td>
+                                                    <div class="fw-semibold text-dark">{{ $service->name }}</div>
+                                                    @if($service->unique_id)
+                                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-0.5 rounded-pill mt-1" style="font-size: 10px; font-family: monospace;">{{ $service->unique_id }}</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="fw-bold text-dark">₹{{ number_format($service->sale_price) }}</div>
                                                     @if($service->original_price > $service->sale_price)

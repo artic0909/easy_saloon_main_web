@@ -61,6 +61,14 @@ class PackageController extends Controller
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
 
+        $packageSlug = strtoupper(Str::slug($request->name));
+        $index = 1;
+        do {
+            $uniqueId = 'PK-' . $packageSlug . '-' . str_pad($index, 2, '0', STR_PAD_LEFT);
+            $index++;
+        } while (Package::where('unique_id', $uniqueId)->exists());
+        $data['unique_id'] = $uniqueId;
+
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('packages', 'public');
         }
@@ -99,6 +107,17 @@ class PackageController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
+
+        // Self-heal: Generate unique_id if pre-existing package does not have one
+        if (empty($package->unique_id)) {
+            $packageSlug = strtoupper(Str::slug($request->name));
+            $index = 1;
+            do {
+                $uniqueId = 'PK-' . $packageSlug . '-' . str_pad($index, 2, '0', STR_PAD_LEFT);
+                $index++;
+            } while (Package::where('unique_id', $uniqueId)->exists());
+            $data['unique_id'] = $uniqueId;
+        }
 
         if ($request->hasFile('image')) {
             if ($package->image) {
