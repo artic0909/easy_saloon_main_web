@@ -17,6 +17,8 @@ class CustomBooking extends Model
         'service_ids',
         'equipment',
         'total_price',
+        'discount_amount',
+        'payable_amount',
         'total_duration',
         'booking_date',
         'time_slot',

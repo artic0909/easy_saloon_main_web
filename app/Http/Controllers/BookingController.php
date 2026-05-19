@@ -46,6 +46,8 @@ class BookingController extends Controller
             'date' => 'required|date',
             'slot' => 'required',
             'address_id' => 'required_if:service_type,home',
+            'payment_method' => 'nullable|in:online,cash',
+            'coupon_code' => 'nullable|string',
         ]);
 
         if (!auth()->check()) {
@@ -74,12 +76,36 @@ class BookingController extends Controller
         if ($request->item_type == 'service') {
             $service = Service::findOrFail($request->item_id);
             $booking->total_price = $service->sale_price;
-            $booking->payable_amount = $service->sale_price;
         } else {
             $package = Package::findOrFail($request->item_id);
             $booking->total_price = $package->sale_price;
-            $booking->payable_amount = $package->sale_price;
         }
+
+        // Calculate coupon discount
+        $discountAmount = 0;
+        if ($request->filled('coupon_code')) {
+            $coupon = \App\Models\Coupon::where('code', $request->coupon_code)
+                ->where('is_active', true)
+                ->where(function ($query) {
+                    $query->whereNull('expiry_date')
+                        ->orWhere('expiry_date', '>=', \Carbon\Carbon::today());
+                })
+                ->first();
+            if ($coupon && $booking->total_price >= $coupon->min_order_amount) {
+                if ($coupon->discount_type === 'percentage') {
+                    $discountAmount = ($booking->total_price * $coupon->discount_value) / 100;
+                    if ($coupon->max_discount && $discountAmount > $coupon->max_discount) {
+                        $discountAmount = $coupon->max_discount;
+                    }
+                } else {
+                    $discountAmount = $coupon->discount_value;
+                }
+            }
+        }
+
+        $booking->discount_amount = $discountAmount;
+        $booking->payable_amount = max(0, $booking->total_price - $discountAmount);
+        $booking->payment_type = $request->payment_method ?? 'online';
 
         if ($request->service_type == 'home') {
             $booking->address_id = $request->address_id;

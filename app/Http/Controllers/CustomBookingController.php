@@ -55,6 +55,8 @@ class CustomBookingController extends Controller
             'date' => 'required|date',
             'slot' => 'required',
             'address_id' => 'required_if:service_type,home',
+            'payment_method' => 'nullable|in:online,cash',
+            'coupon_code' => 'nullable|string',
         ]);
 
         if (!auth()->check()) {
@@ -77,6 +79,32 @@ class CustomBookingController extends Controller
         $booking->time_slot = $request->slot;
         $booking->service_type = $request->service_type;
         $booking->status = 'pending';
+
+        // Calculate coupon discount
+        $discountAmount = 0;
+        if ($request->filled('coupon_code')) {
+            $coupon = \App\Models\Coupon::where('code', $request->coupon_code)
+                ->where('is_active', true)
+                ->where(function ($query) {
+                    $query->whereNull('expiry_date')
+                        ->orWhere('expiry_date', '>=', \Carbon\Carbon::today());
+                })
+                ->first();
+            if ($coupon && $totalPrice >= $coupon->min_order_amount) {
+                if ($coupon->discount_type === 'percentage') {
+                    $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
+                    if ($coupon->max_discount && $discountAmount > $coupon->max_discount) {
+                        $discountAmount = $coupon->max_discount;
+                    }
+                } else {
+                    $discountAmount = $coupon->discount_value;
+                }
+            }
+        }
+
+        $booking->discount_amount = $discountAmount;
+        $booking->payable_amount = max(0, $totalPrice - $discountAmount);
+        $booking->payment_type = $request->payment_method ?? 'online';
 
         if ($request->service_type == 'home') {
             $booking->address_id = $request->address_id;

@@ -102,7 +102,7 @@
                 <div class="bg-white rounded-[3rem] p-10 md:p-12 shadow-2xl shadow-gray-200/50 border border-gray-100 sticky top-40">
                     <h3 class="text-xl font-bold text-[#3d2b1f] mb-8" style="font-family: 'Playfair Display', serif;">Order Summary</h3>
                     
-                    <div class="space-y-6 mb-10 pb-10 border-b border-gray-50">
+                    <div class="space-y-6 mb-8 pb-8 border-b border-gray-50">
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-gray-400 font-medium">Subtotal</span>
                             <span class="text-[#3d2b1f] font-bold">₹{{ number_format($item->original_price, 2) }}</span>
@@ -115,13 +115,50 @@
                             <span class="text-gray-400 font-medium">Service Fee</span>
                             <span class="text-[#3d2b1f] font-bold">₹0.00</span>
                         </div>
+                        <div id="coupon_discount_row" class="flex justify-between items-center text-sm hidden">
+                            <span class="text-gray-400 font-medium">Coupon Discount (<span id="coupon_applied_code"></span>)</span>
+                            <span class="text-green-500 font-bold">- ₹<span id="coupon_discount_value">0.00</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Coupon Code Input -->
+                    <div class="mb-8 p-6 bg-[#fdfbf7] rounded-[2rem] border border-gray-100/50">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Apply Coupon Code</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="coupon_input" placeholder="Enter coupon..." class="flex-1 bg-white border border-gray-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#3d2b1f] font-semibold text-[#3d2b1f] uppercase tracking-wider">
+                            <button type="button" onclick="applyCoupon()" class="bg-[#3d2b1f] text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#c6a664] transition-colors shadow-sm">Apply</button>
+                        </div>
+                        <div id="coupon_status" class="mt-2.5 text-[11px] font-bold hidden"></div>
+                    </div>
+
+                    <!-- Payment Methods Selection -->
+                    <div class="mb-10" x-data="{ paymentMethod: 'online' }">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Select Payment Method</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Online Payment Option -->
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="payment_method" value="online" x-model="paymentMethod" class="absolute opacity-0" checked>
+                                <div :class="paymentMethod == 'online' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-4 rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                    <span class="text-[10px] font-black uppercase tracking-wider">Pay Online</span>
+                                </div>
+                            </label>
+                            <!-- Cash Payment Option -->
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="payment_method" value="cash" x-model="paymentMethod" class="absolute opacity-0">
+                                <div :class="paymentMethod == 'cash' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-4 rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                    <span class="text-[10px] font-black uppercase tracking-wider">Pay Cash</span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Final Total -->
-                    <div class="flex justify-between items-center mb-12">
+                    <div class="flex justify-between items-center mb-10">
                         <div>
                             <p class="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">Total Amount</p>
-                            <h4 class="text-4xl font-black text-[#3d2b1f]" style="font-family: 'Playfair Display', serif;">₹{{ number_format($item->sale_price, 2) }}</h4>
+                            <h4 class="text-4xl font-black text-[#3d2b1f]" id="final_total_display" style="font-family: 'Playfair Display', serif;">₹{{ number_format($item->sale_price, 2) }}</h4>
                         </div>
                         <div class="w-16 h-16 bg-[#fdfbf7] rounded-full flex items-center justify-center text-[#c6a664]">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -146,6 +183,81 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+    let appliedCouponCode = '';
+    let baseAmount = {{ $item->sale_price }};
+
+    function applyCoupon() {
+        const input = document.getElementById('coupon_input');
+        const code = input.value.trim();
+        const statusDiv = document.getElementById('coupon_status');
+        
+        if (!code) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Enter Code',
+                text: 'Please enter a coupon code.',
+                confirmButtonColor: '#3d2b1f'
+            });
+            return;
+        }
+        
+        statusDiv.classList.remove('hidden', 'text-green-600', 'text-red-600');
+        statusDiv.classList.add('text-gray-500');
+        statusDiv.innerText = 'Verifying...';
+        
+        fetch('{{ route("coupon.verify") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                code: code,
+                amount: baseAmount
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                appliedCouponCode = data.data.code;
+                const discount = data.data.discount_amount;
+                const finalTotal = data.data.final_amount;
+                
+                statusDiv.classList.remove('text-gray-500');
+                statusDiv.classList.add('text-green-600');
+                statusDiv.innerText = 'Coupon applied! You saved ₹' + discount.toFixed(2);
+                
+                // Show breakdown row
+                document.getElementById('coupon_applied_code').innerText = data.data.code;
+                document.getElementById('coupon_discount_value').innerText = discount.toFixed(2);
+                document.getElementById('coupon_discount_row').classList.remove('hidden');
+                
+                // Update final total
+                document.getElementById('final_total_display').innerText = '₹' + finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            } else {
+                appliedCouponCode = '';
+                statusDiv.classList.remove('text-gray-500');
+                statusDiv.classList.add('text-red-600');
+                statusDiv.innerText = data.message || 'Invalid coupon code.';
+                
+                // Hide breakdown row
+                document.getElementById('coupon_discount_row').classList.add('hidden');
+                document.getElementById('final_total_display').innerText = '₹' + baseAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            appliedCouponCode = '';
+            statusDiv.classList.remove('text-gray-500');
+            statusDiv.classList.add('text-red-600');
+            statusDiv.innerText = 'Failed to verify coupon.';
+            
+            document.getElementById('coupon_discount_row').classList.add('hidden');
+            document.getElementById('final_total_display').innerText = '₹' + baseAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        });
+    }
+
     function confirmBooking() {
         const addressId = document.querySelector('input[name="address_id"]:checked')?.value;
         const type = '{{ $type }}';
@@ -159,6 +271,8 @@
             });
             return;
         }
+
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'online';
 
         Swal.fire({
             title: 'Confirming Appointment...',
@@ -177,6 +291,10 @@
         formData.append('date', '{{ $date }}');
         formData.append('slot', '{{ $slot }}');
         formData.append('equipment', '@json($equipment)');
+        formData.append('payment_method', paymentMethod);
+        if (appliedCouponCode) {
+            formData.append('coupon_code', appliedCouponCode);
+        }
         if (addressId) formData.append('address_id', addressId);
 
         fetch('{{ route("booking.confirm") }}', {
@@ -189,8 +307,19 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Now Initiate Payment
-                payWithRazorpay(data.booking_id, data.booking_type);
+                if (paymentMethod === 'cash') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Confirmed!',
+                        text: 'Your appointment is booked successfully. Please pay by cash after your session.',
+                        confirmButtonColor: '#3d2b1f'
+                    }).then(() => {
+                        window.location.href = "{{ route('dashboard.bookings') }}";
+                    });
+                } else {
+                    // Now Initiate Payment
+                    payWithRazorpay(data.booking_id, data.booking_type);
+                }
             } else {
                 Swal.fire({
                     icon: 'error',
