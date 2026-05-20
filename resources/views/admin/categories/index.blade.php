@@ -1,12 +1,12 @@
 @extends('admin.layout.app')
 
-@section('page_title', 'Category Management')
+@section('page_title', 'Service Management')
 
 @section('content')
 <div class="card">
     <div class="card-header bg-white py-3">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h5 class="fw-bold mb-0">All Categories</h5>
+            <h5 class="fw-bold mb-0">All Services</h5>
             <a href="{{ route('admin.categories.create') }}" class="btn btn-primary rounded-pill px-4">
                 <i class="bi bi-plus-lg me-2"></i> Add Category
             </a>
