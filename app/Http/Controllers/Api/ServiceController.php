@@ -58,8 +58,11 @@ class ServiceController extends Controller
         }
 
         $services = $query->get()->map(function ($service) {
-            if ($service->image && !filter_var($service->image, FILTER_VALIDATE_URL)) {
-                $service->image = asset('storage/' . $service->image);
+            $firstImage = is_array($service->images) && count($service->images) > 0 ? $service->images[0] : null;
+            if ($firstImage && !filter_var($firstImage, FILTER_VALIDATE_URL)) {
+                $service->image = asset('storage/' . $firstImage);
+            } else {
+                $service->image = $firstImage;
             }
             return $service;
         });
@@ -76,8 +79,11 @@ class ServiceController extends Controller
             ->where('is_active', true)
             ->get()
             ->map(function ($service) {
-                if ($service->image && !filter_var($service->image, FILTER_VALIDATE_URL)) {
-                    $service->image = asset('storage/' . $service->image);
+                $firstImage = is_array($service->images) && count($service->images) > 0 ? $service->images[0] : null;
+                if ($firstImage && !filter_var($firstImage, FILTER_VALIDATE_URL)) {
+                    $service->image = asset('storage/' . $firstImage);
+                } else {
+                    $service->image = $firstImage;
                 }
                 return $service;
             });
@@ -109,8 +115,11 @@ class ServiceController extends Controller
             ], 404);
         }
 
-        if ($service->image && !filter_var($service->image, FILTER_VALIDATE_URL)) {
-            $service->image = asset('storage/' . $service->image);
+        $firstImage = is_array($service->images) && count($service->images) > 0 ? $service->images[0] : null;
+        if ($firstImage && !filter_var($firstImage, FILTER_VALIDATE_URL)) {
+            $service->image = asset('storage/' . $firstImage);
+        } else {
+            $service->image = $firstImage;
         }
 
         return response()->json([
