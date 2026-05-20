@@ -47,7 +47,8 @@ class AuthController extends Controller
             }
 
             if ($request->ajax()) {
-                return response()->json(['success' => true, 'message' => 'Login successful! Redirecting...', 'redirect' => $redirect]);
+                $intendedUrl = redirect()->intended($redirect)->getTargetUrl();
+                return response()->json(['success' => true, 'message' => 'Login successful! Redirecting...', 'redirect' => $intendedUrl]);
             }
             return redirect()->intended($redirect);
         }
