@@ -198,11 +198,11 @@
                     </div>
 
                     <!-- Equipment Selection -->
-                    @if($service->subCategory && $service->subCategory->equipment->count() > 0)
+                    @if($service->equipment && $service->equipment->count() > 0)
                     <div class="mb-10">
                         <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Required Equipment (Optional)</p>
                         <div class="flex flex-wrap gap-3">
-                            @foreach($service->subCategory->equipment as $eq)
+                            @foreach($service->equipment as $eq)
                                 <button type="button" 
                                     @click="toggleEquipment('{{ $eq->name }}')"
                                     :class="selectedEquipments.includes('{{ $eq->name }}') ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/40 border-white/10 hover:border-white/30'"

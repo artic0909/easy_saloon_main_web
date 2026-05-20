@@ -88,11 +88,11 @@
                     <div class="mb-10 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                         <p class="text-white/40 text-[10px] font-black uppercase tracking-widest mb-4">Required Equipments (Optional)</p>
                         @foreach($package->items as $item)
-                            @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
+                            @if($item->service && $item->service->equipment && $item->service->equipment->count() > 0)
                                 <div class="mb-6 last:mb-0">
                                     <p class="text-white/60 text-[10px] font-bold mb-3 border-l-2 border-[#c6a664] pl-2 uppercase tracking-wide">{{ $item->service->name }}</p>
                                     <div class="flex flex-wrap gap-2">
-                                        @foreach($item->service->subCategory->equipment as $eq)
+                                        @foreach($item->service->equipment as $eq)
                                             <button type="button" 
                                                 @click="toggleEquipment('{{ $eq->name }}')"
                                                 :class="selectedEquipments.includes('{{ $eq->name }}') ? 'bg-[#c6a664] text-white border-[#c6a664]' : 'bg-white/5 text-white/40 border-white/10 hover:border-white/30'"

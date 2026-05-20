@@ -104,10 +104,10 @@
                         <tr class="border-bottom">
                             <td class="px-4 py-3">
                                 <div class="fw-bold text-dark">{{ $item->package_id ? $item->package->name : $item->service->name }}</div>
-                                @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
+                                @if($item->service && $item->service->equipment && $item->service->equipment->count() > 0)
                                     <div class="mt-1">
                                         <small class="text-muted">Required Tools: </small>
-                                        @foreach($item->service->subCategory->equipment as $eq)
+                                        @foreach($item->service->equipment as $eq)
                                             <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 py-0 px-2" style="font-size: 0.65rem;">{{ $eq->name }}</span>
                                         @endforeach
                                     </div>

@@ -24,9 +24,10 @@ class PackageListingController extends Controller
     {
         $categories = \App\Models\Category::where('is_active', true)
             ->with(['services' => function($query) {
-                $query->where('is_active', true)->with('subCategory.equipment');
+                $query->where('is_active', true);
             }])
             ->get();
+            
             
         return view('frontend.packages.custom-package', compact('categories'));
     }

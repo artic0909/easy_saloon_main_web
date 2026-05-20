@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Category;
-use App\Models\SubCategory;
 use App\Models\Equipment;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;

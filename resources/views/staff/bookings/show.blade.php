@@ -96,9 +96,9 @@
                                          <div class="small text-muted mt-1">Full Service Bundle</div>
                                      @else
                                          <div class="fw-bold">{{ $item->service->name ?? 'Deleted Service' }}</div>
-                                         @if($item->service && $item->service->subCategory && $item->service->subCategory->equipment->count() > 0)
+                                         @if($item->service && $item->service->equipment && $item->service->equipment->count() > 0)
                                              <div class="mt-1 d-flex flex-wrap gap-1">
-                                                 @foreach($item->service->subCategory->equipment as $eq)
+                                                 @foreach($item->service->equipment as $eq)
                                                      <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10 py-0 px-2" style="font-size: 0.6rem;">
                                                          <i class="bi bi-tools me-1"></i>{{ $eq->name }}
                                                      </span>

@@ -70,23 +70,7 @@
                                 </div>
                                 <p class="text-[10px] md:text-xs text-gray-400 mb-6 md:mb-8 line-clamp-2 leading-relaxed" x-text="stripHtml(service.details)"></p>
                                 
-                                <!-- Equipment Selector -->
-                                <div class="mb-6 md:mb-8 mt-auto" x-show="service.sub_category?.equipment?.length > 0">
-                                    <div class="flex items-center gap-2 mb-4">
-                                        <div class="h-[1px] flex-1 bg-gray-100"></div>
-                                        <span class="text-[8px] md:text-[9px] font-black text-gray-300 uppercase tracking-widest">Equipments</span>
-                                        <div class="h-[1px] flex-1 bg-gray-100"></div>
-                                    </div>
-                                    <div class="flex flex-wrap gap-1.5 md:gap-2">
-                                        <template x-for="eq in service.sub_category.equipment" :key="eq.id">
-                                            <button @click="toggleEquipment(service.id, eq.name)"
-                                                :class="isSelectedEquipment(service.id, eq.name) ? 'bg-[#c6a664] text-white border-[#c6a664] shadow-md' : 'bg-gray-50 text-gray-400 border-gray-50 hover:border-gray-200'"
-                                                class="px-3 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl text-[8px] md:text-[10px] font-bold border transition-all"
-                                                x-text="eq.name">
-                                            </button>
-                                        </template>
-                                    </div>
-                                </div>
+
 
                                 <button @click="addService(service)" 
                                     :disabled="isServiceSelected(service.id)"

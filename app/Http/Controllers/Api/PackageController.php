@@ -44,7 +44,7 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        $package = Package::with('items.service.subCategory.equipment')
+        $package = Package::with('items.service.equipment')
             ->where(function($query) use ($id) {
                 if (is_numeric($id)) {
                     $query->where('id', $id);
@@ -85,7 +85,7 @@ class PackageController extends Controller
     {
         $categories = Category::where('is_active', true)
             ->with(['services' => function($query) {
-                $query->where('is_active', true)->with('subCategory.equipment');
+                $query->where('is_active', true)->with('equipment');
             }])
             ->get()
             ->map(function ($category) {
