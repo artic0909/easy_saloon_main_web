@@ -24,8 +24,17 @@ class PackageController extends Controller
                 }
                 
                 $package->items->map(function ($item) {
-                    if ($item->service && $item->service->image && !filter_var($item->service->image, FILTER_VALIDATE_URL)) {
-                        $item->service->image = asset('storage/' . $item->service->image);
+                    if ($item->service) {
+                        $resolvedImages = [];
+                        if (is_array($item->service->images)) {
+                            foreach ($item->service->images as $img) {
+                                if ($img) {
+                                    $resolvedImages[] = filter_var($img, FILTER_VALIDATE_URL) ? $img : asset('storage/' . $img);
+                                }
+                            }
+                        }
+                        $item->service->images = $resolvedImages;
+                        $item->service->image = count($resolvedImages) > 0 ? $resolvedImages[0] : null;
                     }
                     return $item;
                 });
@@ -66,8 +75,17 @@ class PackageController extends Controller
         }
 
         $package->items->map(function ($item) {
-            if ($item->service && $item->service->image && !filter_var($item->service->image, FILTER_VALIDATE_URL)) {
-                $item->service->image = asset('storage/' . $item->service->image);
+            if ($item->service) {
+                $resolvedImages = [];
+                if (is_array($item->service->images)) {
+                    foreach ($item->service->images as $img) {
+                        if ($img) {
+                            $resolvedImages[] = filter_var($img, FILTER_VALIDATE_URL) ? $img : asset('storage/' . $img);
+                        }
+                    }
+                }
+                $item->service->images = $resolvedImages;
+                $item->service->image = count($resolvedImages) > 0 ? $resolvedImages[0] : null;
             }
             return $item;
         });
@@ -90,9 +108,16 @@ class PackageController extends Controller
             ->get()
             ->map(function ($category) {
                 $category->services->map(function ($service) {
-                    if ($service->image && !filter_var($service->image, FILTER_VALIDATE_URL)) {
-                        $service->image = asset('storage/' . $service->image);
+                    $resolvedImages = [];
+                    if (is_array($service->images)) {
+                        foreach ($service->images as $img) {
+                            if ($img) {
+                                $resolvedImages[] = filter_var($img, FILTER_VALIDATE_URL) ? $img : asset('storage/' . $img);
+                            }
+                        }
                     }
+                    $service->images = $resolvedImages;
+                    $service->image = count($resolvedImages) > 0 ? $resolvedImages[0] : null;
                     return $service;
                 });
                 return $category;

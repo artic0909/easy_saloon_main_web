@@ -58,12 +58,16 @@ class ServiceController extends Controller
         }
 
         $services = $query->get()->map(function ($service) {
-            $firstImage = is_array($service->images) && count($service->images) > 0 ? $service->images[0] : null;
-            if ($firstImage && !filter_var($firstImage, FILTER_VALIDATE_URL)) {
-                $service->image = asset('storage/' . $firstImage);
-            } else {
-                $service->image = $firstImage;
+            $resolvedImages = [];
+            if (is_array($service->images)) {
+                foreach ($service->images as $img) {
+                    if ($img) {
+                        $resolvedImages[] = filter_var($img, FILTER_VALIDATE_URL) ? $img : asset('storage/' . $img);
+                    }
+                }
             }
+            $service->images = $resolvedImages;
+            $service->image = count($resolvedImages) > 0 ? $resolvedImages[0] : null;
             return $service;
         });
 
@@ -79,12 +83,16 @@ class ServiceController extends Controller
             ->where('is_active', true)
             ->get()
             ->map(function ($service) {
-                $firstImage = is_array($service->images) && count($service->images) > 0 ? $service->images[0] : null;
-                if ($firstImage && !filter_var($firstImage, FILTER_VALIDATE_URL)) {
-                    $service->image = asset('storage/' . $firstImage);
-                } else {
-                    $service->image = $firstImage;
+                $resolvedImages = [];
+                if (is_array($service->images)) {
+                    foreach ($service->images as $img) {
+                        if ($img) {
+                            $resolvedImages[] = filter_var($img, FILTER_VALIDATE_URL) ? $img : asset('storage/' . $img);
+                        }
+                    }
                 }
+                $service->images = $resolvedImages;
+                $service->image = count($resolvedImages) > 0 ? $resolvedImages[0] : null;
                 return $service;
             });
 
@@ -98,7 +106,7 @@ class ServiceController extends Controller
 
     public function show($id)
     {
-        $service = Service::with(['category'])
+        $service = Service::with(['category', 'equipment'])
             ->where(function($query) use ($id) {
                 if (is_numeric($id)) {
                     $query->where('id', $id);
@@ -115,12 +123,16 @@ class ServiceController extends Controller
             ], 404);
         }
 
-        $firstImage = is_array($service->images) && count($service->images) > 0 ? $service->images[0] : null;
-        if ($firstImage && !filter_var($firstImage, FILTER_VALIDATE_URL)) {
-            $service->image = asset('storage/' . $firstImage);
-        } else {
-            $service->image = $firstImage;
+        $resolvedImages = [];
+        if (is_array($service->images)) {
+            foreach ($service->images as $img) {
+                if ($img) {
+                    $resolvedImages[] = filter_var($img, FILTER_VALIDATE_URL) ? $img : asset('storage/' . $img);
+                }
+            }
         }
+        $service->images = $resolvedImages;
+        $service->image = count($resolvedImages) > 0 ? $resolvedImages[0] : null;
 
         return response()->json([
             'status' => 'success',
