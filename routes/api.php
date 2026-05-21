@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile/addresses', [App\Http\Controllers\Api\ProfileController::class, 'addresses']);
     Route::post('/profile/addresses/save', [App\Http\Controllers\Api\ProfileController::class, 'saveAddress']);
     Route::delete('/profile/addresses/{id}', [App\Http\Controllers\Api\ProfileController::class, 'deleteAddress']);
+    Route::post('/profile/addresses/{id}/delete', [App\Http\Controllers\Api\ProfileController::class, 'deleteAddress']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
     Route::get('/notifications', [NotificationController::class, 'index']);

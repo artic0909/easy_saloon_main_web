@@ -127,6 +127,16 @@ class ProfileController extends Controller
     public function deleteAddress($id)
     {
         $address = Address::where('user_id', auth()->id())->findOrFail($id);
+        
+        // Manually nullify address_id in bookings to avoid database constraint violations
+        \Illuminate\Support\Facades\DB::table('bookings')
+            ->where('address_id', $address->id)
+            ->update(['address_id' => null]);
+
+        \Illuminate\Support\Facades\DB::table('custom_bookings')
+            ->where('address_id', $address->id)
+            ->update(['address_id' => null]);
+
         $address->delete();
         
         return response()->json([
