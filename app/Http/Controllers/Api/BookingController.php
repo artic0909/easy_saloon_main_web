@@ -21,9 +21,13 @@ class BookingController extends Controller
             'slot' => 'required|string',
             'equipment' => 'nullable|array',
             'address_id' => 'nullable|exists:addresses,id',
+            'coupon_code' => 'nullable|string',
+            'payment_method' => 'nullable|string',
         ]);
 
         $service = Service::findOrFail($request->service_id);
+        $discountAmount = $this->calculateDiscount($request->coupon_code, $service->sale_price);
+        $payableAmount = max(0, $service->sale_price - $discountAmount);
 
         try {
             DB::beginTransaction();
@@ -35,10 +39,13 @@ class BookingController extends Controller
                 'time_slot' => $request->slot,
                 'service_type' => $request->type == 'salon' ? 'salon_visit' : 'home',
                 'total_price' => $service->sale_price,
-                'payable_amount' => $service->sale_price,
+                'discount_amount' => $discountAmount,
+                'payable_amount' => $payableAmount,
                 'status' => 'pending',
                 'is_paid' => false,
-                'payment_type' => 'cod',
+                'payment_type' => $request->payment_method === 'cash' ? 'cod' : 'online',
+                'pay_type' => $request->payment_method ?? 'online',
+                'coupon_code' => $request->filled('coupon_code') ? $request->coupon_code : null,
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
             ]);
@@ -84,9 +91,13 @@ class BookingController extends Controller
             'slot' => 'required|string',
             'equipment' => 'nullable|array',
             'address_id' => 'nullable|exists:addresses,id',
+            'coupon_code' => 'nullable|string',
+            'payment_method' => 'nullable|string',
         ]);
 
         $package = \App\Models\Package::with('items.service')->findOrFail($request->package_id);
+        $discountAmount = $this->calculateDiscount($request->coupon_code, $package->sale_price);
+        $payableAmount = max(0, $package->sale_price - $discountAmount);
 
         try {
             DB::beginTransaction();
@@ -98,10 +109,13 @@ class BookingController extends Controller
                 'time_slot' => $request->slot,
                 'service_type' => $request->type == 'salon' ? 'salon_visit' : 'home',
                 'total_price' => $package->sale_price,
-                'payable_amount' => $package->sale_price,
+                'discount_amount' => $discountAmount,
+                'payable_amount' => $payableAmount,
                 'status' => 'pending',
                 'is_paid' => false,
-                'payment_type' => 'cod',
+                'payment_type' => $request->payment_method === 'cash' ? 'cod' : 'online',
+                'pay_type' => $request->payment_method ?? 'online',
+                'coupon_code' => $request->filled('coupon_code') ? $request->coupon_code : null,
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
             ]);
@@ -160,11 +174,15 @@ class BookingController extends Controller
             'slot' => 'required|string',
             'equipment' => 'nullable|array',
             'address_id' => 'nullable|exists:addresses,id',
+            'coupon_code' => 'nullable|string',
+            'payment_method' => 'nullable|string',
         ]);
 
         $services = Service::whereIn('id', $request->service_ids)->get();
         $totalPrice = $services->sum('sale_price');
         $totalDuration = $services->sum('duration_minutes');
+        $discountAmount = $this->calculateDiscount($request->coupon_code, $totalPrice);
+        $payableAmount = max(0, $totalPrice - $discountAmount);
 
         try {
             DB::beginTransaction();
@@ -177,10 +195,14 @@ class BookingController extends Controller
                 'time_slot' => $request->slot,
                 'service_type' => $request->type,
                 'total_price' => $totalPrice,
+                'discount_amount' => $discountAmount,
+                'payable_amount' => $payableAmount,
                 'total_duration' => $totalDuration,
                 'status' => 'pending',
                 'is_paid' => false,
-                'payment_type' => $request->payment_method ?? 'cod',
+                'payment_type' => $request->payment_method === 'cash' ? 'cod' : 'online',
+                'pay_type' => $request->payment_method ?? 'online',
+                'coupon_code' => $request->filled('coupon_code') ? $request->coupon_code : null,
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
             ]);
@@ -207,5 +229,34 @@ class BookingController extends Controller
                 'message' => 'Failed to create booking: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    private function calculateDiscount($couponCode, $totalPrice)
+    {
+        if (empty($couponCode)) {
+            return 0;
+        }
+
+        $coupon = \App\Models\Coupon::where('code', $couponCode)
+            ->where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('expiry_date')
+                    ->orWhere('expiry_date', '>=', \Carbon\Carbon::today());
+            })
+            ->first();
+
+        if ($coupon && $totalPrice >= $coupon->min_order_amount) {
+            if ($coupon->discount_type === 'percentage') {
+                $discountAmount = ($totalPrice * $coupon->discount_value) / 100;
+                if ($coupon->max_discount && $discountAmount > $coupon->max_discount) {
+                    $discountAmount = $coupon->max_discount;
+                }
+            } else {
+                $discountAmount = $coupon->discount_value;
+            }
+            return round($discountAmount, 2);
+        }
+
+        return 0;
     }
 }
