@@ -50,6 +50,7 @@
                         <th class="py-3 border-0">Designation</th>
                         <th class="py-3 border-0">Salon/Branch</th>
                         <th class="py-3 border-0 text-center">Exp.</th>
+                        <th class="py-3 border-0 text-center">Rating</th>
                         <th class="py-3 border-0 text-center">Status</th>
                         <th class="px-4 py-3 border-0 text-end">Actions</th>
                     </tr>
@@ -78,6 +79,16 @@
                         <td><span class="badge bg-light text-dark fw-medium">{{ $staff->designation }}</span></td>
                         <td>{{ $staff->salon->name ?? 'Mobile / Home Service' }}</td>
                         <td class="text-center">{{ $staff->experience_years }} Years</td>
+                        <td class="text-center">
+                            @if($staff->staff_rating_count > 0)
+                                <span class="badge bg-warning-subtle text-dark border border-warning border-opacity-10 px-2.5 py-2">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>{{ $staff->staff_rating }}
+                                    <span class="text-muted small">({{ $staff->staff_rating_count }})</span>
+                                </span>
+                            @else
+                                <span class="text-muted small">No ratings</span>
+                            @endif
+                        </td>
                         <td class="text-center">
                             @if($staff->is_available)
                                 <span class="badge rounded-pill bg-success-subtle text-success border border-success border-opacity-25 px-3 py-2">

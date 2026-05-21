@@ -94,4 +94,45 @@ class User extends Authenticatable // implements MustVerifyEmail
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
+
+    /**
+     * Get the overall rating average for staff member from both bookings and custom bookings.
+     */
+    public function getStaffRatingAttribute()
+    {
+        $ratings = Booking::where('staff_id', $this->id)
+            ->whereNotNull('rating')
+            ->where('rating', '>', 0)
+            ->pluck('rating')
+            ->concat(
+                CustomBooking::where('staff_id', $this->id)
+                    ->whereNotNull('rating')
+                    ->where('rating', '>', 0)
+                    ->pluck('rating')
+            );
+
+        if ($ratings->isEmpty()) {
+            return 0.0;
+        }
+
+        return round($ratings->average(), 1);
+    }
+
+    /**
+     * Get the total ratings/reviews count for staff member.
+     */
+    public function getStaffRatingCountAttribute()
+    {
+        $bookingsCount = Booking::where('staff_id', $this->id)
+            ->whereNotNull('rating')
+            ->where('rating', '>', 0)
+            ->count();
+
+        $customBookingsCount = CustomBooking::where('staff_id', $this->id)
+            ->whereNotNull('rating')
+            ->where('rating', '>', 0)
+            ->count();
+
+        return $bookingsCount + $customBookingsCount;
+    }
 }

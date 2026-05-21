@@ -114,7 +114,17 @@
                         {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
                     <h6 class="fw-bold mb-1">{{ auth()->user()->name }}</h6>
-                    <p class="text-muted small mb-3">{{ auth()->user()->designation ?? 'Service Professional' }}</p>
+                    <p class="text-muted small mb-2">{{ auth()->user()->designation ?? 'Service Professional' }}</p>
+                    
+                    @if(auth()->user()->staff_rating_count > 0)
+                        <div class="mb-3 d-flex justify-content-center align-items-center gap-1">
+                            <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                            <span class="fw-bold text-dark">{{ auth()->user()->staff_rating }}</span>
+                            <span class="text-muted small">({{ auth()->user()->staff_rating_count }} reviews)</span>
+                        </div>
+                    @else
+                        <div class="mb-3 text-muted small"><i class="bi bi-star me-1"></i>No ratings yet</div>
+                    @endif
                     
                     <div class="mb-3">
                         @if(auth()->user()->is_available)
