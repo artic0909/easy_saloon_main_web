@@ -27,6 +27,10 @@ Route::post('/coupons/verify', [CouponController::class, 'verify']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
+    Route::post('/profile/update', [App\Http\Controllers\Api\ProfileController::class, 'updateProfile']);
+    Route::get('/profile/addresses', [App\Http\Controllers\Api\ProfileController::class, 'addresses']);
+    Route::post('/profile/addresses/save', [App\Http\Controllers\Api\ProfileController::class, 'saveAddress']);
+    Route::delete('/profile/addresses/{id}', [App\Http\Controllers\Api\ProfileController::class, 'deleteAddress']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
     Route::get('/notifications', [NotificationController::class, 'index']);
