@@ -41,6 +41,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/bookings/package', [App\Http\Controllers\Api\BookingController::class, 'storePackageBooking']);
     Route::post('/bookings/custom-package', [App\Http\Controllers\Api\BookingController::class, 'storeCustomPackageBooking']);
     
+    Route::get('/my-bookings', [App\Http\Controllers\Api\MybookingsController::class, 'index']);
+    Route::post('/my-bookings/{id}/cancel', [App\Http\Controllers\Api\MybookingsController::class, 'cancel']);
+    Route::post('/my-bookings/{id}/rate', [App\Http\Controllers\Api\MybookingsController::class, 'rate']);
+    
     // Role-based routes
     Route::middleware('role:admin')->get('/admin/dashboard', function() {
         return response()->json(['message' => 'Welcome Admin']);
