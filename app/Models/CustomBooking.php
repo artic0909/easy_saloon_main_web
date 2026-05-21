@@ -40,6 +40,8 @@ class CustomBooking extends Model
     ];
 
     protected $casts = [
+        'user_id' => 'integer',
+        'staff_id' => 'integer',
         'service_ids' => 'array',
         'equipment' => 'array',
         'booking_date' => 'date',

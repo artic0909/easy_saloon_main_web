@@ -34,6 +34,8 @@ class Booking extends Model
     ];
 
     protected $casts = [
+        'user_id' => 'integer',
+        'staff_id' => 'integer',
         'equipment' => 'array',
         'booking_date' => 'date',
         'is_paid' => 'boolean',

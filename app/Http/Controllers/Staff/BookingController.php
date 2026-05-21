@@ -75,7 +75,7 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         // Ensure the booking belongs to the logged in staff OR is unassigned
-        if ($booking->staff_id !== null && $booking->staff_id !== auth()->id()) {
+        if ($booking->staff_id !== null && $booking->staff_id != auth()->id()) {
             abort(403);
         }
 
@@ -85,7 +85,7 @@ class BookingController extends Controller
 
     public function updateStatus(Request $request, Booking $booking)
     {
-        if ($booking->staff_id !== auth()->id()) {
+        if ($booking->staff_id != auth()->id()) {
             // If it's unassigned and they are trying to accept it
             if ($booking->staff_id === null && $request->status === 'Accepted') {
                 $otp = $booking->otp ?? rand(1000, 9999);
@@ -140,7 +140,7 @@ class BookingController extends Controller
     {
         $booking = \App\Models\CustomBooking::findOrFail($id);
         
-        if ($booking->staff_id !== auth()->id()) {
+        if ($booking->staff_id != auth()->id()) {
             if ($booking->staff_id === null && $request->status === 'Accepted') {
                 $otp = $booking->otp ?? rand(1000, 9999);
                 $booking->update([
