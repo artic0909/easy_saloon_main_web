@@ -59,12 +59,12 @@
                                             $s = strtolower($booking->status);
                                             $isVerified = (bool) $booking->verify;
                                         @endphp
-                                        <option value="Pending" {{ $s == 'pending' ? 'selected' : '' }} disabled>Pending (Assigned)</option>
-                                        <option value="Accepted" {{ $s == 'accepted' ? 'selected' : '' }} disabled>Accepted</option>
-                                        <option value="On the way" {{ $s == 'on_the_way' ? 'selected' : '' }} {{ ($s == 'pending' || $s == 'accepted') ? '' : 'disabled' }}>On the way</option>
+                                        <option value="Pending" {{ ($s == 'pending' || $s == 'confirmed') ? 'selected' : '' }} disabled>Pending (Assigned)</option>
+                                        <option value="Accepted" {{ $s == 'accepted' ? 'selected' : '' }} {{ ($s == 'confirmed' || $s == 'pending') ? '' : 'disabled' }}>Accepted</option>
+                                        <option value="On the way" {{ $s == 'on_the_way' ? 'selected' : '' }} {{ ($s == 'pending' || $s == 'accepted' || $s == 'confirmed') ? '' : 'disabled' }}>On the way</option>
                                         <option value="Started" {{ $s == 'started' ? 'selected' : '' }} {{ ($s == 'on_the_way' && $isVerified) ? '' : 'disabled' }}>Service Started {{ ($s == 'on_the_way' && !$isVerified) ? '(Requires OTP)' : '' }}</option>
                                         <option value="Completed" {{ $s == 'completed' ? 'selected' : '' }} {{ ($s == 'started') ? '' : 'disabled' }}>Service Completed</option>
-                                        <option value="Rejected" {{ $s == 'cancelled' ? 'selected' : '' }} disabled>Reject Booking</option>
+                                        <option value="Rejected" {{ $s == 'cancelled' ? 'selected' : '' }} {{ ($s == 'pending' || $s == 'accepted' || $s == 'confirmed') ? '' : 'disabled' }}>Reject Booking</option>
                                     @endif
                                 </select>
                             </form>
