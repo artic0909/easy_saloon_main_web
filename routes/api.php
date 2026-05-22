@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Staff\DashboardController as StaffDashboardController;
+use App\Http\Controllers\Api\Staff\BookingsManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -57,5 +58,19 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::middleware('role:staff')->group(function() {
         Route::get('/staff/dashboard', [StaffDashboardController::class, 'index']);
+
+        // Booking Management
+        Route::get('/staff/bookings', [BookingsManagementController::class, 'index']);
+        Route::get('/staff/pending-bookings', [BookingsManagementController::class, 'pending']);
+        Route::get('/staff/completed-bookings', [BookingsManagementController::class, 'completed']);
+        Route::get('/staff/cancelled-bookings', [BookingsManagementController::class, 'cancelled']);
+        Route::get('/staff/bookings/{booking}', [BookingsManagementController::class, 'show']);
+        Route::post('/staff/bookings/{booking}/status', [BookingsManagementController::class, 'updateStatus']);
+        Route::post('/staff/bookings/{booking}/verify-otp', [BookingsManagementController::class, 'verifyOtp']);
+
+        // Custom Bookings
+        Route::get('/staff/custom-bookings/{id}', [BookingsManagementController::class, 'customShow']);
+        Route::post('/staff/custom-bookings/{id}/status', [BookingsManagementController::class, 'customUpdateStatus']);
+        Route::post('/staff/custom-bookings/{id}/verify-otp', [BookingsManagementController::class, 'customVerifyOtp']);
     });
 });
