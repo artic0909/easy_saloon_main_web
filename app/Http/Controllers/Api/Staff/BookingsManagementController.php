@@ -64,7 +64,7 @@ class BookingsManagementController extends Controller
         
         $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at');
 
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 'all');
         if ($perPage != 'all') {
             $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
             $items = $allBookings->forPage($currentPage, $perPage)->values();
@@ -339,7 +339,7 @@ class BookingsManagementController extends Controller
         
         $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at');
 
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 'all');
         if ($perPage != 'all') {
             $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
             $items = $allBookings->forPage($currentPage, $perPage)->values();
@@ -408,7 +408,7 @@ class BookingsManagementController extends Controller
         
         $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at');
 
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 'all');
         if ($perPage != 'all') {
             $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
             $items = $allBookings->forPage($currentPage, $perPage)->values();
@@ -477,7 +477,7 @@ class BookingsManagementController extends Controller
         
         $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at');
 
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 'all');
         if ($perPage != 'all') {
             $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
             $items = $allBookings->forPage($currentPage, $perPage)->values();
