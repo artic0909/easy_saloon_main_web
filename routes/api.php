@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Admin Booking Management
         Route::get('/admin/bookings', [AdminBookingsManagementController::class, 'index']);
         Route::get('/admin/pending-bookings', [AdminBookingsManagementController::class, 'pending']);
+        Route::get('/admin/cancelled-bookings', [AdminBookingsManagementController::class, 'cancelled']);
         Route::get('/admin/bookings/{id}', [AdminBookingsManagementController::class, 'show']);
         Route::post('/admin/bookings/{id}/assign-staff', [AdminBookingsManagementController::class, 'assignStaff']);
         Route::post('/admin/bookings/{id}/status', [AdminBookingsManagementController::class, 'updateStatus']);

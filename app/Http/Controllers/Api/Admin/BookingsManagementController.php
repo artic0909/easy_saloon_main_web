@@ -110,6 +110,53 @@ class BookingsManagementController extends Controller
         ]);
     }
 
+    public function cancelled(Request $request)
+    {
+        $query = Booking::with(['user', 'staff', 'items'])->where('status', 'cancelled');
+        $customQuery = CustomBooking::with(['user', 'staff'])->where('status', 'cancelled');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  })
+                  ->orWhereHas('staff', function($sq) use ($search) {
+                      $sq->where('name', 'like', "%$search%");
+                  });
+            });
+            
+            $customQuery->where(function($q) use ($search) {
+                $q->where('booking_number', 'like', "%$search%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%$search%")
+                         ->orWhere('phone', 'like', "%$search%");
+                  })
+                  ->orWhereHas('staff', function($sq) use ($search) {
+                      $sq->where('name', 'like', "%$search%");
+                  });
+            });
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('booking_date', $request->date);
+            $customQuery->whereDate('booking_date', $request->date);
+        }
+
+        $bookings = $query->latest()->get();
+        $customBookings = $customQuery->latest()->get();
+        
+        // Merge and sort
+        $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->values();
+        
+        return response()->json([
+            'status' => 'success',
+            'data' => $allBookings
+        ]);
+    }
+
     public function show($id)
     {
         $booking = Booking::with(['user', 'staff', 'items'])->findOrFail($id);
