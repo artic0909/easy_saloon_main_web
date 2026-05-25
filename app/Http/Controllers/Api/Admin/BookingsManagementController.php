@@ -46,8 +46,14 @@ class BookingsManagementController extends Controller
             $customQuery->whereDate('booking_date', $request->date);
         }
         
-        $bookings = $query->latest()->get();
-        $customBookings = $customQuery->latest()->get();
+        $bookings = $query->latest()->get()->map(function($item) {
+            $item->booking_type = 'regular';
+            return $item;
+        });
+        $customBookings = $customQuery->latest()->get()->map(function($item) {
+            $item->booking_type = 'custom';
+            return $item;
+        });
         
         // Merge and sort
         $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->values();
@@ -98,8 +104,14 @@ class BookingsManagementController extends Controller
             $customQuery->where('status', $request->status);
         }
 
-        $bookings = $query->latest()->get();
-        $customBookings = $customQuery->latest()->get();
+        $bookings = $query->latest()->get()->map(function($item) {
+            $item->booking_type = 'regular';
+            return $item;
+        });
+        $customBookings = $customQuery->latest()->get()->map(function($item) {
+            $item->booking_type = 'custom';
+            return $item;
+        });
         
         // Merge and sort
         $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->values();
@@ -145,8 +157,14 @@ class BookingsManagementController extends Controller
             $customQuery->whereDate('booking_date', $request->date);
         }
 
-        $bookings = $query->latest()->get();
-        $customBookings = $customQuery->latest()->get();
+        $bookings = $query->latest()->get()->map(function($item) {
+            $item->booking_type = 'regular';
+            return $item;
+        });
+        $customBookings = $customQuery->latest()->get()->map(function($item) {
+            $item->booking_type = 'custom';
+            return $item;
+        });
         
         // Merge and sort
         $allBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->values();
