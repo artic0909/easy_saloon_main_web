@@ -3,9 +3,9 @@
     <div class="max-w-7xl mx-auto px-4">
         <!-- Long City List -->
         <div class="mb-12">
-            <button class="w-full flex justify-between items-center py-4 border-b border-gray-100 text-sm font-bold text-gray-400">
+            <!-- <button class="w-full flex justify-between items-center py-4 border-b border-gray-100 text-sm font-bold text-gray-400">
                 More About Easy Saloon Services <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
+            </button> -->
             <div class="mt-8">
                 <p class="text-[10px] text-gray-400 uppercase font-bold mb-4">We Are Live In 50+ Cities</p>
                 <div class="flex flex-wrap gap-x-4 gap-y-2 text-[10px] text-gray-400">
