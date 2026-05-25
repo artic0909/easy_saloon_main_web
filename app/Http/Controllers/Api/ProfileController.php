@@ -149,7 +149,12 @@ class ProfileController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'current_password' => 'required',
-            'new_password' => 'required|min:8',
+            'new_password' => 'required|min:8|different:current_password',
+        ], [
+            'current_password.required' => 'Your current password is required.',
+            'new_password.required' => 'A new password is required.',
+            'new_password.min' => 'The new password must be at least 8 characters long.',
+            'new_password.different' => 'The new password cannot be the same as your current password.',
         ]);
 
         if ($validator->fails()) {
@@ -164,7 +169,7 @@ class ProfileController extends Controller
         if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Current password does not match.'
+                'message' => 'Your current password is incorrect.'
             ], 400);
         }
 
