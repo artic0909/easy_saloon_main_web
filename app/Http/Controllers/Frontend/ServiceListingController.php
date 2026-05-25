@@ -58,6 +58,13 @@ class ServiceListingController extends Controller
             ? (is_array($request->category) ? $request->category : explode(',', $request->category))
             : [];
 
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('frontend.services.partials.service_list', compact('services'))->render(),
+                'count' => $services->total(),
+            ]);
+        }
+
         return view('frontend.services.index', compact('services', 'categories'));
     }
 
