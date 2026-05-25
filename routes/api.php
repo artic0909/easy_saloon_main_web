@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Staff\DashboardController as StaffDashboardController;
 use App\Http\Controllers\Api\Staff\BookingsManagementController;
+use App\Http\Controllers\Api\Admin\BookingsManagementController as AdminBookingsManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -53,8 +54,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/my-bookings/{id}/rate', [App\Http\Controllers\Api\MybookingsController::class, 'rate']);
     
     // Role-based routes
-    Route::middleware('role:admin')->get('/admin/dashboard', function() {
-        return response()->json(['message' => 'Welcome Admin']);
+    Route::middleware('role:admin')->group(function() {
+        Route::get('/admin/dashboard', function() {
+            return response()->json(['message' => 'Welcome Admin']);
+        });
+
+        // Admin Booking Management
+        Route::get('/admin/bookings', [AdminBookingsManagementController::class, 'index']);
+        Route::get('/admin/pending-bookings', [AdminBookingsManagementController::class, 'pending']);
+        Route::get('/admin/bookings/{id}', [AdminBookingsManagementController::class, 'show']);
+        Route::post('/admin/bookings/{id}/assign-staff', [AdminBookingsManagementController::class, 'assignStaff']);
+        Route::post('/admin/bookings/{id}/status', [AdminBookingsManagementController::class, 'updateStatus']);
+        Route::delete('/admin/bookings/{id}', [AdminBookingsManagementController::class, 'destroy']);
+
+        // Admin Custom Bookings
+        Route::get('/admin/custom-bookings/{id}', [AdminBookingsManagementController::class, 'customShow']);
+        Route::post('/admin/custom-bookings/{id}/assign-staff', [AdminBookingsManagementController::class, 'customAssignStaff']);
+        Route::post('/admin/custom-bookings/{id}/status', [AdminBookingsManagementController::class, 'customUpdateStatus']);
+        Route::delete('/admin/custom-bookings/{id}', [AdminBookingsManagementController::class, 'customDestroy']);
     });
     
     Route::middleware('role:staff')->group(function() {
