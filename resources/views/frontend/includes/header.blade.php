@@ -118,7 +118,10 @@
                     <a href="{{ route('dashboard.bookings') }}" class="block text-lg font-bold text-[#3d2b1f]">My Bookings</a>
                     <a href="{{ route('dashboard.notifications') }}" class="block text-lg font-bold text-[#3d2b1f]">Notifications</a>
                     <a href="{{ route('dashboard.addresses') }}" class="block text-lg font-bold text-[#3d2b1f]">Saved Addresses</a>
-                    <a href="{{ route('logout') }}" method="POST" class="block text-lg font-bold text-red-500">Sign Out</a>
+                    <form action="{{ route('logout') }}" method="POST" class="w-full">
+                        @csrf
+                        <button type="submit" class="block text-lg font-bold text-red-500 text-left w-full hover:opacity-80 transition-opacity">Sign Out</button>
+                    </form>
                 @else
                     <a href="{{ route('login') }}" class="block text-lg font-bold text-[#3d2b1f]">Login</a>
                     <a href="{{ route('register') }}" class="block w-full bg-[#3d2b1f] text-white py-4 rounded-2xl font-bold mt-4 text-center shadow-lg">Join Now</a>
