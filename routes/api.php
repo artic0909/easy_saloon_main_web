@@ -63,6 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
             return response()->json(['message' => 'Welcome Admin']);
         });
 
+        // Admin Coupons Management
+        Route::apiResource('/admin/coupons', \App\Http\Controllers\Api\Admin\CouponsManagementApiController::class);
+
         // Admin Booking Management
         Route::get('/admin/bookings', [AdminBookingsManagementController::class, 'index']);
         Route::get('/admin/pending-bookings', [AdminBookingsManagementController::class, 'pending']);
