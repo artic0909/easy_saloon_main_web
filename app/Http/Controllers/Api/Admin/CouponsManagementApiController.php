@@ -46,7 +46,7 @@ class CouponsManagementApiController extends Controller
             'discount_value' => $request->discount_value,
             'min_order_amount' => $request->min_order_amount ?? 0,
             'expiry_date' => $request->expiry_date,
-            'is_active' => $request->has('is_active') ? $request->is_active : true,
+            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : true,
         ]);
 
         return response()->json([
@@ -87,7 +87,7 @@ class CouponsManagementApiController extends Controller
             'discount_value' => $request->discount_value,
             'min_order_amount' => $request->min_order_amount ?? 0,
             'expiry_date' => $request->expiry_date,
-            'is_active' => $request->has('is_active') ? $request->is_active : $coupon->is_active,
+            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : $coupon->is_active,
         ]);
 
         return response()->json([

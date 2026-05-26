@@ -53,8 +53,8 @@ class StaffManagementApiController extends Controller
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
             'role' => 'staff',
-            'is_active' => $request->has('is_active') ? $request->is_active : true,
-            'is_available' => $request->has('is_available') ? $request->is_available : true,
+            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : true,
+            'is_available' => $request->has('is_available') ? $request->boolean('is_available') : true,
             'salon_id' => $request->salon_id,
             'designation' => $request->designation,
             'experience_years' => $request->experience_years,
@@ -102,8 +102,8 @@ class StaffManagementApiController extends Controller
             'designation' => $request->designation,
             'experience_years' => $request->experience_years,
             'bio' => $request->bio,
-            'is_active' => $request->has('is_active') ? $request->is_active : $staff->is_active,
-            'is_available' => $request->has('is_available') ? $request->is_available : $staff->is_available,
+            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : $staff->is_active,
+            'is_available' => $request->has('is_available') ? $request->boolean('is_available') : $staff->is_available,
         ];
 
         if ($request->filled('password')) {
