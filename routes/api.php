@@ -66,6 +66,9 @@ Route::middleware('auth:sanctum')->group(function () {
         // Admin Coupons Management
         Route::apiResource('/admin/coupons', \App\Http\Controllers\Api\Admin\CouponsManagementApiController::class);
 
+        // Admin Staff Management
+        Route::apiResource('/admin/staffs', \App\Http\Controllers\Api\Admin\StaffManagementApiController::class);
+
         // Admin Booking Management
         Route::get('/admin/bookings', [AdminBookingsManagementController::class, 'index']);
         Route::get('/admin/pending-bookings', [AdminBookingsManagementController::class, 'pending']);
