@@ -30,6 +30,13 @@ class PaymentController extends Controller
             $booking = CustomBooking::findOrFail($request->booking_id);
         }
 
+        if ($booking->is_paid || $booking->payment_type === 'wallet') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'This booking has already been paid.'
+            ], 400);
+        }
+
         $amount = isset($booking->payable_amount) ? $booking->payable_amount : $booking->total_price;
 
         $orderData = [

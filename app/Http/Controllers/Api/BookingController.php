@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\BookingItem;
 use App\Models\Service;
+use App\Models\Wallet;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -29,8 +31,29 @@ class BookingController extends Controller
         $discountAmount = $this->calculateDiscount($request->coupon_code, $service->sale_price);
         $payableAmount = max(0, $service->sale_price - $discountAmount);
 
+        $wallet = null;
+        if ($request->payment_method === 'wallet') {
+            $wallet = Wallet::where('user_id', auth()->id())->first();
+            if (!$wallet || $wallet->balance < $payableAmount) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Insufficient wallet balance.'
+                ], 400);
+            }
+        }
+
         try {
             DB::beginTransaction();
+
+            $isPaid = false;
+            $status = 'pending';
+            $payType = $request->payment_method ?? 'online';
+            $paymentType = $request->payment_method === 'cash' ? 'cod' : ($request->payment_method === 'wallet' ? 'wallet' : 'online');
+
+            if ($request->payment_method === 'wallet') {
+                $isPaid = true;
+                $status = 'confirmed';
+            }
 
             $booking = Booking::create([
                 'user_id' => auth()->id(),
@@ -41,10 +64,10 @@ class BookingController extends Controller
                 'total_price' => $service->sale_price,
                 'discount_amount' => $discountAmount,
                 'payable_amount' => $payableAmount,
-                'status' => 'pending',
-                'is_paid' => false,
-                'payment_type' => $request->payment_method === 'cash' ? 'cod' : 'online',
-                'pay_type' => $request->payment_method ?? 'online',
+                'status' => $status,
+                'is_paid' => $isPaid,
+                'payment_type' => $paymentType,
+                'pay_type' => $payType,
                 'coupon_code' => $request->filled('coupon_code') ? $request->coupon_code : null,
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
@@ -57,6 +80,20 @@ class BookingController extends Controller
                 'price' => $service->sale_price,
                 'quantity' => 1,
             ]);
+
+            if ($request->payment_method === 'wallet' && $wallet) {
+                $wallet->decrement('balance', $payableAmount);
+                Transaction::create([
+                    'user_id' => auth()->id(),
+                    'booking_id' => $booking->id,
+                    'transaction_id' => 'TXN-' . strtoupper(Str::random(10)),
+                    'amount' => $payableAmount,
+                    'payment_mode' => 'wallet',
+                    'status' => 'completed',
+                    'type' => 'booking',
+                    'description' => 'Payment for Booking ' . $booking->booking_number
+                ]);
+            }
 
             DB::commit();
 
@@ -99,8 +136,29 @@ class BookingController extends Controller
         $discountAmount = $this->calculateDiscount($request->coupon_code, $package->sale_price);
         $payableAmount = max(0, $package->sale_price - $discountAmount);
 
+        $wallet = null;
+        if ($request->payment_method === 'wallet') {
+            $wallet = Wallet::where('user_id', auth()->id())->first();
+            if (!$wallet || $wallet->balance < $payableAmount) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Insufficient wallet balance.'
+                ], 400);
+            }
+        }
+
         try {
             DB::beginTransaction();
+
+            $isPaid = false;
+            $status = 'pending';
+            $payType = $request->payment_method ?? 'online';
+            $paymentType = $request->payment_method === 'cash' ? 'cod' : ($request->payment_method === 'wallet' ? 'wallet' : 'online');
+
+            if ($request->payment_method === 'wallet') {
+                $isPaid = true;
+                $status = 'confirmed';
+            }
 
             $booking = Booking::create([
                 'user_id' => auth()->id(),
@@ -111,10 +169,10 @@ class BookingController extends Controller
                 'total_price' => $package->sale_price,
                 'discount_amount' => $discountAmount,
                 'payable_amount' => $payableAmount,
-                'status' => 'pending',
-                'is_paid' => false,
-                'payment_type' => $request->payment_method === 'cash' ? 'cod' : 'online',
-                'pay_type' => $request->payment_method ?? 'online',
+                'status' => $status,
+                'is_paid' => $isPaid,
+                'payment_type' => $paymentType,
+                'pay_type' => $payType,
                 'coupon_code' => $request->filled('coupon_code') ? $request->coupon_code : null,
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
@@ -137,6 +195,20 @@ class BookingController extends Controller
                     'item_type' => 'service',
                     'price' => 0.00,
                     'quantity' => 1,
+                ]);
+            }
+
+            if ($request->payment_method === 'wallet' && $wallet) {
+                $wallet->decrement('balance', $payableAmount);
+                Transaction::create([
+                    'user_id' => auth()->id(),
+                    'booking_id' => $booking->id,
+                    'transaction_id' => 'TXN-' . strtoupper(Str::random(10)),
+                    'amount' => $payableAmount,
+                    'payment_mode' => 'wallet',
+                    'status' => 'completed',
+                    'type' => 'booking',
+                    'description' => 'Payment for Booking ' . $booking->booking_number
                 ]);
             }
 
@@ -184,8 +256,29 @@ class BookingController extends Controller
         $discountAmount = $this->calculateDiscount($request->coupon_code, $totalPrice);
         $payableAmount = max(0, $totalPrice - $discountAmount);
 
+        $wallet = null;
+        if ($request->payment_method === 'wallet') {
+            $wallet = Wallet::where('user_id', auth()->id())->first();
+            if (!$wallet || $wallet->balance < $payableAmount) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Insufficient wallet balance.'
+                ], 400);
+            }
+        }
+
         try {
             DB::beginTransaction();
+
+            $isPaid = false;
+            $status = 'pending';
+            $payType = $request->payment_method ?? 'online';
+            $paymentType = $request->payment_method === 'cash' ? 'cod' : ($request->payment_method === 'wallet' ? 'wallet' : 'online');
+
+            if ($request->payment_method === 'wallet') {
+                $isPaid = true;
+                $status = 'confirmed';
+            }
 
             $booking = \App\Models\CustomBooking::create([
                 'user_id' => auth()->id(),
@@ -198,14 +291,28 @@ class BookingController extends Controller
                 'discount_amount' => $discountAmount,
                 'payable_amount' => $payableAmount,
                 'total_duration' => $totalDuration,
-                'status' => 'pending',
-                'is_paid' => false,
-                'payment_type' => $request->payment_method === 'cash' ? 'cod' : 'online',
-                'pay_type' => $request->payment_method ?? 'online',
+                'status' => $status,
+                'is_paid' => $isPaid,
+                'payment_type' => $paymentType,
+                'pay_type' => $payType,
                 'coupon_code' => $request->filled('coupon_code') ? $request->coupon_code : null,
                 'equipment' => $request->equipment,
                 'address_id' => $request->type == 'home' ? $request->address_id : null,
             ]);
+
+            if ($request->payment_method === 'wallet' && $wallet) {
+                $wallet->decrement('balance', $payableAmount);
+                Transaction::create([
+                    'user_id' => auth()->id(),
+                    'custom_booking_id' => $booking->id,
+                    'transaction_id' => 'TXN-' . strtoupper(Str::random(10)),
+                    'amount' => $payableAmount,
+                    'payment_mode' => 'wallet',
+                    'status' => 'completed',
+                    'type' => 'booking',
+                    'description' => 'Payment for Custom Booking ' . $booking->booking_number
+                ]);
+            }
 
             DB::commit();
 
