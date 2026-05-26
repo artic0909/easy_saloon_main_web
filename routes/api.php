@@ -45,6 +45,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/addresses', [App\Http\Controllers\Api\AddressController::class, 'index']);
     Route::post('/addresses', [App\Http\Controllers\Api\AddressController::class, 'store']);
 
+    Route::get('/wallet', [App\Http\Controllers\Api\WalletController::class, 'index']);
+    Route::post('/wallet/add-money', [App\Http\Controllers\Api\WalletController::class, 'addMoney']);
+    Route::post('/wallet/verify-payment', [App\Http\Controllers\Api\WalletController::class, 'verifyPayment']);
+
     Route::post('/bookings/service', [App\Http\Controllers\Api\BookingController::class, 'storeServiceBooking']);
     Route::post('/bookings/package', [App\Http\Controllers\Api\BookingController::class, 'storePackageBooking']);
     Route::post('/bookings/custom-package', [App\Http\Controllers\Api\BookingController::class, 'storeCustomPackageBooking']);
