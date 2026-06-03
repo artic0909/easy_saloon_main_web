@@ -66,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Admin Categories, Services & Equipments Management
         Route::apiResource('/admin/categories', \App\Http\Controllers\Api\Admin\CategoryManageApiController::class)->names('api.admin.categories');
         Route::apiResource('/admin/services', \App\Http\Controllers\Api\Admin\ServiceManageApiController::class)->names('api.admin.services');
+        Route::apiResource('/admin/packages', \App\Http\Controllers\Api\Admin\PackageManageApiController::class)->names('api.admin.packages');
         Route::get('/admin/equipments', function() {
             return response()->json(['equipments' => \App\Models\Equipment::all()]);
         });
