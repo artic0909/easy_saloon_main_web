@@ -64,17 +64,17 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         // Admin Categories, Services & Equipments Management
-        Route::apiResource('/admin/categories', \App\Http\Controllers\Api\Admin\CategoryManageApiController::class);
-        Route::apiResource('/admin/services', \App\Http\Controllers\Api\Admin\ServiceManageApiController::class);
+        Route::apiResource('/admin/categories', \App\Http\Controllers\Api\Admin\CategoryManageApiController::class)->names('api.admin.categories');
+        Route::apiResource('/admin/services', \App\Http\Controllers\Api\Admin\ServiceManageApiController::class)->names('api.admin.services');
         Route::get('/admin/equipments', function() {
             return response()->json(['equipments' => \App\Models\Equipment::all()]);
         });
 
         // Admin Coupons Management
-        Route::apiResource('/admin/coupons', \App\Http\Controllers\Api\Admin\CouponsManagementApiController::class);
+        Route::apiResource('/admin/coupons', \App\Http\Controllers\Api\Admin\CouponsManagementApiController::class)->names('api.admin.coupons');
 
         // Admin Staff Management
-        Route::apiResource('/admin/staffs', \App\Http\Controllers\Api\Admin\StaffManagementApiController::class);
+        Route::apiResource('/admin/staffs', \App\Http\Controllers\Api\Admin\StaffManagementApiController::class)->names('api.admin.staffs');
 
         // Admin Booking Management
         Route::get('/admin/bookings', [AdminBookingsManagementController::class, 'index']);
