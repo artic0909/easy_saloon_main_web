@@ -63,6 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
             return response()->json(['message' => 'Welcome Admin']);
         });
 
+        // Admin Categories & Services Management
+        Route::apiResource('/admin/categories', \App\Http\Controllers\Api\Admin\CategoryManageApiController::class);
+        Route::apiResource('/admin/services', \App\Http\Controllers\Api\Admin\ServiceManageApiController::class);
+
         // Admin Coupons Management
         Route::apiResource('/admin/coupons', \App\Http\Controllers\Api\Admin\CouponsManagementApiController::class);
 
