@@ -63,9 +63,12 @@ Route::middleware('auth:sanctum')->group(function () {
             return response()->json(['message' => 'Welcome Admin']);
         });
 
-        // Admin Categories & Services Management
+        // Admin Categories, Services & Equipments Management
         Route::apiResource('/admin/categories', \App\Http\Controllers\Api\Admin\CategoryManageApiController::class);
         Route::apiResource('/admin/services', \App\Http\Controllers\Api\Admin\ServiceManageApiController::class);
+        Route::get('/admin/equipments', function() {
+            return response()->json(['equipments' => \App\Models\Equipment::all()]);
+        });
 
         // Admin Coupons Management
         Route::apiResource('/admin/coupons', \App\Http\Controllers\Api\Admin\CouponsManagementApiController::class);
