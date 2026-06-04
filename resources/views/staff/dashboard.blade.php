@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row g-4 mb-4">
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card stat-card border-0">
             <div class="card-body p-4">
                 <div class="stat-icon" style="background: rgba(198, 166, 100, 0.1);">
@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card stat-card border-0">
             <div class="card-body p-4">
                 <div class="stat-icon" style="background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card stat-card border-0">
             <div class="card-body p-4">
                 <div class="stat-icon" style="background: rgba(25, 135, 84, 0.1); color: #198754;">
@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card stat-card border-0">
             <div class="card-body p-4">
                 <div class="stat-icon" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;">
@@ -45,6 +45,17 @@
                 </div>
                 <h3 class="fw-bold mb-1">{{ $stats['today_bookings'] }}</h3>
                 <p class="text-muted small mb-0">Today's Schedule</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card stat-card border-0">
+            <div class="card-body p-4">
+                <div class="stat-icon" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;">
+                    <i class="bi bi-star"></i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ number_format($stats['rating'] ?? 0, 1) }}</h3>
+                <p class="text-muted small mb-0">{{ $stats['rating_count'] ?? 0 }} Reviews</p>
             </div>
         </div>
     </div>

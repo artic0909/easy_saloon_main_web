@@ -23,6 +23,8 @@ class DashboardController extends Controller
                 })
                 ->whereDate('booking_date', Carbon::today())
                 ->count(),
+            'rating' => $user->staff_rating,
+            'rating_count' => $user->staff_rating_count,
         ];
 
         // Daily schedule (Assigned to me OR Unassigned)

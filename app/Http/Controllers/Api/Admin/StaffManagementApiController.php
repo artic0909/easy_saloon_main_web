@@ -24,7 +24,7 @@ class StaffManagementApiController extends Controller
             });
         }
 
-        $staffMembers = $query->latest()->get();
+        $staffMembers = $query->latest()->get()->each->append(['staff_rating', 'staff_rating_count']);
 
         return response()->json([
             'status' => 'success',
