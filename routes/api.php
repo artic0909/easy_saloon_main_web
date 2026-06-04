@@ -63,6 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
             return response()->json(['message' => 'Welcome Admin']);
         });
 
+        // Admin Profile
+        Route::post('/admin/profile/update', [\App\Http\Controllers\Api\Admin\ProfileController::class, 'updateProfile']);
+
         // Admin Categories, Services & Equipments Management
         Route::apiResource('/admin/categories', \App\Http\Controllers\Api\Admin\CategoryManageApiController::class)->names('api.admin.categories');
         Route::apiResource('/admin/services', \App\Http\Controllers\Api\Admin\ServiceManageApiController::class)->names('api.admin.services');
@@ -95,6 +98,9 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::middleware('role:staff')->group(function() {
         Route::get('/staff/dashboard', [StaffDashboardController::class, 'index']);
+
+        // Staff Profile
+        Route::post('/staff/profile/update', [\App\Http\Controllers\Api\Staff\ProfileController::class, 'updateProfile']);
 
         // Booking Management
         Route::get('/staff/bookings', [BookingsManagementController::class, 'index']);
