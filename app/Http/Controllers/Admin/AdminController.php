@@ -20,10 +20,14 @@ class AdminController extends Controller
             'users' => User::where('role', 'user')->count(),
             'bookings' => Booking::count(),
             'total_revenue' => Transaction::where('status', 'success')->sum('amount'),
-            'monthly_revenue' => Transaction::where('status', 'success')
+            'monthly_revenue' => \App\Models\Booking::where('is_paid', true)
                 ->whereMonth('created_at', $now->month)
                 ->whereYear('created_at', $now->year)
-                ->sum('amount'),
+                ->sum('payable_amount')
+                + \App\Models\CustomBooking::where('is_paid', true)
+                ->whereMonth('created_at', $now->month)
+                ->whereYear('created_at', $now->year)
+                ->sum('payable_amount'),
             'services' => Service::count(),
             'transactions_count' => Transaction::count(),
         ];

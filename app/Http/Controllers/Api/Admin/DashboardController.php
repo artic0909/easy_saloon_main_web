@@ -19,10 +19,14 @@ class DashboardController extends Controller
         // Matching logic from App\Http\Controllers\Admin\AdminController
         $totalCustomers = User::where('role', 'user')->count();
         $totalBookings = Booking::count();
-        $monthlyRevenue = Transaction::where('status', 'success')
+        $monthlyRevenue = Booking::where('is_paid', true)
             ->whereMonth('created_at', $now->month)
             ->whereYear('created_at', $now->year)
-            ->sum('amount');
+            ->sum('payable_amount')
+            + CustomBooking::where('is_paid', true)
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
+            ->sum('payable_amount');
         $totalTransactions = Transaction::count();
 
         return response()->json([
