@@ -14,28 +14,22 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Total Customers (Assuming role 'user' or default role)
+        $now = Carbon::now();
+
+        // Matching logic from App\Http\Controllers\Admin\AdminController
         $totalCustomers = User::where('role', 'user')->count();
-
-        // 2. Active Bookings (Pending, Accepted, Started, On the way)
-        $activeBookings = Booking::whereNotIn('status', ['Completed', 'Cancelled', 'cancelled', 'completed'])->count();
-        $activeCustomBookings = CustomBooking::whereNotIn('status', ['Completed', 'Cancelled', 'cancelled', 'completed'])->count();
-        $totalActiveBookings = $activeBookings + $activeCustomBookings;
-
-        // 3. Monthly Revenue
+        $totalBookings = Booking::count();
         $monthlyRevenue = Transaction::where('status', 'success')
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
+            ->whereMonth('created_at', $now->month)
+            ->whereYear('created_at', $now->year)
             ->sum('amount');
-
-        // 4. Total Transactions
-        $totalTransactions = Transaction::where('status', 'success')->count();
+        $totalTransactions = Transaction::count();
 
         return response()->json([
             'status' => 'success',
             'data' => [
                 'total_customers' => $totalCustomers,
-                'active_bookings' => $totalActiveBookings,
+                'total_bookings' => $totalBookings,
                 'monthly_revenue' => $monthlyRevenue,
                 'total_transactions' => $totalTransactions
             ]
