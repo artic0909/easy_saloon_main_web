@@ -59,9 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Role-based routes
     Route::middleware('role:admin')->group(function() {
-        Route::get('/admin/dashboard', function() {
-            return response()->json(['message' => 'Welcome Admin']);
-        });
+        Route::get('/admin/dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
 
         // Admin Profile
         Route::post('/admin/profile/update', [\App\Http\Controllers\Api\Admin\ProfileController::class, 'updateProfile']);
