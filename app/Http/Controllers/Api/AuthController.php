@@ -110,9 +110,20 @@ class AuthController extends Controller
 
     public function profile(Request $request)
     {
+        $user = $request->user();
+        
+        $bookingsCount = \App\Models\Booking::where('user_id', $user->id)->count();
+        $customBookingsCount = \App\Models\CustomBooking::where('user_id', $user->id)->count();
+        $totalBookings = $bookingsCount + $customBookingsCount;
+
+        $show_scratch_card = ($totalBookings === 1 && !$user->scratch_card_claimed);
+
+        $userData = $user->toArray();
+        $userData['show_scratch_card'] = $show_scratch_card;
+
         return response()->json([
             'status' => 'success',
-            'data' => $request->user()
+            'data' => $userData
         ]);
     }
 }

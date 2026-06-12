@@ -471,6 +471,11 @@
                 <i class="bi bi-ticket-perforated-fill"></i>
                 <span>Discounts</span>
             </a>
+            
+            <a href="{{ route('admin.settings.scratch_card.index') }}" class="nav-link {{ Route::is('admin.settings.scratch_card.*') ? 'active' : '' }}">
+                <i class="bi bi-gift-fill"></i>
+                <span>Free Services</span>
+            </a>
 
 
 

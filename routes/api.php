@@ -37,6 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/addresses/{id}/delete', [App\Http\Controllers\Api\ProfileController::class, 'deleteAddress']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
+    Route::post('/user/claim-scratch-card', [\App\Http\Controllers\Api\ScratchCardController::class, 'claim']);
+    
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/payments/create-order', [App\Http\Controllers\Api\PaymentController::class, 'createOrder']);
@@ -92,6 +94,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/admin/custom-bookings/{id}/assign-staff', [AdminBookingsManagementController::class, 'customAssignStaff']);
         Route::post('/admin/custom-bookings/{id}/status', [AdminBookingsManagementController::class, 'customUpdateStatus']);
         Route::delete('/admin/custom-bookings/{id}', [AdminBookingsManagementController::class, 'customDestroy']);
+        // Admin Settings
+        Route::get('/admin/settings/scratch-card', [\App\Http\Controllers\Api\Admin\SettingController::class, 'getScratchCardSettings']);
+        Route::post('/admin/settings/scratch-card', [\App\Http\Controllers\Api\Admin\SettingController::class, 'updateScratchCardSettings']);
     });
     
     Route::middleware('role:staff')->group(function() {

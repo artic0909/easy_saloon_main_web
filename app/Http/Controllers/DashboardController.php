@@ -23,7 +23,10 @@ class DashboardController extends Controller
         
         $recentBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->take(5);
             
-        return view('frontend.dashboard.index', compact('user', 'recentBookings'));
+        $totalBookingsCount = Booking::where('user_id', $user->id)->count() + \App\Models\CustomBooking::where('user_id', $user->id)->count();
+        $show_scratch_card = ($totalBookingsCount === 1 && !$user->scratch_card_claimed);
+
+        return view('frontend.dashboard.index', compact('user', 'recentBookings', 'show_scratch_card'));
     }
 
     public function updateProfile(Request $request)
@@ -211,5 +214,26 @@ class DashboardController extends Controller
         $user->unreadNotifications->markAsRead();
 
         return view('frontend.dashboard.notifications', compact('notifications'));
+    }
+
+    public function claimScratchCard()
+    {
+        $user = auth()->user();
+
+        if ($user->scratch_card_claimed) {
+            return response()->json(['success' => false, 'message' => 'Scratch card already claimed']);
+        }
+
+        $totalBookingsCount = Booking::where('user_id', $user->id)->count() + \App\Models\CustomBooking::where('user_id', $user->id)->count();
+
+        if ($totalBookingsCount !== 1) {
+            return response()->json(['success' => false, 'message' => 'Not eligible for scratch card']);
+        }
+
+        $user->scratch_card_claimed = true;
+        $user->free_second_booking_available = true;
+        $user->save();
+
+        return response()->json(['success' => true, 'message' => 'Scratch card claimed successfully!']);
     }
 }

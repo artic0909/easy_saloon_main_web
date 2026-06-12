@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
         Route::post('/profile/update', [App\Http\Controllers\DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
+        Route::post('/claim-scratch-card', [App\Http\Controllers\DashboardController::class, 'claimScratchCard'])->name('dashboard.scratch-card.claim');
         
         Route::get('/bookings', [App\Http\Controllers\DashboardController::class, 'bookings'])->name('dashboard.bookings');
         Route::post('/bookings/{id}/cancel', [App\Http\Controllers\DashboardController::class, 'cancelBooking'])->name('dashboard.bookings.cancel');

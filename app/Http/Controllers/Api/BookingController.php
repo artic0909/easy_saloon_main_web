@@ -28,8 +28,11 @@ class BookingController extends Controller
         ]);
 
         $service = Service::findOrFail($request->service_id);
-        $discountAmount = $this->calculateDiscount($request->coupon_code, $service->sale_price);
-        $payableAmount = max(0, $service->sale_price - $discountAmount);
+        $totalPrice = $service->sale_price;
+        $discountAmount = $this->calculateDiscount($request->coupon_code, $totalPrice);
+        $payableAmount = max(0, $totalPrice - $discountAmount);
+
+        $this->applyFreeSecondBookingDiscount(auth()->user(), [$service->id], $payableAmount, $discountAmount, $totalPrice);
 
         $wallet = null;
         if ($request->payment_method === 'wallet') {
@@ -256,6 +259,13 @@ class BookingController extends Controller
         $discountAmount = $this->calculateDiscount($request->coupon_code, $totalPrice);
         $payableAmount = max(0, $totalPrice - $discountAmount);
 
+        $servicePrices = [];
+        foreach ($request->service_ids as $id) {
+            $s = $services->firstWhere('id', $id);
+            $servicePrices[] = $s ? $s->sale_price : 0;
+        }
+        $this->applyFreeSecondBookingDiscount(auth()->user(), $request->service_ids, $payableAmount, $discountAmount, $totalPrice, $servicePrices);
+
         $wallet = null;
         if ($request->payment_method === 'wallet') {
             $wallet = Wallet::where('user_id', auth()->id())->first();
@@ -365,5 +375,51 @@ class BookingController extends Controller
         }
 
         return 0;
+    }
+
+    private function applyFreeSecondBookingDiscount($user, $serviceIds, &$payableAmount, &$discountAmount, $totalPrice, $servicePrices = [])
+    {
+        if (!$user || !$user->free_second_booking_available) {
+            return false;
+        }
+
+        $setting = \App\Models\SiteSetting::where('key', 'free_second_booking_services')->first();
+        if (!$setting || empty($setting->value)) {
+            return false;
+        }
+
+        $freeServiceIds = json_decode($setting->value, true) ?? [];
+        if (empty($freeServiceIds)) {
+            return false;
+        }
+
+        $freeAmount = 0;
+        
+        if (empty($servicePrices)) {
+            if (in_array($serviceIds[0], $freeServiceIds)) {
+                $freeAmount = $totalPrice;
+            }
+        } else {
+            foreach ($serviceIds as $index => $id) {
+                if (in_array($id, $freeServiceIds)) {
+                    $freeAmount += $servicePrices[$index] ?? 0;
+                }
+            }
+        }
+
+        if ($freeAmount > 0) {
+            $discountAmount += $freeAmount;
+            if ($discountAmount > $totalPrice) {
+                $discountAmount = $totalPrice;
+            }
+            $payableAmount = max(0, $totalPrice - $discountAmount);
+
+            $user->free_second_booking_available = false;
+            $user->save();
+            
+            return true;
+        }
+
+        return false;
     }
 }

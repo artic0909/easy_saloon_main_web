@@ -58,6 +58,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/cms/banners', [CmsController::class, 'storeBanner'])->name('cms.banners.store');
     Route::delete('/cms/banners/{banner}', [CmsController::class, 'deleteBanner'])->name('cms.banners.destroy');
 
+    Route::get('/settings/scratch-card', [\App\Http\Controllers\Admin\ScratchCardSettingController::class, 'index'])->name('settings.scratch_card.index');
+    Route::post('/settings/scratch-card', [\App\Http\Controllers\Admin\ScratchCardSettingController::class, 'update'])->name('settings.scratch_card.update');
+
     Route::resource('cms/promo', App\Http\Controllers\Admin\PromoBannerController::class)->names([
         'index' => 'cms.promo.index',
         'store' => 'cms.promo.store',

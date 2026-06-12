@@ -34,6 +34,8 @@ class User extends Authenticatable // implements MustVerifyEmail
         'bio',
         'experience_years',
         'is_available',
+        'scratch_card_claimed',
+        'free_second_booking_available',
     ];
 
     public function salon()
