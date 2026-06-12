@@ -11,11 +11,67 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function sendOtp(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string|max:15|unique:users'
+        ]);
+
+        $otp = rand(100000, 999999);
+        \Illuminate\Support\Facades\Cache::put('otp_' . $request->phone, $otp, now()->addMinutes(10));
+
+        $accountSid = env('TWILIO_ACCOUNT_SID', '');
+        $authToken = env('TWILIO_AUTH_TOKEN', ''); // Must be set in .env
+        $messagingServiceSid = env('TWILIO_MESSAGING_SERVICE_SID', '');
+
+        $response = \Illuminate\Support\Facades\Http::withBasicAuth($accountSid, $authToken)
+            ->asForm()
+            ->post("https://api.twilio.com/2010-04-01/Accounts/{$accountSid}/Messages.json", [
+                'To' => $request->phone,
+                'MessagingServiceSid' => $messagingServiceSid,
+                'Body' => 'Your Esy Saloon Signup OTP is ' . $otp
+            ]);
+
+        if ($response->successful()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OTP sent successfully'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to send OTP. Please check server configuration.'
+        ], 500);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string',
+            'otp' => 'required|string'
+        ]);
+
+        $cachedOtp = \Illuminate\Support\Facades\Cache::get('otp_' . $request->phone);
+
+        if ($cachedOtp && $cachedOtp == $request->otp) {
+            \Illuminate\Support\Facades\Cache::forget('otp_' . $request->phone);
+            \Illuminate\Support\Facades\Cache::put('verified_otp_' . $request->phone, true, now()->addMinutes(15));
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OTP verified successfully'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid or expired OTP'
+        ], 400);
+    }
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:15|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -28,13 +84,25 @@ class AuthController extends Controller
             ], 422);
         }
 
+        $isVerified = \Illuminate\Support\Facades\Cache::get('verified_otp_' . $request->phone);
+        if (!$isVerified) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Phone number not verified. Please verify OTP first.'
+            ], 400);
+        }
+
+        $email = $request->phone . '@easysaloon.com';
+
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'role' => 'user', // Default role for new registrations
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('verified_otp_' . $request->phone);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
