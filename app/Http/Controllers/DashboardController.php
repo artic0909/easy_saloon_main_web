@@ -85,8 +85,11 @@ class DashboardController extends Controller
 
         // Merge and sort
         $bookings = $bookings->concat($customBookings)->sortByDesc('created_at');
+        
+        $totalBookingsCount = Booking::where('user_id', auth()->id())->count() + \App\Models\CustomBooking::where('user_id', auth()->id())->count();
+        $show_scratch_card = ($totalBookingsCount === 1 && !auth()->user()->scratch_card_claimed);
             
-        return view('frontend.dashboard.bookings', compact('bookings'));
+        return view('frontend.dashboard.bookings', compact('bookings', 'show_scratch_card'));
     }
 
     public function cancelBooking($id)

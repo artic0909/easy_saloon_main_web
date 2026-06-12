@@ -65,8 +65,33 @@ class CustomBookingController extends Controller
 
         $serviceIds = json_decode($request->service_ids, true);
         $services = Service::whereIn('id', $serviceIds)->get();
-        $totalPrice = $services->sum('sale_price');
-        $totalDuration = $services->sum('duration_minutes');
+        
+        $totalPrice = 0;
+        $totalDuration = 0;
+
+        $user = auth()->user();
+        $isFreeSecondBooking = $user->free_second_booking_available;
+        $freeServiceIds = [];
+        if ($isFreeSecondBooking) {
+            $setting = \App\Models\SiteSetting::where('key', 'free_second_booking_services')->first();
+            $freeServiceIds = $setting && $setting->value ? json_decode($setting->value, true) : [];
+        }
+
+        $freeApplied = false;
+
+        foreach ($services as $service) {
+            $price = $service->sale_price;
+            if ($isFreeSecondBooking && !$freeApplied && in_array($service->id, $freeServiceIds)) {
+                $price = 0;
+                $freeApplied = true;
+            }
+            $totalPrice += $price;
+            $totalDuration += $service->duration_minutes;
+        }
+
+        if ($freeApplied) {
+            $user->update(['free_second_booking_available' => false]);
+        }
 
         $booking = new CustomBooking();
         $booking->user_id = auth()->id();

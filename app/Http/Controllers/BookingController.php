@@ -75,7 +75,20 @@ class BookingController extends Controller
         
         if ($request->item_type == 'service') {
             $service = Service::findOrFail($request->item_id);
-            $booking->total_price = $service->sale_price;
+            $price = $service->sale_price;
+
+            // Apply Free Second Booking Discount
+            $user = auth()->user();
+            if ($user->free_second_booking_available) {
+                $setting = \App\Models\SiteSetting::where('key', 'free_second_booking_services')->first();
+                $freeServiceIds = $setting && $setting->value ? json_decode($setting->value, true) : [];
+                if (in_array($service->id, $freeServiceIds)) {
+                    $price = 0; // Free!
+                    $user->update(['free_second_booking_available' => false]);
+                }
+            }
+
+            $booking->total_price = $price;
         } else {
             $package = Package::findOrFail($request->item_id);
             $booking->total_price = $package->sale_price;

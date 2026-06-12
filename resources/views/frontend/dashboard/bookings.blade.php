@@ -469,4 +469,6 @@
         });
     }
 </script>
+
+@include('frontend.dashboard.includes.scratch_card')
 @endsection
