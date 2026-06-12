@@ -238,9 +238,10 @@ class DashboardController extends Controller
             return response()->json(['success' => false, 'message' => 'Scratch card already claimed']);
         }
 
-        $totalBookingsCount = Booking::where('user_id', $user->id)->count() + \App\Models\CustomBooking::where('user_id', $user->id)->count();
+        $totalConfirmedBookings = Booking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                  \App\Models\CustomBooking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count();
 
-        if ($totalBookingsCount !== 1) {
+        if (!($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0))) {
             return response()->json(['success' => false, 'message' => 'Not eligible for scratch card']);
         }
 
