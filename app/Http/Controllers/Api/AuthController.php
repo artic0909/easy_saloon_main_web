@@ -20,9 +20,9 @@ class AuthController extends Controller
         $otp = rand(100000, 999999);
         \Illuminate\Support\Facades\Cache::put('otp_' . $request->phone, $otp, now()->addMinutes(10));
 
-        $accountSid = env('TWILIO_ACCOUNT_SID', '');
-        $authToken = env('TWILIO_AUTH_TOKEN', ''); // Must be set in .env
-        $messagingServiceSid = env('TWILIO_MESSAGING_SERVICE_SID', '');
+        $accountSid = config('services.twilio.account_sid', '');
+        $authToken = config('services.twilio.auth_token', '');
+        $messagingServiceSid = config('services.twilio.messaging_service_sid', '');
 
         $phoneForTwilio = $request->phone;
         if (!str_starts_with($phoneForTwilio, '+')) {
