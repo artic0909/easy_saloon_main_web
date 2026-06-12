@@ -24,10 +24,15 @@ class AuthController extends Controller
         $authToken = env('TWILIO_AUTH_TOKEN', ''); // Must be set in .env
         $messagingServiceSid = env('TWILIO_MESSAGING_SERVICE_SID', '');
 
+        $phoneForTwilio = $request->phone;
+        if (!str_starts_with($phoneForTwilio, '+')) {
+            $phoneForTwilio = '+91' . ltrim($phoneForTwilio, '0');
+        }
+
         $response = \Illuminate\Support\Facades\Http::withBasicAuth($accountSid, $authToken)
             ->asForm()
             ->post("https://api.twilio.com/2010-04-01/Accounts/{$accountSid}/Messages.json", [
-                'To' => $request->phone,
+                'To' => $phoneForTwilio,
                 'MessagingServiceSid' => $messagingServiceSid,
                 'Body' => 'Your Esy Saloon Signup OTP is ' . $otp
             ]);
@@ -41,7 +46,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'error',
-            'message' => 'Failed to send OTP. Please check server configuration.'
+            'message' => 'Failed to send OTP: ' . $response->body()
         ], 500);
     }
 
