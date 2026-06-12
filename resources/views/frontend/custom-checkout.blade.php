@@ -28,7 +28,14 @@
                                     <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">{{ $service->duration_minutes }} Mins</p>
                                 </div>
                                 <div class="text-right">
-                                    <span class="font-black text-[#c6a664]">₹{{ number_format($service->sale_price, 2) }}</span>
+                                    @if(isset($service->is_free) && $service->is_free)
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-xs text-gray-400 line-through">₹{{ number_format($service->sale_price, 2) }}</span>
+                                            <span class="font-black text-green-600">₹0.00</span>
+                                        </div>
+                                    @else
+                                        <span class="font-black text-[#c6a664]">₹{{ number_format($service->sale_price, 2) }}</span>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
@@ -312,7 +319,16 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                if (paymentMethod === 'cash') {
+                if (data.is_free) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Confirmed!',
+                        text: 'Your free appointment has been booked successfully!',
+                        confirmButtonColor: '#3d2b1f'
+                    }).then(() => {
+                        window.location.href = "{{ route('dashboard.bookings') }}";
+                    });
+                } else if (paymentMethod === 'cash') {
                     Swal.fire({
                         icon: 'success',
                         title: 'Booking Confirmed!',

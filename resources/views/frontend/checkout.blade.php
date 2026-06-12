@@ -158,7 +158,14 @@
                     <div class="flex justify-between items-center mb-10">
                         <div>
                             <p class="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">Total Amount</p>
-                            <h4 class="text-4xl font-black text-[#3d2b1f]" id="final_total_display" style="font-family: 'Playfair Display', serif;">₹{{ number_format($item->sale_price, 2) }}</h4>
+                            @if(isset($isFree) && $isFree)
+                                <h4 class="text-4xl font-black text-[#3d2b1f] flex items-center gap-3" id="final_total_display" style="font-family: 'Playfair Display', serif;">
+                                    <span class="text-xl text-gray-400 line-through">₹{{ number_format($item->sale_price, 2) }}</span>
+                                    <span class="text-green-600">₹0.00</span>
+                                </h4>
+                            @else
+                                <h4 class="text-4xl font-black text-[#3d2b1f]" id="final_total_display" style="font-family: 'Playfair Display', serif;">₹{{ number_format($item->sale_price, 2) }}</h4>
+                            @endif
                         </div>
                         <div class="w-16 h-16 bg-[#fdfbf7] rounded-full flex items-center justify-center text-[#c6a664]">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -184,7 +191,7 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     let appliedCouponCode = '';
-    let baseAmount = {{ $item->sale_price }};
+    let baseAmount = {{ (isset($isFree) && $isFree) ? 0 : $item->sale_price }};
 
     function applyCoupon() {
         const input = document.getElementById('coupon_input');
@@ -307,7 +314,16 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                if (paymentMethod === 'cash') {
+                if (data.is_free) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Confirmed!',
+                        text: 'Your free appointment has been booked successfully!',
+                        confirmButtonColor: '#3d2b1f'
+                    }).then(() => {
+                        window.location.href = "{{ route('dashboard.bookings') }}";
+                    });
+                } else if (paymentMethod === 'cash') {
                     Swal.fire({
                         icon: 'success',
                         title: 'Booking Confirmed!',

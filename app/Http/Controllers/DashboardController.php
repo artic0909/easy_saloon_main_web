@@ -19,14 +19,20 @@ class DashboardController extends Controller
         $user = auth()->user();
         
         $bookings = Booking::where('user_id', $user->id)->latest()->take(5)->get();
-        $customBookings = \App\Models\CustomBooking::where('user_id', $user->id)->latest()->take(5)->get();
-        
-        $recentBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->take(5);
-            
-        $totalBookingsCount = Booking::where('user_id', $user->id)->count() + \App\Models\CustomBooking::where('user_id', $user->id)->count();
-        $show_scratch_card = ($totalBookingsCount === 1 && !$user->scratch_card_claimed);
+        $customBookings = \App\Models\CustomBooking::where('user_id', auth()->id())->with(['user'])->get();
 
-        return view('frontend.dashboard.index', compact('user', 'recentBookings', 'show_scratch_card'));
+        // Merge and sort
+        $recentBookings = $bookings->concat($customBookings)->sortByDesc('created_at')->take(3);
+
+        $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                  \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
+        
+        $show_scratch_card = false;
+        if ($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0) && !auth()->user()->scratch_card_claimed) {
+            $show_scratch_card = true;
+        }
+
+        return view('frontend.dashboard.index', compact('recentBookings', 'show_scratch_card', 'totalConfirmedBookings'));
     }
 
     public function updateProfile(Request $request)
@@ -86,10 +92,15 @@ class DashboardController extends Controller
         // Merge and sort
         $bookings = $bookings->concat($customBookings)->sortByDesc('created_at');
         
-        $totalBookingsCount = Booking::where('user_id', auth()->id())->count() + \App\Models\CustomBooking::where('user_id', auth()->id())->count();
-        $show_scratch_card = ($totalBookingsCount === 1 && !auth()->user()->scratch_card_claimed);
+        $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                  \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
+        
+        $show_scratch_card = false;
+        if ($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0) && !auth()->user()->scratch_card_claimed) {
+            $show_scratch_card = true;
+        }
             
-        return view('frontend.dashboard.bookings', compact('bookings', 'show_scratch_card'));
+        return view('frontend.dashboard.bookings', compact('bookings', 'show_scratch_card', 'totalConfirmedBookings'));
     }
 
     public function cancelBooking($id)

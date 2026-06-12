@@ -1,14 +1,36 @@
-@if(isset($show_scratch_card) && $show_scratch_card)
+@if(isset($show_scratch_card) && $show_scratch_card && isset($totalConfirmedBookings))
+@php
+    $nextBookingNumber = $totalConfirmedBookings + 1;
+    $suffix = 'th';
+    if (!in_array($nextBookingNumber % 100, [11,12,13])) {
+        switch ($nextBookingNumber % 10) {
+            case 1: $suffix = 'st'; break;
+            case 2: $suffix = 'nd'; break;
+            case 3: $suffix = 'rd'; break;
+        }
+    }
+    $bookingText = $nextBookingNumber . $suffix . ' Booking';
+    
+    $currentSuffix = 'th';
+    if (!in_array($totalConfirmedBookings % 100, [11,12,13])) {
+        switch ($totalConfirmedBookings % 10) {
+            case 1: $currentSuffix = 'st'; break;
+            case 2: $currentSuffix = 'nd'; break;
+            case 3: $currentSuffix = 'rd'; break;
+        }
+    }
+    $currentBookingText = $totalConfirmedBookings . $currentSuffix;
+@endphp
 <!-- Scratch Card Modal -->
 <div id="scratchCardModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
     <div class="bg-white p-8 rounded-3xl shadow-2xl text-center relative max-w-sm w-full mx-4 overflow-hidden">
         <h3 class="text-2xl font-bold text-[#3d2b1f] mb-2" style="font-family: 'Playfair Display', serif;">Congratulations!</h3>
-        <p class="text-gray-500 mb-6 text-sm">Scratch the card below to reveal your surprise reward for your first booking!</p>
+        <p class="text-gray-500 mb-6 text-sm">Scratch the card below to reveal your surprise reward for your {{ $currentBookingText }} booking!</p>
         
         <div class="relative w-64 h-32 mx-auto rounded-2xl overflow-hidden shadow-inner border border-gray-100 bg-[#fdfbf7] flex items-center justify-center flex-col select-none">
             <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
                 <span class="text-3xl font-black text-[#c6a664]">FREE</span>
-                <span class="text-sm font-bold text-[#3d2b1f]">Second Booking!</span>
+                <span class="text-sm font-bold text-[#3d2b1f]">{{ $bookingText }}!</span>
             </div>
             <canvas id="scratchCanvas" class="absolute inset-0 w-full h-full cursor-pointer touch-none" style="z-index: 10;"></canvas>
         </div>

@@ -29,12 +29,23 @@ class BookingController extends Controller
             return redirect()->route('home')->with('error', 'Please select a service or package.');
         }
 
+        $isFree = false;
+        if (auth()->check() && $itemType == 'service') {
+            if (auth()->user()->free_second_booking_available) {
+                $setting = \App\Models\SiteSetting::where('key', 'free_second_booking_services')->first();
+                $freeServiceIds = $setting && $setting->value ? json_decode($setting->value, true) : [];
+                if (in_array($item->id, $freeServiceIds)) {
+                    $isFree = true;
+                }
+            }
+        }
+
         $userAddresses = [];
         if (auth()->check()) {
             $userAddresses = Address::where('user_id', auth()->id())->with(['city', 'state', 'country'])->get();
         }
 
-        return view('frontend.checkout', compact('item', 'itemType', 'type', 'date', 'slot', 'userAddresses', 'equipment'));
+        return view('frontend.checkout', compact('item', 'itemType', 'type', 'date', 'slot', 'userAddresses', 'equipment', 'isFree'));
     }
 
     public function confirm(Request $request)
@@ -118,8 +129,16 @@ class BookingController extends Controller
 
         $booking->discount_amount = $discountAmount;
         $booking->payable_amount = max(0, $booking->total_price - $discountAmount);
-        $booking->payment_type = $request->payment_method === 'cash' ? 'cod' : 'online';
-        $booking->pay_type = $request->payment_method ?? 'online';
+        
+        if ($booking->payable_amount == 0) {
+            $booking->is_paid = true;
+            $booking->status = 'confirmed';
+            $booking->payment_type = 'online';
+            $booking->pay_type = 'online';
+        } else {
+            $booking->payment_type = $request->payment_method === 'cash' ? 'cod' : 'online';
+            $booking->pay_type = $request->payment_method ?? 'online';
+        }
         $booking->coupon_code = $request->filled('coupon_code') ? $request->coupon_code : null;
 
         if ($request->service_type == 'home') {
@@ -162,11 +181,21 @@ class BookingController extends Controller
         // Send Notification
         auth()->user()->notify(new \App\Notifications\BookingConfirmation($booking));
 
+        // Milestone Reset Check for Free Bookings (if it's confirmed immediately)
+        if ($booking->status === 'confirmed') {
+            $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                      \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
+            if ($totalConfirmedBookings > 0 && $totalConfirmedBookings % 10 == 0) {
+                auth()->user()->update(['scratch_card_claimed' => false]);
+            }
+        }
+
         return response()->json([
             'success' => true, 
             'message' => 'Booking placed successfully!',
             'booking_id' => $booking->id,
-            'booking_type' => 'regular'
+            'booking_type' => 'regular',
+            'is_free' => ($booking->payable_amount == 0)
         ]);
     }
 }
