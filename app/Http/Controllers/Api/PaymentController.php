@@ -100,9 +100,22 @@ class PaymentController extends Controller
                 'status' => 'confirmed'
             ]);
 
+            // Milestone Reset Check for Free Bookings
+            $show_scratch_card = false;
+            $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                      \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
+            if ($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0)) {
+                if (auth()->user()->scratch_card_claimed) {
+                    auth()->user()->update(['scratch_card_claimed' => false]);
+                    $show_scratch_card = true;
+                }
+            }
+
             return response()->json([
                 'status' => 'success',
-                'message' => 'Payment verified successfully'
+                'message' => 'Payment verified successfully',
+                'show_scratch_card' => $show_scratch_card,
+                'total_confirmed_bookings' => $totalConfirmedBookings
             ]);
         } catch (\Exception $e) {
             return response()->json([

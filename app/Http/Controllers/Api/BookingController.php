@@ -53,7 +53,12 @@ class BookingController extends Controller
             $payType = $request->payment_method ?? 'online';
             $paymentType = $request->payment_method === 'cash' ? 'cod' : ($request->payment_method === 'wallet' ? 'wallet' : 'online');
 
-            if ($request->payment_method === 'wallet') {
+            if ($payableAmount == 0) {
+                $isPaid = true;
+                $status = 'confirmed';
+                $paymentType = 'online';
+                $payType = 'online';
+            } elseif ($request->payment_method === 'wallet') {
                 $isPaid = true;
                 $status = 'confirmed';
             }
@@ -107,10 +112,27 @@ class BookingController extends Controller
                 // Silently fail notification if mail not configured
             }
 
+            // Milestone Reset Check for Free Bookings (if it's confirmed immediately)
+            $show_scratch_card = false;
+            $totalConfirmedBookings = 0;
+            if ($status === 'confirmed') {
+                $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                          \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
+                if ($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0)) {
+                    if (auth()->user()->scratch_card_claimed) {
+                        auth()->user()->update(['scratch_card_claimed' => false]);
+                        $show_scratch_card = true;
+                    }
+                }
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Booking created successfully',
-                'data' => $booking->load('items.service')
+                'data' => $booking->load('items.service'),
+                'is_free' => ($payableAmount == 0),
+                'show_scratch_card' => $show_scratch_card,
+                'total_confirmed_bookings' => $totalConfirmedBookings
             ]);
 
         } catch (\Exception $e) {
@@ -158,7 +180,12 @@ class BookingController extends Controller
             $payType = $request->payment_method ?? 'online';
             $paymentType = $request->payment_method === 'cash' ? 'cod' : ($request->payment_method === 'wallet' ? 'wallet' : 'online');
 
-            if ($request->payment_method === 'wallet') {
+            if ($payableAmount == 0) {
+                $isPaid = true;
+                $status = 'confirmed';
+                $paymentType = 'online';
+                $payType = 'online';
+            } elseif ($request->payment_method === 'wallet') {
                 $isPaid = true;
                 $status = 'confirmed';
             }
@@ -224,10 +251,27 @@ class BookingController extends Controller
                 // Silently fail notification
             }
 
+            // Milestone Reset Check for Free Bookings (if it's confirmed immediately)
+            $show_scratch_card = false;
+            $totalConfirmedBookings = 0;
+            if ($status === 'confirmed') {
+                $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                          \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
+                if ($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0)) {
+                    if (auth()->user()->scratch_card_claimed) {
+                        auth()->user()->update(['scratch_card_claimed' => false]);
+                        $show_scratch_card = true;
+                    }
+                }
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Package booking created successfully',
-                'data' => $booking->load('items')
+                'data' => $booking->load('items'),
+                'is_free' => ($payableAmount == 0),
+                'show_scratch_card' => $show_scratch_card,
+                'total_confirmed_bookings' => $totalConfirmedBookings
             ]);
 
         } catch (\Exception $e) {
@@ -285,7 +329,12 @@ class BookingController extends Controller
             $payType = $request->payment_method ?? 'online';
             $paymentType = $request->payment_method === 'cash' ? 'cod' : ($request->payment_method === 'wallet' ? 'wallet' : 'online');
 
-            if ($request->payment_method === 'wallet') {
+            if ($payableAmount == 0) {
+                $isPaid = true;
+                $status = 'confirmed';
+                $paymentType = 'online';
+                $payType = 'online';
+            } elseif ($request->payment_method === 'wallet') {
                 $isPaid = true;
                 $status = 'confirmed';
             }
@@ -332,11 +381,28 @@ class BookingController extends Controller
                 // Silently fail notification
             }
 
+            // Milestone Reset Check for Free Bookings (if it's confirmed immediately)
+            $show_scratch_card = false;
+            $totalConfirmedBookings = 0;
+            if ($status === 'confirmed') {
+                $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                          \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
+                if ($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0)) {
+                    if (auth()->user()->scratch_card_claimed) {
+                        auth()->user()->update(['scratch_card_claimed' => false]);
+                        $show_scratch_card = true;
+                    }
+                }
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Custom package booking created successfully',
                 'data' => $booking,
-                'booking_type' => 'custom'
+                'booking_type' => 'custom',
+                'is_free' => ($payableAmount == 0),
+                'show_scratch_card' => $show_scratch_card,
+                'total_confirmed_bookings' => $totalConfirmedBookings
             ]);
 
         } catch (\Exception $e) {

@@ -20,11 +20,10 @@ class ScratchCardController extends Controller
             ], 400);
         }
 
-        $bookingsCount = Booking::where('user_id', $user->id)->count();
-        $customBookingsCount = CustomBooking::where('user_id', $user->id)->count();
-        $totalBookings = $bookingsCount + $customBookingsCount;
+        $totalConfirmedBookings = Booking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                  \App\Models\CustomBooking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count();
 
-        if ($totalBookings !== 1) {
+        if (!($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0))) {
             return response()->json([
                 'status' => false,
                 'message' => 'Not eligible for scratch card'
@@ -41,6 +40,25 @@ class ScratchCardController extends Controller
             'data' => [
                 'free_second_booking_available' => true
             ]
+        ]);
+    }
+
+    public function status(Request $request)
+    {
+        $user = $request->user();
+
+        $totalConfirmedBookings = Booking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count() + 
+                                  \App\Models\CustomBooking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count();
+
+        $show_scratch_card = false;
+        if ($totalConfirmedBookings > 0 && ($totalConfirmedBookings == 1 || $totalConfirmedBookings % 10 == 0) && !$user->scratch_card_claimed) {
+            $show_scratch_card = true;
+        }
+
+        return response()->json([
+            'success' => true,
+            'show_scratch_card' => $show_scratch_card,
+            'total_confirmed_bookings' => $totalConfirmedBookings
         ]);
     }
 }

@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile/addresses/{id}/delete', [App\Http\Controllers\Api\ProfileController::class, 'deleteAddress']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
+    Route::get('/user/scratch-card-status', [\App\Http\Controllers\Api\ScratchCardController::class, 'status']);
     Route::post('/user/claim-scratch-card', [\App\Http\Controllers\Api\ScratchCardController::class, 'claim']);
     
     Route::get('/notifications', [NotificationController::class, 'index']);
