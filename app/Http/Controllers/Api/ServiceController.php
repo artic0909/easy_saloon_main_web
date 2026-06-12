@@ -57,7 +57,20 @@ class ServiceController extends Controller
                 break;
         }
 
-        $services = $query->get()->map(function ($service) {
+        $isFree = false;
+        $freeServiceIds = [];
+        if (auth('sanctum')->check() && auth('sanctum')->user()->free_second_booking_available) {
+            $isFree = true;
+            $setting = \App\Models\SiteSetting::where('key', 'free_second_booking_services')->first();
+            if ($setting && !empty($setting->value)) {
+                $freeServiceIds = json_decode($setting->value, true) ?? [];
+            }
+        }
+
+        $services = $query->get()->map(function ($service) use ($isFree, $freeServiceIds) {
+            if ($isFree && in_array($service->id, $freeServiceIds)) {
+                $service->sale_price = 0;
+            }
             $resolvedImages = [];
             if (is_array($service->images)) {
                 foreach ($service->images as $img) {
@@ -79,10 +92,23 @@ class ServiceController extends Controller
 
     public function byCategory($categoryId)
     {
+        $isFree = false;
+        $freeServiceIds = [];
+        if (auth('sanctum')->check() && auth('sanctum')->user()->free_second_booking_available) {
+            $isFree = true;
+            $setting = \App\Models\SiteSetting::where('key', 'free_second_booking_services')->first();
+            if ($setting && !empty($setting->value)) {
+                $freeServiceIds = json_decode($setting->value, true) ?? [];
+            }
+        }
+
         $services = Service::where('category_id', $categoryId)
             ->where('is_active', true)
             ->get()
-            ->map(function ($service) {
+            ->map(function ($service) use ($isFree, $freeServiceIds) {
+                if ($isFree && in_array($service->id, $freeServiceIds)) {
+                    $service->sale_price = 0;
+                }
                 $resolvedImages = [];
                 if (is_array($service->images)) {
                     foreach ($service->images as $img) {
@@ -121,6 +147,16 @@ class ServiceController extends Controller
                 'status' => 'error',
                 'message' => 'Service not found'
             ], 404);
+        }
+
+        if (auth('sanctum')->check() && auth('sanctum')->user()->free_second_booking_available) {
+            $setting = \App\Models\SiteSetting::where('key', 'free_second_booking_services')->first();
+            if ($setting && !empty($setting->value)) {
+                $freeServiceIds = json_decode($setting->value, true) ?? [];
+                if (in_array($service->id, $freeServiceIds)) {
+                    $service->sale_price = 0;
+                }
+            }
         }
 
         $resolvedImages = [];
