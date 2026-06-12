@@ -20,9 +20,9 @@ class AuthController extends Controller
         $otp = rand(100000, 999999);
         \Illuminate\Support\Facades\Cache::put('otp_' . $request->phone, $otp, now()->addMinutes(10));
 
-        $accountSid = config('services.twilio.account_sid', '');
+        $accountSid = config('services.twilio.sid', '');
         $authToken = config('services.twilio.auth_token', '');
-        $messagingServiceSid = config('services.twilio.messaging_service_sid', '');
+        $fromNumber = config('services.twilio.from', '');
 
         $phoneForTwilio = $request->phone;
         if (!str_starts_with($phoneForTwilio, '+')) {
@@ -33,7 +33,7 @@ class AuthController extends Controller
             ->asForm()
             ->post("https://api.twilio.com/2010-04-01/Accounts/{$accountSid}/Messages.json", [
                 'To' => $phoneForTwilio,
-                'MessagingServiceSid' => $messagingServiceSid,
+                'From' => $fromNumber,
                 'Body' => 'Your Esy Saloon Signup OTP is ' . $otp
             ]);
 
