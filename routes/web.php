@@ -54,4 +54,6 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [App\Http\Controllers\AuthController::class, 'login'])->name('login.post');
     Route::get('/register', [App\Http\Controllers\AuthController::class, 'showRegister'])->name('register');
     Route::post('register', [App\Http\Controllers\AuthController::class, 'register'])->name('register.post');
+    Route::post('/register/send-otp', [App\Http\Controllers\AuthController::class, 'sendOtp'])->name('register.send-otp');
+    Route::post('/register/verify-otp', [App\Http\Controllers\AuthController::class, 'verifyOtp'])->name('register.verify-otp');
 });
