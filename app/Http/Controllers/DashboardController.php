@@ -245,64 +245,76 @@ class DashboardController extends Controller
         $totalConfirmedBookings = Booking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count() + 
                                   \App\Models\CustomBooking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->count();
 
-        if ($totalConfirmedBookings !== 1) {
+        if ($totalConfirmedBookings !== 1 && (!($totalConfirmedBookings > 0 && $totalConfirmedBookings % 10 == 0))) {
             return response()->json(['success' => false, 'message' => 'Not eligible for scratch card']);
         }
 
         $user->scratch_card_claimed = true;
         
-        $winnersCount = \App\Models\Transaction::where('type', 'reward')->count();
-        $isWinner = false;
-        $rewardAmount = 0;
+        if ($totalConfirmedBookings === 1) {
+            $winnersCount = \App\Models\Transaction::where('type', 'reward')->count();
+            $isWinner = false;
+            $rewardAmount = 0;
 
-        if ($winnersCount < 3 && rand(1, 10) <= 5) { // 50% chance up to 3 winners
-            $firstBooking = Booking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->orderBy('created_at', 'asc')->first();
-            $firstCustomBooking = \App\Models\CustomBooking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->orderBy('created_at', 'asc')->first();
-            
-            $oldestBooking = null;
-            if ($firstBooking && $firstCustomBooking) {
-                $oldestBooking = $firstBooking->created_at < $firstCustomBooking->created_at ? $firstBooking : $firstCustomBooking;
-            } else {
-                $oldestBooking = $firstBooking ?? $firstCustomBooking;
-            }
+            if ($winnersCount < 3 && rand(1, 10) <= 5) { // 50% chance up to 3 winners
+                $firstBooking = Booking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->orderBy('created_at', 'asc')->first();
+                $firstCustomBooking = \App\Models\CustomBooking::where('user_id', $user->id)->whereIn('status', ['confirmed', 'completed'])->orderBy('created_at', 'asc')->first();
+                
+                $oldestBooking = null;
+                if ($firstBooking && $firstCustomBooking) {
+                    $oldestBooking = $firstBooking->created_at < $firstCustomBooking->created_at ? $firstBooking : $firstCustomBooking;
+                } else {
+                    $oldestBooking = $firstBooking ?? $firstCustomBooking;
+                }
 
-            if ($oldestBooking) {
-                $rewardAmount = $oldestBooking->payable_amount;
-                if ($rewardAmount > 0) {
-                    $isWinner = true;
-                    
-                    $wallet = \App\Models\Wallet::firstOrCreate(['user_id' => $user->id]);
-                    $wallet->balance += $rewardAmount;
-                    $wallet->save();
+                if ($oldestBooking) {
+                    $rewardAmount = $oldestBooking->payable_amount;
+                    if ($rewardAmount > 0) {
+                        $isWinner = true;
+                        
+                        $wallet = \App\Models\Wallet::firstOrCreate(['user_id' => $user->id]);
+                        $wallet->balance += $rewardAmount;
+                        $wallet->save();
 
-                    \App\Models\Transaction::create([
-                        'user_id' => $user->id,
-                        'wallet_id' => $wallet->id,
-                        'type' => 'reward',
-                        'amount' => $rewardAmount,
-                        'description' => 'Scratch Card Reward (1st Booking Amount)',
-                        'status' => 'completed'
-                    ]);
+                        \App\Models\Transaction::create([
+                            'user_id' => $user->id,
+                            'wallet_id' => $wallet->id,
+                            'type' => 'reward',
+                            'amount' => $rewardAmount,
+                            'description' => 'Scratch Card Reward (1st Booking Amount)',
+                            'status' => 'completed'
+                        ]);
+                    }
                 }
             }
-        }
 
-        $user->save();
+            $user->save();
 
-        if ($isWinner) {
+            if ($isWinner) {
+                return response()->json([
+                    'status' => true,
+                    'success' => true, 
+                    'is_winner' => true,
+                    'reward_amount' => $rewardAmount,
+                    'message' => 'You get reward of ' . number_format($rewardAmount, 2) . ' rupees on your wallet'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => true,
+                    'success' => true, 
+                    'is_winner' => false,
+                    'message' => 'Better luck next time!'
+                ]);
+            }
+        } else {
+            $user->free_second_booking_available = true;
+            $user->save();
+
             return response()->json([
                 'status' => true,
                 'success' => true, 
                 'is_winner' => true,
-                'reward_amount' => $rewardAmount,
-                'message' => 'Congratulations! You won ₹' . number_format($rewardAmount, 2) . ' in your wallet!'
-            ]);
-        } else {
-            return response()->json([
-                'status' => true,
-                'success' => true, 
-                'is_winner' => false,
-                'message' => 'Better luck next time!'
+                'message' => 'You have unlocked a FREE eligible service on your next booking!'
             ]);
         }
     }

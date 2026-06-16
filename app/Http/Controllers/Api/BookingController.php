@@ -118,11 +118,11 @@ class BookingController extends Controller
             if ($status === 'confirmed') {
                 $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
                                           \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
-                if ($totalConfirmedBookings === 1 && auth()->user()->role === 'user') {
+                if (($totalConfirmedBookings === 1 && auth()->user()->role === 'user') || ($totalConfirmedBookings > 0 && $totalConfirmedBookings % 10 == 0)) {
                     if (auth()->user()->scratch_card_claimed) {
                         auth()->user()->update(['scratch_card_claimed' => false]);
-                        $show_scratch_card = true;
                     }
+                    $show_scratch_card = true;
                 }
             }
 
@@ -257,11 +257,11 @@ class BookingController extends Controller
             if ($status === 'confirmed') {
                 $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
                                           \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
-                if ($totalConfirmedBookings === 1 && auth()->user()->role === 'user') {
+                if (($totalConfirmedBookings === 1 && auth()->user()->role === 'user') || ($totalConfirmedBookings > 0 && $totalConfirmedBookings % 10 == 0)) {
                     if (auth()->user()->scratch_card_claimed) {
                         auth()->user()->update(['scratch_card_claimed' => false]);
-                        $show_scratch_card = true;
                     }
+                    $show_scratch_card = true;
                 }
             }
 
@@ -387,11 +387,11 @@ class BookingController extends Controller
             if ($status === 'confirmed') {
                 $totalConfirmedBookings = Booking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count() + 
                                           \App\Models\CustomBooking::where('user_id', auth()->id())->whereIn('status', ['confirmed', 'completed'])->count();
-                if ($totalConfirmedBookings === 1 && auth()->user()->role === 'user') {
+                if (($totalConfirmedBookings === 1 && auth()->user()->role === 'user') || ($totalConfirmedBookings > 0 && $totalConfirmedBookings % 10 == 0)) {
                     if (auth()->user()->scratch_card_claimed) {
                         auth()->user()->update(['scratch_card_claimed' => false]);
-                        $show_scratch_card = true;
                     }
+                    $show_scratch_card = true;
                 }
             }
 
