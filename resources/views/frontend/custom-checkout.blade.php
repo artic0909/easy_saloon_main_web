@@ -147,21 +147,29 @@
                     <!-- Payment Methods Selection -->
                     <div class="mb-10" x-data="{ paymentMethod: 'online' }">
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Select Payment Method</label>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                             <!-- Online Payment Option -->
                             <label class="relative cursor-pointer group">
                                 <input type="radio" name="payment_method" value="online" x-model="paymentMethod" class="absolute opacity-0" checked>
-                                <div :class="paymentMethod == 'online' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
+                                <div :class="paymentMethod == 'online' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5 h-full">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                                     <span class="text-[10px] font-black uppercase tracking-wider">Pay Online</span>
+                                </div>
+                            </label>
+                            <!-- Wallet Payment Option -->
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="payment_method" value="wallet" x-model="paymentMethod" class="absolute opacity-0">
+                                <div :class="paymentMethod == 'wallet' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5 h-full">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    <span class="text-[10px] font-black uppercase tracking-wider">Wallet (₹{{ number_format($walletBalance, 2) }})</span>
                                 </div>
                             </label>
                             <!-- Cash Payment Option -->
                             <label class="relative cursor-pointer group">
                                 <input type="radio" name="payment_method" value="cash" x-model="paymentMethod" class="absolute opacity-0">
-                                <div :class="paymentMethod == 'cash' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5">
+                                <div :class="paymentMethod == 'cash' ? 'bg-[#3d2b1f] text-white border-[#3d2b1f] shadow-lg' : 'bg-[#fdfbf7] text-gray-500 border-gray-100'" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 text-center transition-all group-hover:-translate-y-0.5 flex flex-col items-center justify-center gap-1.5 h-full">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                    <span class="text-[10px] font-black uppercase tracking-wider">Pay Cash</span>
+                                    <span class="text-[10px] font-black uppercase tracking-wider">COD</span>
                                 </div>
                             </label>
                         </div>
@@ -333,6 +341,15 @@
                         icon: 'success',
                         title: 'Booking Confirmed!',
                         text: 'Your appointment is booked successfully. Please pay by cash after your session.',
+                        confirmButtonColor: '#3d2b1f'
+                    }).then(() => {
+                        window.location.href = "{{ route('dashboard.bookings') }}";
+                    });
+                } else if (paymentMethod === 'wallet') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Confirmed!',
+                        text: 'Your appointment is booked successfully using Wallet balance.',
                         confirmButtonColor: '#3d2b1f'
                     }).then(() => {
                         window.location.href = "{{ route('dashboard.bookings') }}";

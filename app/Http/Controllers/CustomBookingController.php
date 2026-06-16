@@ -67,11 +67,14 @@ class CustomBookingController extends Controller
         $equipment = array_unique($equipment);
 
         $userAddresses = [];
+        $walletBalance = 0;
         if (auth()->check()) {
             $userAddresses = Address::where('user_id', auth()->id())->with(['city', 'state', 'country'])->get();
+            $wallet = \App\Models\Wallet::firstOrCreate(['user_id' => auth()->id()]);
+            $walletBalance = $wallet->balance;
         }
 
-        return view('frontend.custom-checkout', compact('services', 'totalPrice', 'totalDuration', 'type', 'date', 'slot', 'userAddresses', 'equipment', 'serviceIds'));
+        return view('frontend.custom-checkout', compact('services', 'totalPrice', 'totalDuration', 'type', 'date', 'slot', 'userAddresses', 'equipment', 'serviceIds', 'walletBalance'));
     }
 
     public function confirm(Request $request)
@@ -82,7 +85,7 @@ class CustomBookingController extends Controller
             'date' => 'required|date',
             'slot' => 'required',
             'address_id' => 'required_if:service_type,home',
-            'payment_method' => 'nullable|in:online,cash',
+            'payment_method' => 'nullable|in:online,cash,wallet',
             'coupon_code' => 'nullable|string',
         ]);
 
@@ -163,8 +166,31 @@ class CustomBookingController extends Controller
             $booking->payment_type = 'online';
             $booking->pay_type = 'online';
         } else {
-            $booking->payment_type = $request->payment_method === 'cash' ? 'cod' : 'online';
-            $booking->pay_type = $request->payment_method ?? 'online';
+            if ($request->payment_method === 'wallet') {
+                $wallet = \App\Models\Wallet::firstOrCreate(['user_id' => auth()->id()]);
+                if ($wallet->balance < $booking->payable_amount) {
+                    return response()->json(['success' => false, 'message' => 'Insufficient wallet balance.'], 400);
+                }
+                $wallet->balance -= $booking->payable_amount;
+                $wallet->save();
+                
+                \App\Models\Transaction::create([
+                    'user_id' => auth()->id(),
+                    'wallet_id' => $wallet->id,
+                    'type' => 'debit',
+                    'amount' => $booking->payable_amount,
+                    'description' => 'Payment for Custom Booking #' . $booking->booking_number,
+                    'status' => 'completed'
+                ]);
+
+                $booking->is_paid = true;
+                $booking->status = 'confirmed';
+                $booking->payment_type = 'wallet';
+                $booking->pay_type = 'wallet';
+            } else {
+                $booking->payment_type = $request->payment_method === 'cash' ? 'cod' : 'online';
+                $booking->pay_type = $request->payment_method ?? 'online';
+            }
         }
         
         $booking->coupon_code = $request->filled('coupon_code') ? $request->coupon_code : null;
